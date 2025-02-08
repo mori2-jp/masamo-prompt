@@ -1,5 +1,6 @@
 単元のJSONはGithubのプライベートリポジトリで管理しています。
-github リポジトリからGithubAPIを利用してファイルを取得してDBにインサートするLaravel11のコマンドを実装してください。
+github リポジトリからGithubAPIを利用してファイルを取得してDBにインサートするLaravel11のImportUnitsFromGithubというコマンドを実装し、
+実行方法となるコマンドも出力してください
 
 # 条件
 1.
@@ -25,6 +26,7 @@ contents/units/logic/units-s2-l3-002.json
 contents/units/sience/units-s3-l3-001.json
 contents/units/english/units-s4-l3-001.json
 これら全てのファイルが対象。（subject はここで示したもの以外にも無数に存在します。
+
 
 2.
 リポジトリは、

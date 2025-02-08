@@ -1,14 +1,34 @@
-問題のJSONはGithubのプライベートリポジトリで管理しています。
-github リポジトリからgithub api を利用してファイルを取得してDBにインサートするLaravel11のコマンドを実装してください。
+単元のJSONはGithubのプライベートリポジトリで管理しています。
+github リポジトリからGithubAPIを利用してファイルを取得してDBにインサートするLaravel11のCommands\Import\Github\ImportQuestionsFromGithubというコマンドを実装し、
+実行方法となるコマンドも出力してください
+
 
 # 条件
 1.
 パスは、「contents/questions/{subject}/{question_type}」です。
 例：contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-例：contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+例：contents/questions/math/SCENARIO/ques-s1-l2-001.json
 
 s1 は、subject ID が 1を表しています
 l1 は、Level ID が 1を表しています
+
+コマンドのオプションで subject を指定している時は subject 内のファイルのみ処理の対象とし、
+subject の指定が無い場合は、questions/以下すべてを対象としたい
+
+例 subject が math の場合、
+contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+contents/question/math/FILL_IN_THE_BLANK/ques-s1-l2-002.json
+これらのファイルが対象
+
+例 subject が指定されていない場合、
+contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+contents/question/math/FILL_IN_THE_BLANK/ques-s1-l2-002.json
+contents/question/math/SCENARIO/ques-s1-l2-002.json
+contents/questions/programming/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+contents/question/programming/FILL_IN_THE_BLANK/ques-s1-l2-002.json
+これら全てのファイルが対象。（subject と question_type はここで示したもの以外にも無数に存在します。
+
+つまり、レスポンスが type = dir の時は再帰的に処理をして json ファイルを見つける必要があります。
 
 2.
 リポジトリは、
@@ -34,7 +54,10 @@ DB
 JSON ID が同一のものが既にテーブルに存在する場合はデータを上書きしてください。
 
 JSONの requirement と required_competency は、配列になっていますがDBにはそれぞれ改行して一つのカラムに入れてください。
-なた、questions, question_translations の両方にカラムは存在しますが、units には、日本語をインサートして、unit_translations には言語ごとにインサートしてください
+なた、units, unit_translations の両方にカラムは存在しますが、units には、日本語をインサートして、unit_translations には言語ごとにインサートしてください
+
+5.
+github token は config/services.php github.api_token
 
 ーーDB
 ```json
@@ -85,6 +108,7 @@ $table->foreign('question_id')->references('id')->on('questions')->onDelete('cas
 ```
 
 --JSON
+/contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
 ```json
 {
   "order": 1,
@@ -153,6 +177,452 @@ $table->foreign('question_id')->references('id')->on('questions')->onDelete('cas
   ],
   "created_at": "2025-01-01 00:00:00",
   "updated_at": "2025-01-01 00:00:00"
+}
+
+
+```
+
+```json
+{
+  "order": 1,
+  "id": "prob_s1_l2_002",
+  "level_id": "level-001",
+  "difficulty_id": "diff-001",
+  "version": "1.0.0",
+  "problem_type": "SCENARIO",
+  "question_format": "NUMERIC_ANSWER",
+  "question_text": {
+    "ja": "カレールー3つとりんご2つは必須で購入する必要があります。具材ごとの価格は次のとおり：りんご130円、カレールー100円、じゃがいも150円、にんじん200円、たまねぎ150円。予算は1,000円です。合計金額が予算内に収まるように買い物をし、(合計金額, お釣り)を導き出してください。",
+    "en": "You must buy at least 3 curry roux and 2 apples. Prices per item: apple 130 yen, curry roux 100 yen, potato 150 yen, carrot 200 yen, onion 150 yen, with a total budget of 1,000 yen. Make sure the total cost does not exceed the budget and answer (total cost, change)."
+  },
+  "explanation": {
+    "ja": "",
+    "en": ""
+  },
+  "metadata": {
+    "options": [
+      {
+        "option_id": 1,
+        "name_ja": "りんご",
+        "name_en": "apple",
+        "price": 130,
+        "required": 2
+      },
+      {
+        "option_id": 2,
+        "name_ja": "カレールー",
+        "name_en": "curry roux",
+        "price": 100,
+        "required": 3
+      },
+      {
+        "option_id": 3,
+        "name_ja": "じゃがいも",
+        "name_en": "potato",
+        "price": 150,
+        "required": 0
+      },
+      {
+        "option_id": 4,
+        "name_ja": "にんじん",
+        "name_en": "carrot",
+        "price": 200,
+        "required": 0
+      },
+      {
+        "option_id": 5,
+        "name_ja": "たまねぎ",
+        "name_en": "onion",
+        "price": 150,
+        "required": 0
+      }
+    ],
+    "conditions": [
+      {
+        "total_amount": 1000
+      }
+    ],
+    "inputFormat": {
+      "type": "custom",
+      "fields": [
+        {
+          "field_id": "f_1",
+          "attribute": "array",
+          "name": "selected options",
+          "keys": [
+            "option_id",
+            "quantity"
+          ]
+        },
+        {
+          "field_id": "f_2",
+          "attribute": "number",
+          "name": "price"
+        },
+        {
+          "field_id": "f_3",
+          "attribute": "number",
+          "name": "change"
+        }
+      ]
+    },
+    "evaluationMethod": "CODE",
+    "evaluationSpec": {
+      "checkerMethod": "caluclateMethod"
+    }
+  },
+  "learning_requirements": [
+    {
+      "learning_subject": "算数",
+      "learning_no": 5,
+      "learning_requirement": "A 数と計算 日常生活への活用 数の活用",
+      "learning_required_competency": "身の回りの物や人数などを数えて，必要な数を報告できる",
+      "learning_category": "A",
+      "learning_grade_level": "小1",
+      "learning_url": "https://docs.google.com/spreadsheets/xxxx#range=20:20"
+    }
+  ],
+  "created_at": "2025-01-01 00:00:00",
+  "updated_at": "2025-01-01 00:00:00"
+}
+
+```
+
+```json
+<?php
+
+namespace App\Enums;
+
+enum QuestionFormat: int
+{
+    case MULTIPLE_CHOICE = 1;   // 選択式
+    case NUMERIC_ANSWER   = 300;  // 数値回答式
+    case TEXT_ANSWER      = 600;  // テキスト回答式
+
+    public function label(): string
+    {
+        return match($this) {
+            self::MULTIPLE_CHOICE => '選択式',
+            self::NUMERIC_ANSWER  => '数値回答式',
+            self::TEXT_ANSWER     => 'テキスト回答式',
+        };
+    }
+}
+
+
+<?php
+
+namespace App\Enums;
+
+// 問題のカテゴリ（出題形式とは別）
+enum QuestionType: int
+{
+case CALCULATION             = 1;
+case FILL_IN_THE_BLANK       = 51;
+case SCENARIO                   = 101;
+
+//    case MULTIPLE_CHOICE         = 1;
+//    case SIMPLE_ARITHMETIC        = 10;
+
+//    case COMBINATION             = 101;
+//    case HELL                    = 151;
+//    case STORY                   = 201;
+//    case FREE_TEXT               = 251;
+//    case DRILL                   = 301;
+//    case SIMULATION              = 401;
+//    case DEBUG                   = 451;
+//    case PROOF                   = 501;
+//    case REASONING               = 551;
+//    case MULTI_STEP_COMPARATIVE  = 601;
+//    case FUSION                  = 651;
+//    case INFERENCE               = 701;
+//    case DATA_INTERPRETATION     = 751;
+//    case LOGIC                   = 801;
+
+
+public function label(): string
+{
+return match($this) {
+self::CALCULATION            => 'Calculation Problem',              // 計算問題: 数値計算や演算ルールの処理を中心
+self::FILL_IN_THE_BLANK      => 'Fill-in-the-Blank Problem',        // 穴埋め問題: 問題文や式に空所があり、そこを埋める形式
+self::SCENARIO               => 'Scenario Problem',                 // シナリオ問題: 状況や経過を踏まえて解決する（回答が一意じゃない）
+//            self::MULTIPLE_CHOICE        => 'Multiple Choice Problem',          // 選択問題: 複数の選択肢から答えを選ぶ
+//            self::SIMPLE_ARITHMETIC      => 'Simple Arithmetic Problem',        // 単純計算問題: 簡単な計算式や数値操作を問う
+
+//            self::COMBINATION            => 'Combination Problem',              // 組み合わせ問題: 対応するペアやグループをマッチさせる
+//            self::HELL                   => 'Hell Problem',                     // 地獄問題: 選択肢が多く1つだけ正解がある特許取得済の問題
+//            self::STORY                  => 'Story Problem',                    // ストーリー問題: 物語やシナリオで流れを理解しながら解答
+//            self::FREE_TEXT              => 'Free Text Problem',                // フリーテキスト問題: 自由記述形式での回答
+//            self::DRILL                  => 'Drill Problem',                    // 発生練習問題: 何かを生成・作成したりする練習を含む
+//            self::SIMULATION             => 'Simulation Problem (Real-life Modeling)', // シミュレーション問題: 実生活モデルを扱う
+//            self::DEBUG                  => 'Debug Problem',                    // デバッグ問題: ミスを発見し修正する
+//            self::PROOF                  => 'Proof Problem',                    // 証明問題: 定理や結論がなぜ成り立つかを示す
+//            self::REASONING              => 'Reasoning Problem',                // 理由づけ問題: 結果の根拠や理由を説明
+//            self::MULTI_STEP_COMPARATIVE => 'Multi-Step Comparative Problem',   // 複数手順を比較検討する問題
+//            self::FUSION                 => 'Fusion Problem',                   // 融合問題: 複数領域を組み合わせて解決
+//            self::INFERENCE              => 'Inference Problem',                // 推理問題: 与えられた情報から論理的に結論を導く
+//            self::DATA_INTERPRETATION    => 'Data Interpretation Problem',      // 統計資料の読み取り問題: グラフや表を使う
+//            self::LOGIC                  => 'Logic Problem',                    // ロジック問題: プログラム的思考やアルゴリズム判断
+
+};
+}
+}
+
+```
+
+``` 参考コマンド
+<?php
+
+namespace App\Console\Commands\Import\Github;
+
+use App\Models\Level\Level;
+use App\Models\Subject\Subject;
+use App\Models\Unit\Unit;
+use App\Models\Unit\UnitTranslation;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+/**
+ * Import units JSON from a private GitHub repository
+ * and upsert into units / unit_translations.
+ */
+class ImportUnitsFromGithub extends Command
+{
+    protected $signature = 'import:units-from-github
+                            {--subject= : If specified, only import files under contents/units/{subject} }';
+
+    protected $description = 'Import units data from a GitHub repository JSON files and sync DB';
+
+    public function handle()
+    {
+        // 1. 認証トークンをconfigから取得
+        $token = config('services.github.api_token');
+        if (!$token) {
+            $this->error('GitHub API token not found in config/services.php [github.api_token]');
+            return 1;
+        }
+
+        // 2. リポジトリとパスの指定
+        $repoOwnerAndName = 'NousContentsManagement/masamo-content';
+        $basePath = 'contents/units';
+
+        $subjectOption = $this->option('subject');
+        if ($subjectOption) {
+            // e.g. contents/units/math
+            $basePath .= '/' . $subjectOption;
+            $this->info("Subject specified: {$subjectOption}, path= {$basePath}");
+        } else {
+            $this->info("No subject specified. Will import from all subdirectories under contents/units");
+        }
+
+        // 3. 再帰的にGitHub APIでファイル一覧(JSONファイル)を収集
+        $allJsonFiles = $this->fetchAllJsonFilesRecursively($repoOwnerAndName, $basePath, $token);
+
+        if (empty($allJsonFiles)) {
+            $this->warn("No JSON files found under path: {$basePath}");
+            return 0;
+        }
+
+        $this->info("Found " . count($allJsonFiles) . " JSON file(s) in total under path: {$basePath}");
+
+        // 4. 各JSONファイルを処理
+        foreach ($allJsonFiles as $file) {
+            $this->processJsonFile($file, $token);
+        }
+
+        $this->info("Import process completed.");
+        return 0;
+    }
+
+    /**
+     * 再帰的にディレクトリをたどり、.jsonファイルを収集する
+     */
+    private function fetchAllJsonFilesRecursively(string $repo, string $path, string $token): array
+    {
+        $url = "https://api.github.com/repos/{$repo}/contents/{$path}";
+        $response = Http::withToken($token)->get($url);
+
+        if ($response->failed()) {
+            $this->warn("Failed to fetch from GitHub: {$url}, status={$response->status()}");
+            return [];
+        }
+
+        $items = $response->json();
+        if (!is_array($items)) {
+            return [];
+        }
+
+        $result = [];
+
+        foreach ($items as $item) {
+            $type = $item['type'] ?? null;
+            $itemPath = $item['path'] ?? '';
+            $name     = $item['name'] ?? '';
+            // ディレクトリなら再帰的に取得
+            if ($type === 'dir') {
+                // 再帰的に下層ディレクトリを探索
+                $descendantFiles = $this->fetchAllJsonFilesRecursively($repo, $itemPath, $token);
+                $result = array_merge($result, $descendantFiles);
+            } elseif ($type === 'file') {
+                // .json ファイルかチェック
+                // 例: 末尾が .json なら対象に加える
+                if (str_ends_with($name, '.json')) {
+                    // 取得候補に追加
+                    $result[] = $item;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * 単一のJSONファイルをダウンロードし、"units"配列をDBに反映
+     */
+    private function processJsonFile(array $file, string $token)
+    {
+        if (!isset($file['download_url'])) {
+            $this->warn("No download_url for file: " . ($file['path'] ?? 'unknown'));
+            return;
+        }
+        $this->info("Fetching JSON from: " . $file['path']);
+
+        // JSONファイル内容を取得
+        $jsonContent = Http::withToken($token)
+            ->get($file['download_url'])
+            ->body();
+
+        $decoded = json_decode($jsonContent, true);
+        if (!is_array($decoded) || !isset($decoded['units'])) {
+            $this->warn("File {$file['name']} does not contain 'units' array. Skipped.");
+            return;
+        }
+
+        // "units" 配列を処理
+        $unitsArray = $decoded['units'];
+        // JSONのorder順にソートしてから処理する
+        usort($unitsArray, fn($a, $b) => ($a['order'] ?? 9999) <=> ($b['order'] ?? 9999));
+
+        foreach ($unitsArray as $unitItem) {
+            $this->upsertUnit($unitItem);
+        }
+    }
+
+    /**
+     * JSONデータ1件(ユニット)をDBへupsert
+     */
+    private function upsertUnit(array $unitItem)
+    {
+        DB::beginTransaction();
+        try {
+            $jsonId = $unitItem['json_id'] ?? null;
+            if (!$jsonId) {
+                $this->warn("unit JSON missing 'json_id'. Skipped.");
+                DB::rollBack();
+                return;
+            }
+
+            $unitRecord = Unit::where('json_id', $jsonId)->first();
+
+            // subject_id, level_id を解決
+            $subjectUuid = $this->findSubjectUuid($unitItem['subject_id'] ?? null);
+            $levelUuid   = $this->findLevelUuid($unitItem['level_id']   ?? null);
+
+            // order の重複回避
+            $jsonOrder = $unitItem['order'] ?? 9999;
+            if (!$unitRecord) {
+                // 新規
+                $unitRecord = new Unit();
+                $unitRecord->id = (string) Str::uuid();
+                $unitRecord->json_id = $jsonId;
+
+                $maxOrder = Unit::max('order');
+                if ($maxOrder === null) {
+                    $maxOrder = 0;
+                }
+                // 例えば maxOrder+1 or JSON指定 order が大きいか比較
+                // ここでは例として、衝突時に +1 して空きを作る
+                $finalOrder = max($maxOrder+1, $jsonOrder);
+                while (Unit::where('order', $finalOrder)->exists()) {
+                    $finalOrder++;
+                }
+                $unitRecord->order = $finalOrder;
+            } else {
+                // 既存レコードのorder更新
+                $this->reorderUnit($unitRecord->id, $jsonOrder);
+            }
+
+            $unitRecord->subject_id   = $subjectUuid;
+            $unitRecord->level_id     = $levelUuid;
+
+            // unitsテーブルには日本語名を入れる（要件より）
+            $jaName = $unitItem['name']['ja'] ?? null;
+            $jaDesc = $unitItem['description']['ja'] ?? null;
+            $unitRecord->name        = $jaName;
+            $unitRecord->description = $jaDesc;
+            $unitRecord->version     = $unitItem['version'] ?? '0.0.1';
+
+            $unitRecord->save();
+
+            // unit_translations 多言語
+            foreach (['ja','en'] as $locale) {
+                if (isset($unitItem['name'][$locale]) || isset($unitItem['description'][$locale])) {
+                    UnitTranslation::updateOrCreate(
+                        [
+                            'unit_id' => $unitRecord->id,
+                            'locale'  => $locale,
+                        ],
+                        [
+                            'name'        => $unitItem['name'][$locale] ?? null,
+                            'description' => $unitItem['description'][$locale] ?? null,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+            $this->info("Upserted unit json_id={$jsonId}");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            $this->error("Error upserting unit json_id={$jsonId}: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * DB内の既存unitの並び順(order)を更新する際に、JSONで指定された順序に合わせつつ衝突を回避
+     */
+    private function reorderUnit(string $unitId, int $targetOrder)
+    {
+        $unit = Unit::find($unitId);
+        if (!$unit) return;
+
+        // 順序衝突を回避 (簡易例)
+        while (Unit::where('order', $targetOrder)->where('id','!=',$unitId)->exists()) {
+            $targetOrder++;
+        }
+        $unit->order = $targetOrder;
+        $unit->save();
+    }
+
+    /**
+     * Subject ID解決用
+     */
+    private function findSubjectUuid(?string $subJsonId)
+    {
+        if (!$subJsonId) return null;
+         return Subject::where('json_id',$subJsonId)->value('id') ?: null;
+    }
+
+    /**
+     * Level ID解決用
+     */
+    private function findLevelUuid(?string $levJsonId)
+    {
+        if (!$levJsonId) return null;
+        return Level::where('json_id',$levJsonId)->value('id') ?: null;
+    }
 }
 
 ```
