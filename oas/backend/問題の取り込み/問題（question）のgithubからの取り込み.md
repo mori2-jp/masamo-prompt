@@ -5,9 +5,9 @@ github リポジトリからGithubAPIを利用してファイルを取得してD
 
 # 条件
 1.
-パスは、「contents/questions/{subject}/{question_type}」です。
-例：contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-例：contents/questions/math/SCENARIO/ques-s1-l2-001.json
+パスは、「contents/questions/{subject}/{level}/{question_type}」です。
+例：contents/questions/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+例：contents/questions/math/l2/SCENARIO/ques-s1-l2-001.json
 
 s1 は、subject ID が 1を表しています
 l1 は、Level ID が 1を表しています
@@ -16,16 +16,16 @@ l1 は、Level ID が 1を表しています
 subject の指定が無い場合は、questions/以下すべてを対象としたい
 
 例 subject が math の場合、
-contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-contents/question/math/FILL_IN_THE_BLANK/ques-s1-l2-002.json
+contents/questions/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+contents/question/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-002.json
 これらのファイルが対象
 
 例 subject が指定されていない場合、
-contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-contents/question/math/FILL_IN_THE_BLANK/ques-s1-l2-002.json
-contents/question/math/SCENARIO/ques-s1-l2-002.json
-contents/questions/programming/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-contents/question/programming/FILL_IN_THE_BLANK/ques-s1-l2-002.json
+contents/questions/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+contents/question/math/l1/FILL_IN_THE_BLANK/ques-s1-l1-001.json
+contents/question/math/l2/SCENARIO/ques-s1-l2-002.json
+contents/questions/programming/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
+contents/question/programming/l1/FILL_IN_THE_BLANK/ques-s1-l1-001.json
 これら全てのファイルが対象。（subject と question_type はここで示したもの以外にも無数に存在します。
 
 つまり、レスポンスが type = dir の時は再帰的に処理をして json ファイルを見つける必要があります。
@@ -58,6 +58,12 @@ JSONの requirement と required_competency は、配列になっていますが
 
 5.
 github token は config/services.php github.api_token
+
+6.
+jsonの、difficulty_id　や　level_id は、levels や difficulties の ID ではなく json_id のことを指しています。
+これは、primary key である id は生成時に自動生成されるため予め定義されたJSONではIDを知り得ないため参照用のIDとしてjson_idを容易しています。
+つまり、jsonのlevel_id から levels の json_id と対応するデータを探す必要があります（dificulties も同様に）
+
 
 ーーDB
 ```json
@@ -288,6 +294,94 @@ $table->foreign('question_id')->references('id')->on('questions')->onDelete('cas
 
 ```
 
+
+```
+<?php
+
+namespace App\Models\Question;
+
+use App\Traits\HasOrder;
+use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Question extends Model
+{
+    use HasOrder, UsesUuid, SoftDeletes;
+
+    // 主キーがUUIDであることを指定
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    public $sortable = [
+        'order_column_name' => 'order',
+        'sort_when_creating' => true,
+    ];
+}
+
+--
+
+<?php
+
+namespace App\Models\Question;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class QuestionTranslation extends Model
+{
+    use SoftDeletes;
+}
+
+--
+<?php
+
+namespace App\Models\Level;
+
+use App\Traits\HasOrder;
+use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Level extends Model
+{
+    use UsesUuid, HasOrder, SoftDeletes;
+
+    // 主キーがUUIDであることを指定
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    public $sortable = [
+        'order_column_name' => 'order',
+        'sort_when_creating' => true,
+    ];
+}
+
+--
+<?php
+
+namespace App\Models\Difficulty;
+
+use App\Traits\HasOrder;
+use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Difficulty extends Model
+{
+    use HasOrder, UsesUuid, SoftDeletes;
+
+    // 主キーがUUIDであることを指定
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    public $sortable = [
+        'order_column_name' => 'order',
+        'sort_when_creating' => true,
+    ];
+}
+
+
 ```json
 <?php
 
@@ -307,8 +401,63 @@ enum QuestionFormat: int
             self::TEXT_ANSWER     => 'テキスト回答式',
         };
     }
+
+    /**
+     * 文字列を受け取り、該当する QuestionFormat を返す静的メソッド
+     * 存在しない場合は例外を投げるサンプルです
+     *
+     * @param string $formatString "MULTIPLE_CHOICE", "NUMERIC_ANSWER", "TEXT_ANSWER"
+     * @return QuestionFormat
+     */
+    public static function fromString(string $formatString): QuestionFormat
+    {
+        return match ($formatString) {
+            'MULTIPLE_CHOICE' => self::MULTIPLE_CHOICE,
+            'NUMERIC_ANSWER'  => self::NUMERIC_ANSWER,
+            'TEXT_ANSWER'     => self::TEXT_ANSWER,
+            default => throw new \InvalidArgumentException("Unknown QuestionFormat string: {$formatString}")
+        };
+    }
 }
 
+
+
+<?php
+
+namespace App\Enums;
+
+enum QuestionFormat: int
+{
+    case MULTIPLE_CHOICE = 1;   // 選択式
+    case NUMERIC_ANSWER   = 300;  // 数値回答式
+    case TEXT_ANSWER      = 600;  // テキスト回答式
+
+    public function label(): string
+    {
+        return match($this) {
+            self::MULTIPLE_CHOICE => '選択式',
+            self::NUMERIC_ANSWER  => '数値回答式',
+            self::TEXT_ANSWER     => 'テキスト回答式',
+        };
+    }
+
+    /**
+     * 文字列を受け取り、該当する QuestionFormat を返す静的メソッド
+     * 存在しない場合は例外を投げるサンプルです
+     *
+     * @param string $formatString "MULTIPLE_CHOICE", "NUMERIC_ANSWER", "TEXT_ANSWER"
+     * @return QuestionFormat
+     */
+    public static function fromString(string $formatString): QuestionFormat
+    {
+        return match ($formatString) {
+            'MULTIPLE_CHOICE' => self::MULTIPLE_CHOICE,
+            'NUMERIC_ANSWER'  => self::NUMERIC_ANSWER,
+            'TEXT_ANSWER'     => self::TEXT_ANSWER,
+            default => throw new \InvalidArgumentException("Unknown QuestionFormat string: {$formatString}")
+        };
+    }
+}
 
 <?php
 
@@ -317,13 +466,12 @@ namespace App\Enums;
 // 問題のカテゴリ（出題形式とは別）
 enum QuestionType: int
 {
-case CALCULATION             = 1;
-case FILL_IN_THE_BLANK       = 51;
-case SCENARIO                   = 101;
+    case CALCULATION             = 1;
+    case FILL_IN_THE_BLANK       = 51;
+    case SCENARIO                = 101;
+    case MULTIPLE_CHOICE         = 151;
 
-//    case MULTIPLE_CHOICE         = 1;
 //    case SIMPLE_ARITHMETIC        = 10;
-
 //    case COMBINATION             = 101;
 //    case HELL                    = 151;
 //    case STORY                   = 201;
@@ -339,16 +487,15 @@ case SCENARIO                   = 101;
 //    case DATA_INTERPRETATION     = 751;
 //    case LOGIC                   = 801;
 
+    public function label(): string
+    {
+        return match($this) {
+            self::CALCULATION            => 'Calculation Problem',              // 計算問題: 数値計算や演算ルールの処理を中心
+            self::FILL_IN_THE_BLANK      => 'Fill-in-the-Blank Problem',        // 穴埋め問題: 問題文や式に空所があり、そこを埋める形式
+            self::SCENARIO               => 'Scenario Problem',                 // シナリオ問題: 状況や経過を踏まえて解決する（回答が一意じゃない）
+            self::MULTIPLE_CHOICE        => 'Multiple Choice Problem',          // 選択問題: 複数の選択肢から答えを選ぶ
 
-public function label(): string
-{
-return match($this) {
-self::CALCULATION            => 'Calculation Problem',              // 計算問題: 数値計算や演算ルールの処理を中心
-self::FILL_IN_THE_BLANK      => 'Fill-in-the-Blank Problem',        // 穴埋め問題: 問題文や式に空所があり、そこを埋める形式
-self::SCENARIO               => 'Scenario Problem',                 // シナリオ問題: 状況や経過を踏まえて解決する（回答が一意じゃない）
-//            self::MULTIPLE_CHOICE        => 'Multiple Choice Problem',          // 選択問題: 複数の選択肢から答えを選ぶ
 //            self::SIMPLE_ARITHMETIC      => 'Simple Arithmetic Problem',        // 単純計算問題: 簡単な計算式や数値操作を問う
-
 //            self::COMBINATION            => 'Combination Problem',              // 組み合わせ問題: 対応するペアやグループをマッチさせる
 //            self::HELL                   => 'Hell Problem',                     // 地獄問題: 選択肢が多く1つだけ正解がある特許取得済の問題
 //            self::STORY                  => 'Story Problem',                    // ストーリー問題: 物語やシナリオで流れを理解しながら解答
@@ -363,9 +510,26 @@ self::SCENARIO               => 'Scenario Problem',                 // シナリ
 //            self::INFERENCE              => 'Inference Problem',                // 推理問題: 与えられた情報から論理的に結論を導く
 //            self::DATA_INTERPRETATION    => 'Data Interpretation Problem',      // 統計資料の読み取り問題: グラフや表を使う
 //            self::LOGIC                  => 'Logic Problem',                    // ロジック問題: プログラム的思考やアルゴリズム判断
+        };
+    }
 
-};
-}
+    /**
+     * 文字列を受け取り、該当する QuestionType を返す静的メソッド
+     * 存在しない場合は例外を投げるサンプルです
+     *
+     * @param string $typeString "FILL_IN_THE_BLANK" など
+     * @return QuestionType
+     */
+    public static function fromString(string $typeString): QuestionType
+    {
+        return match($typeString) {
+            'CALCULATION'       => self::CALCULATION,
+            'FILL_IN_THE_BLANK' => self::FILL_IN_THE_BLANK,
+            'SCENARIO'          => self::SCENARIO,
+            'MULTIPLE_CHOICE'   => self::MULTIPLE_CHOICE,
+            default => throw new \InvalidArgumentException("Unknown QuestionType string: {$typeString}")
+        };
+    }
 }
 
 ```
@@ -624,5 +788,3 @@ class ImportUnitsFromGithub extends Command
         return Level::where('json_id',$levJsonId)->value('id') ?: null;
     }
 }
-
-```
