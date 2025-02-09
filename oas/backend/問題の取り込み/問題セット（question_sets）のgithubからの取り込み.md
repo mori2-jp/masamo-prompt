@@ -74,6 +74,10 @@ status は、QuestionSetStatusを参照して正しく保存してください
 questions には、questions テーブルの,json_id が配列で入っています。
 questions を探索して、該当したquestions の id を使って pivot を作成してください
 
+9.
+question_set_questions にはModelがありません。
+Questions または QuestionSet にリレーションを定義するか何かする必要があります
+
 ーーDB
 ```json
    <?php
