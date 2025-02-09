@@ -1,31 +1,33 @@
 単元のJSONはGithubのプライベートリポジトリで管理しています。
-github リポジトリからGithubAPIを利用してファイルを取得してDBにインサートするLaravel11のCommands\Import\Github\ImportQuestionsFromGithubというコマンドを実装し、
+github リポジトリからGithubAPIを利用してファイルを取得してDBにインサートするLaravel11のCommands\Import\Github\ImportQuestionSetsFromGithubというコマンドを実装し、
 実行方法となるコマンドも出力してください
 
 
 # 条件
 1.
-パスは、「contents/questions/{subject}/{level}/{question_type}」です。
-例：contents/questions/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-例：contents/questions/math/l2/SCENARIO/ques-s1-l2-001.json
+パスは、「contents/question_sets/{subject}/{level}/{unit}」です。
+例：contents/question_sets/math/l2/u1/ques-s1-l2-001.json
+例：contents/question_sets/math/l2/u2/ques-s1-l2-001.json
 
 s1 は、subject ID が 1を表しています
 l1 は、Level ID が 1を表しています
+u1 は、Unit ID が1を表しています。
 
 コマンドのオプションで subject を指定している時は subject 内のファイルのみ処理の対象とし、
 subject の指定が無い場合は、questions/以下すべてを対象としたい
 
 例 subject が math の場合、
-contents/questions/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-contents/question/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-002.json
+例：contents/question_sets/math/l2/u1/ques-s1-l2-001.json
+例：contents/question_sets/math/l2/u1/ques-s1-l2-001.json
 これらのファイルが対象
 
 例 subject が指定されていない場合、
-contents/questions/math/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-contents/question/math/l1/FILL_IN_THE_BLANK/ques-s1-l1-001.json
-contents/question/math/l2/SCENARIO/ques-s1-l2-002.json
-contents/questions/programming/l2/FILL_IN_THE_BLANK/ques-s1-l2-001.json
-contents/question/programming/l1/FILL_IN_THE_BLANK/ques-s1-l1-001.json
+contents/question_sets/math/l2/u1/ques-s1-l2-001.json
+contents/question_sets/math/l2/u1/ques-s1-l2-001.json
+contents/question_sets/math/l2/u1/ques-s1-l2-001.json
+contents/question_sets/programming/l2/u1/ques-s1-l2-001.json
+contents/question_sets/programming/l2/u1/ques-s1-l2-001.json
+contents/question_sets/programming/l2/u1/ques-s1-l2-001.json
 これら全てのファイルが対象。（subject と question_type はここで示したもの以外にも無数に存在します。
 
 つまり、レスポンスが type = dir の時は再帰的に処理をして json ファイルを見つける必要があります。
@@ -60,239 +62,154 @@ JSONの requirement と required_competency は、配列になっていますが
 github token は config/services.php github.api_token
 
 6.
-jsonの、difficulty_id　や　level_id は、levels や difficulties の ID ではなく json_id のことを指しています。
+jsonの、difficulty_id　や　level_id , unit_id は、levels や difficulties , units の ID ではなく json_id のことを指しています。
 これは、primary key である id は生成時に自動生成されるため予め定義されたJSONではIDを知り得ないため参照用のIDとしてjson_idを容易しています。
-つまり、jsonのlevel_id から levels の json_id と対応するデータを探す必要があります（dificulties も同様に）
+つまり、jsonのlevel_id から levels の json_id と対応するデータを探す必要があります（dificulties, units も同様に）
+
 
 7.
-status は、QuestionStatusを参照して正しく保存してください
+status は、QuestionSetStatusを参照して正しく保存してください
+
+8.
+questions には、questions テーブルの,json_id が配列で入っています。
+questions を探索して、該当したquestions の id を使って pivot を作成してください
 
 ーーDB
 ```json
-        Schema::create('questions', function (Blueprint $table) {
+   <?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+/**
+ * Run the migrations.
+ */
+public function up(): void
+{
+Schema::create('question_sets', function (Blueprint $table) {
 $table->uuid('id')->primary();
-$table->uuid('level_id');
-$table->uuid('difficulty_id');
+$table->uuid('unit_id')->nullable();
 $table->string('json_id')->nullable()->unique();
-$table->json('metadata')->nullable();
 $table->string('version')->default('0.0.1');
 $table->integer('status')->default(1);
-$table->integer('question_type')->default(1);
-$table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
-$table->string('learning_subject')->nullable()
-->comment('科目 (学習要件) e.g. "Arithmetic"');
-$table->integer('learning_no')->nullable()
-->comment('学習要件の番号 e.g. 10');
-$table->text('learning_requirement')->nullable()
-->comment('学習要件の内容 "Numbers and Calculation..."');
-$table->text('learning_required_competency')->nullable()
-->comment('必要水準 "Understand multiplication..."');
-$table->string('learning_category')->nullable()
-->comment('分類 e.g. "A", "B"');
-$table->string('learning_grade_level')->nullable()
-->comment('学年 e.g. "Grade 2"');
-$table->string('learning_url')->nullable()
-->comment('URLリンク e.g. "https://docs.google.com/..."');
 $table->integer('order');
-$table->boolean('generated_by_llm')->default(false);
 $table->timestamps();
 $table->softDeletes();
 
-$table->foreign('level_id')->references('id')->on('levels')->onDelete('cascade');
-$table->foreign('difficulty_id')->references('id')->on('difficulties')->onDelete('cascade');
+$table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
 });
+}
 
-Schema::create('question_translations', function (Blueprint $table) {
+/**
+ * Reverse the migrations.
+ */
+public function down(): void
+{
+DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+Schema::dropIfExists('question_sets');
+DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+}
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+/**
+ * Run the migrations.
+ */
+public function up(): void
+{
+Schema::create('question_set_translations', function (Blueprint $table) {
 $table->id();
-$table->uuid('question_id');
+$table->uuid('question_set_id');
 $table->string('locale', 10);
-$table->longText('question_text')->nullable();
-$table->longText('explanation')->nullable();
+$table->string('title')->nullable();
+$table->text('description')->nullable();
 $table->timestamps();
 $table->softDeletes();
 
+$table->foreign('question_set_id')->references('id')->on('question_sets')->onDelete('cascade');
+});
+}
+
+/**
+ * Reverse the migrations.
+ */
+public function down(): void
+{
+Schema::dropIfExists('question_set_translations');
+}
+};
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+/**
+ * Run the migrations.
+ */
+public function up(): void
+{
+Schema::create('question_set_questions', function (Blueprint $table) {
+$table->uuid('id')->primary();
+$table->uuid('question_set_id');
+$table->uuid('question_id');
+$table->integer('order');
+$table->timestamps();
+
+$table->foreign('question_set_id')->references('id')->on('question_sets')->onDelete('cascade');
 $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
 });
+}
+
+/**
+ * Reverse the migrations.
+ */
+public function down(): void
+{
+Schema::dropIfExists('question_set_questions');
+}
+};
+
 ```
 
 --JSON
 /contents/questions/math/FILL_IN_THE_BLANK/ques-s1-l2-001.json
 ```json
 {
+  "json_id": "qset_s1_l2_u1_001",
+  "unit_id": "unit_s1_l1_001",
+  "unit": {
+    "ja": "掛け算の基礎",
+    "en": "Basic Multiplication"
+  },
+  "title": {
+    "ja": "掛け算問題セット１",
+    "en": "Multiplication Problem Set 1"
+  },
+  "description": {
+    "ja": "この問題セットでは掛け算の基礎を～",
+    "en": "This set covers the fundamentals of multiplication..."
+  },
   "order": 1,
-  "id": "question_s1_l2_001",
-  "level_id": "lev_002",
-  "difficulty_id": "diff-001",
-  "version": "1.0.0",
-  "question_type": "FILL_IN_THE_BLANK",
-  "question_format": "NUMBER",
-  "question_text": {
-    "ja": "▢にあてはまる数を答えなさい。",
-    "en": "Please answer the numbers that fit in the blanks."
-  },
-  "explanation": {
-    "ja": "",
-    "en": ""
-  },
-  "metadata": {
-    "question": "8 × 4 = ▢ × 8 = ▢",
-    "inputFormat": {
-      "type": "fixed",
-      "fields": [
-        {
-          "field_id": "f_1",
-          "attribute": "number",
-          "collect_answer": "4"
-        },
-        {
-          "field_id": "f_2",
-          "attribute": "number",
-          "collect_answer": "4"
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "content": "8 × 4 = "
-        },
-        {
-          "type": "blank",
-          "field_id": "f_1"
-        },
-        {
-          "type": "text",
-          "content": " × 8 = "
-        },
-        {
-          "type": "blank",
-          "field_id": "f_2"
-        }
-      ]
-    },
-    "": [],
-    "evaluationMethod": "LLM"
-  },
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 10,
-      "learning_requirement": "数と計算 計算の意味・方法 乗法の意味",
-      "learning_required_competency": "かけ算は同じ数の繰り返し加法であるという本質を理解できる",
-      "learning_category": "A",
-      "learning_grade_level": "小2",
-      "learning_url": "https://docs.google.com/spreadsheets/d/1W5vaFHcyU_BrMwb1JLZ-DpyFmXXZPaYMTHIITcwLqqY/edit?gid=0#gid=0&range=15:15"
-    }
-  ],
-  "generated_by_llm": false,
-  "created_at": "2025-01-01 00:00:00",
-  "updated_at": "2025-01-01 00:00:00"
-}
-
-
-```
-
-```json
-{
-  "order": 1,
-  "id": "prob_s1_l2_002",
-  "level_id": "level-001",
-  "difficulty_id": "diff-001",
-  "version": "1.0.0",
-  "problem_type": "SCENARIO",
-  "question_format": "NUMERIC_ANSWER",
-  "question_text": {
-    "ja": "カレールー3つとりんご2つは必須で購入する必要があります。具材ごとの価格は次のとおり：りんご130円、カレールー100円、じゃがいも150円、にんじん200円、たまねぎ150円。予算は1,000円です。合計金額が予算内に収まるように買い物をし、(合計金額, お釣り)を導き出してください。",
-    "en": "You must buy at least 3 curry roux and 2 apples. Prices per item: apple 130 yen, curry roux 100 yen, potato 150 yen, carrot 200 yen, onion 150 yen, with a total budget of 1,000 yen. Make sure the total cost does not exceed the budget and answer (total cost, change)."
-  },
-  "explanation": {
-    "ja": "",
-    "en": ""
-  },
-  "metadata": {
-    "options": [
-      {
-        "option_id": 1,
-        "name_ja": "りんご",
-        "name_en": "apple",
-        "price": 130,
-        "required": 2
-      },
-      {
-        "option_id": 2,
-        "name_ja": "カレールー",
-        "name_en": "curry roux",
-        "price": 100,
-        "required": 3
-      },
-      {
-        "option_id": 3,
-        "name_ja": "じゃがいも",
-        "name_en": "potato",
-        "price": 150,
-        "required": 0
-      },
-      {
-        "option_id": 4,
-        "name_ja": "にんじん",
-        "name_en": "carrot",
-        "price": 200,
-        "required": 0
-      },
-      {
-        "option_id": 5,
-        "name_ja": "たまねぎ",
-        "name_en": "onion",
-        "price": 150,
-        "required": 0
-      }
-    ],
-    "conditions": [
-      {
-        "total_amount": 1000
-      }
-    ],
-    "inputFormat": {
-      "type": "custom",
-      "fields": [
-        {
-          "field_id": "f_1",
-          "attribute": "array",
-          "name": "selected options",
-          "keys": [
-            "option_id",
-            "quantity"
-          ]
-        },
-        {
-          "field_id": "f_2",
-          "attribute": "number",
-          "name": "price"
-        },
-        {
-          "field_id": "f_3",
-          "attribute": "number",
-          "name": "change"
-        }
-      ]
-    },
-    "evaluationMethod": "CODE",
-    "evaluationSpec": {
-      "checkerMethod": "caluclateMethod"
-    }
-  },
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 5,
-      "learning_requirement": "A 数と計算 日常生活への活用 数の活用",
-      "learning_required_competency": "身の回りの物や人数などを数えて，必要な数を報告できる",
-      "learning_category": "A",
-      "learning_grade_level": "小1",
-      "learning_url": "https://docs.google.com/spreadsheets/xxxx#range=20:20"
-    }
-  ],
-  "created_at": "2025-01-01 00:00:00",
-  "updated_at": "2025-01-01 00:00:00"
+  "version": "0.0.1",
+  "status": "PUBLISHED",
+  "questions": [
+    "question_s1_l2_001",
+    "question_s1_l2_002"
+  ]
 }
 
 ```
@@ -308,7 +225,7 @@ use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Question extends Model
+class QuestionSet extends Model
 {
     use HasOrder, UsesUuid, SoftDeletes;
 
@@ -322,8 +239,8 @@ class Question extends Model
     ];
 }
 
---
 
+--
 <?php
 
 namespace App\Models\Question;
@@ -331,7 +248,7 @@ namespace App\Models\Question;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class QuestionTranslation extends Model
+class QuestionSetTranslation extends Model
 {
     use SoftDeletes;
 }
@@ -531,6 +448,47 @@ enum QuestionType: int
             'SCENARIO'          => self::SCENARIO,
             'MULTIPLE_CHOICE'   => self::MULTIPLE_CHOICE,
             default => throw new \InvalidArgumentException("Unknown QuestionType string: {$typeString}")
+        };
+    }
+}
+
+<?php
+
+namespace App\Enums;
+
+enum QuestionSetStatus: int
+{
+    case DRAFT = 1;         // 下書き
+    case PUBLISHED = 300;   // 公開中
+    case HIDDEN = 600;      // 非公開
+    case TEST_PUBLISHED = 900; // テスト公開
+
+    /**
+     * ラベルを取得
+     */
+    public function label(): string
+    {
+        return match($this) {
+            self::DRAFT          => '下書き',
+            self::PUBLISHED      => '公開中',
+            self::HIDDEN         => '非公開',
+            self::TEST_PUBLISHED => 'テスト公開',
+        };
+    }
+
+    /**
+     * 文字列から QuestionSetStatus を取得
+     * @param string $statusString 例: "DRAFT", "PUBLISHED" など
+     * @return self
+     */
+    public static function fromString(string $statusString): self
+    {
+        return match (strtoupper($statusString)) {
+            'DRAFT'          => self::DRAFT,
+            'PUBLISHED'      => self::PUBLISHED,
+            'HIDDEN'         => self::HIDDEN,
+            'TEST_PUBLISHED' => self::TEST_PUBLISHED,
+            default => throw new \InvalidArgumentException("Unknown status string: {$statusString}")
         };
     }
 }
@@ -791,18 +749,20 @@ class ImportUnitsFromGithub extends Command
         return Level::where('json_id',$levJsonId)->value('id') ?: null;
     }
 }
-
 <?php
 
 namespace App\Enums;
 
-enum QuestionStatus: int
+enum QuestionSetStatus: int
 {
     case DRAFT = 1;         // 下書き
     case PUBLISHED = 300;   // 公開中
     case HIDDEN = 600;      // 非公開
     case TEST_PUBLISHED = 900; // テスト公開
 
+    /**
+     * ラベルを取得
+     */
     public function label(): string
     {
         return match($this) {
@@ -814,7 +774,7 @@ enum QuestionStatus: int
     }
 
     /**
-     * 文字列から QuestionStatus を取得
+     * 文字列から QuestionSetStatus を取得
      * @param string $statusString 例: "DRAFT", "PUBLISHED" など
      * @return self
      */
@@ -829,3 +789,61 @@ enum QuestionStatus: int
         };
     }
 }
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('questions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('level_id');
+            $table->uuid('difficulty_id');
+            $table->string('json_id')->nullable()->unique();
+            $table->json('metadata')->nullable();
+            $table->string('version')->default('0.0.1');
+            $table->integer('status')->default(1);
+            $table->integer('question_type')->default(1);
+            $table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
+            $table->string('learning_subject')->nullable()
+                ->comment('科目 (学習要件) e.g. "Arithmetic"');
+            $table->integer('learning_no')->nullable()
+                ->comment('学習要件の番号 e.g. 10');
+            $table->text('learning_requirement')->nullable()
+                ->comment('学習要件の内容 "Numbers and Calculation..."');
+            $table->text('learning_required_competency')->nullable()
+                ->comment('必要水準 "Understand multiplication..."');
+            $table->string('learning_category')->nullable()
+                ->comment('分類 e.g. "A", "B"');
+            $table->string('learning_grade_level')->nullable()
+                ->comment('学年 e.g. "Grade 2"');
+            $table->string('learning_url')->nullable()
+                ->comment('URLリンク e.g. "https://docs.google.com/..."');
+            $table->integer('order');
+            $table->boolean('generated_by_llm')->default(false);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('level_id')->references('id')->on('levels')->onDelete('cascade');
+            $table->foreign('difficulty_id')->references('id')->on('difficulties')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Schema::dropIfExists('questions');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+};
