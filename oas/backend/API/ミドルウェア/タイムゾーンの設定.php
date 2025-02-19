@@ -1,0 +1,186 @@
+APIを国際化する為に、
+APIリクエスト元の、Timezoneを取得してレスポンスする値をリクエスト元のタイムゾーンに合わせてレスポンスするように何かを実装してください
+
+Laravel11 では、app/http/Kernel.php が廃止され、// bootstrap/app.php　に変更されていることは気をつけてくださいね。
+
+デフォルトのタイムゾーンはUTCとしてDBにインサートされています。
+データをクリエイトするときは、UTCで保存したくAPIのレスポンス（例えばcreated_at など）をリクエスト元のタイムゾーンに合わせてレスポンスしたいです
+
+ーー
+# 使用技術
+- Laravel11
+- PHP8.4
+- mariadb
+- laravel sail
+- Laravel Sanctum
+
+# composer.json
+"require": {
+"php": "^8.4",
+"google/apiclient": "^2.18",
+"laravel/framework": "^11.31",
+"laravel/sanctum": "^4.0",
+"laravel/slack-notification-channel": "^3.4",
+"laravel/socialite": "^5.17",
+"laravel/tinker": "^2.9",
+"league/csv": "^9.21",
+"spatie/eloquent-sortable": "^4.4"
+},
+"require-dev": {
+"barryvdh/laravel-ide-helper": "^3.5",
+"fakerphp/faker": "^1.23",
+"laravel/pail": "^1.1",
+"laravel/pint": "^1.13",
+"laravel/sail": "^1.40",
+"mockery/mockery": "^1.6",
+"nunomaduro/collision": "^8.1",
+"phpunit/phpunit": "^11.0.1"
+},
+
+# 画面認証構成（モノレポ）API
+- ユーザー画面用API(app ユーザーが利用する画面) api.masamo.yashio-corp.com or api.masamo.local
+
+# 実装方針
+1.
+ビジネスロジックは Model へ、
+ビジネスロジックへのアクセスは service を介して行うこと。
+
+アーキテクチャ構成は
+- **アーキテクチャ構成(クリーンアーキテクチャ)**：
+- - **Model**
+- ビジネスロジックを記述
+- **Controller**
+- リクエストを受け取り、適切なUseCaseを呼び出します。
+- **UseCase**
+- 特定のユースケース（機能）に対するビジネスロジックを実装し、必要なServiceを利用して処理を行います。
+- **Service**
+- データアクセスや共通のビジネスロジックを実装します。データの取得や保存を担当し、Modelと連携します。
+- **DTO（Data Transfer Object）**
+- レイヤー間でデータを転送するためのオブジェクトで、データの構造を明示的に定義します。
+- **Resource**
+- APIレスポンスはResourceで定義する
+のように実装してください。
+
+---
+<?php
+// bootstrap/app.php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        using: function () {
+            Route::middleware('api')
+                ->domain(config('domain.api'))
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
+        },
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        //
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+
+        // AuthenticationExceptionのハンドリング
+        $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            $detail = '';
+            if (!\App::environment('production')) {
+                $detail = $e->getMessage();
+            }
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'title' => 'Unauthenticated',
+                    'detail' => $detail,
+                    'errors' => '',
+                    'status' => 401,
+                ], 401);
+            }
+        });
+
+        // ValidationExceptionのハンドリング
+        $exceptions->renderable(function (ValidationException $e, $request) {
+            $detail = '';
+            if (!\App::environment('production')) {
+                $detail = $e->getMessage();
+            }
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'title' => 'Validation Error',
+                    'detail' => $detail,
+                    'errors' => $e->errors(),
+                    'status' => 422,
+                ], 422);
+            }
+        });
+
+        // NotFoundHttpExceptionのハンドリング
+        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+            $detail = '';
+            if (!\App::environment('production')) {
+                $detail = $e->getMessage();
+            }
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'title' => 'Record not found',
+                    'detail' => $detail,
+                    'status' => 404,
+                ], 404);
+            }
+        });
+
+        // BadRequestHttpExceptionのハンドリング
+        $exceptions->renderable(function (BadRequestHttpException $e, $request) {
+            $detail = '';
+            if (!\App::environment('production')) {
+                $detail = $e->getMessage();
+            }
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'title' => 'Bad Request',
+                    'detail' => $detail,
+                    'status' => 400,
+                ], 400);
+            }
+        });
+
+        // AccessDeniedHttpExceptionのハンドリング
+        $exceptions->renderable(function (AccessDeniedHttpException $e, $request) {
+            $detail = '';
+            if (!\App::environment('production')) {
+                $detail = $e->getMessage();
+            }
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'title' => 'Forbidden',
+                    'detail' => $detail,
+                    'status' => 403,
+                ], 403);
+            }
+        });
+
+        // その他の例外のハンドリング
+        $exceptions->renderable(function (Throwable $e, $request) {
+            $detail = '';
+            if (!\App::environment('production')) {
+                $detail = $e->getMessage();
+            }
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'title' => 'Internal Server Error',
+                    'detail' => $detail,
+                    'status' => 500,
+                ], 500);
+            }
+        });
+    })->create();
