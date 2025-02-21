@@ -3,10 +3,12 @@
 
 Userが問題の回答を正誤するバックエンドの設計
 
-/answers というAPIを更新したい。
+/answer というAPIを更新したい。
+現在実装済みのコードが以下の仕様を満たすように更新してください。
 
 ・Enumで評価手法を分岐
 ・Enumでどのメソッドを使って評価するか分岐
+・現在は answer_data しか受け付けていないので、user_question_id もほしい
 
 # 説明
 question_sets：問題（questions）を束ねるグループ
@@ -15,23 +17,77 @@ question_set_questions：question_sets と questions を紐づけるPivotテー�
 user_question_sets: ユーザーが学習した questions_sets。学習開始時に question_sets_id と紐づいて status （UserQuestionSetsStatus::NOT_START) が未開始の状態で生成され、進捗ステータスはスコアなどが管理される
 user_questions: ユーザーが学習した questions。学習開始時に、学習を開始した question_sets に紐づく questions が全て、 user_question_sets_id と question_id（questions）を紐づけて status （UserQuestionStatus::NOT_START) が未開始の状態で全てのquestionsの数の分、生成され、進捗ステータスはスコアなどが管理される。スコアを保持
 
+# バリデーション項目
+user_question_id
+UserQuestionのuser_id がログインUserのIDと一致していること
+
+answer_data
+ユーザーからリクエストされる回答のJSON形式(answer_dataの中身)と形式が合っているか。
 
 # フロー
 --開始ここから
 １．
-ユーザーの回答（JSON）を受け取ってフォーマットが正しいかバリデーションする
+ユーザーの回答 answer_data（Array）と user_question_id を受け取って, answer_data のフォーマットが正しいか、answer_data の各項目をバリデーションする
 2.
-evaluationMethodがLLMなら、APIを使ってLLMに正誤判定を依頼。evaluationMethodがCodeなら指定されたメソッドで正誤判定を行う
+user_question_id から questions を取得し、quesitons の evaluation_method カラムが1(EvaluationMethod::LLM)なら、APIを使ってLLMに正誤判定を依頼。evaluation_methodカラムが2(EvaluationMethod::CODE)なら指定されたメソッドで正誤判定を行う
 ３．
+正誤の結果と、回答日時（まだ未回答（user_questions の status が UserQuestionStatus::NOT_STARTの場合のみ）、正誤（statusにUserQuestionStatusのCORRECT、INCORRECT、SKIPなどを保存）、 user_questions に保存。
+４．
 user_question_sets に次の問題（紐づいている user_questions の中に status がNOT_STARTのものがあれば　order 昇順で一番先頭のやつ）があればそれをレスポンスする。無ければ user_question_sets の status をCOMPLETEにする
-
 
 
 Dto に fromModelを実装するようなことはせずに、Dtoの生成は必ずService内部で実行するようにしてください
 
+------ ユーザーからのリクエスト(AnswerController で受ける　Request の中身)
+user_question_id: UUID, user_questions:exists
+answer_data: array
 
-ーーユーザーからリクエストされる回答のJSON形式
+ーーユーザーからリクエストされる回答のJSON形式(answer_dataの中身)
+# 説明
+user_answer: ユーザー（学習者）の回答
+collect_answer: 正しい回答。LLMが入力する
+is_collect: ユーザーの回答が正答かどうが。正答なら true, 誤答なら false。LLMが入力する
+field_explanation：フィールドごとに、なぜその回答なのか解説する。LLMが入力する
+explanation: この問題の解説。LLMが入力する
 
+# RequestJSON
+```json
+{
+  "question_text": {
+    "ja": "▢にあてはまる数を答えなさい。",
+    "en": "Please answer the numbers that fit in the blanks."
+  },
+  "explanation": {
+    "ja": "",
+    "en": ""
+  },
+  "question": "8 × 4 = ▢ × 8 = ▢",
+  "problem_id": "prob_s1_l2_001",
+  "fields": [
+    {
+      "field_id": "f_1",
+      "user_answer": "2",
+      "is_collect": "",
+      "collect_answer": "",
+      "field_explanation": {
+        "ja": "",
+        "en": ""
+      }
+    },
+    {
+      "field_id": "f_2",
+      "user_answer": "32",
+      "is_collect": "",
+      "collect_answer": "",
+      "field_explanation": {
+        "ja": "",
+        "en": ""
+      }
+    }
+  ]
+}
+
+```
 
 ーー現在の実装
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -49,17 +105,18 @@ namespace App\Http\Controllers\API\V1\Answer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\V1\Answer\StoreAnswerRequest;
 use App\Http\Resources\V1\Answer\AnswerCheckResource;
-use App\UseCases\V1\Answer\AnswerCheckUseCase;
+use App\UseCases\V1\Answer\EvaluateAnswerUseCase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerController extends Controller
 {
-    protected AnswerCheckUseCase $answerCheckUseCase;
+    protected EvaluateAnswerUseCase $evaluateAnswerUseCase;
 
     public function __construct(
-        AnswerCheckUseCase $answerCheckUseCase
+        EvaluateAnswerUseCase $evaluateAnswerUseCase
     ) {
-        $this->answerCheckUseCase = $answerCheckUseCase;
+        $this->evaluateAnswerUseCase = $evaluateAnswerUseCase;
     }
 
     /**
@@ -68,39 +125,40 @@ class AnswerController extends Controller
      * ユーザーからのJSONリクエストを受け取り、
      * OpenAI API に問い合わせて結果を返す
      */
-    public function store(Request $request)
+    public function store(StoreAnswerRequest $request)
     {
-        $answerData = json_decode($request->get('answer_data'), true);
-//        $answerData = $validatedData['answer_data'];
+        $userId          = Auth::id();
+        $answerData = $request->get('answer_data');
+        $userQuestionId = $request->get('user_question_id');
 
-        // ユースケースを実行 → Service経由でOpenAIに問い合わせ
-        $answerCheckDto = $this->answerCheckUseCase->handle($answerData);
+        $answerCheckDto = $this->evaluateAnswerUseCase->handle($userId, $answerData, $userQuestionId);
 
         // Resourceを利用してJSONレスポンスとして返す
         return new AnswerCheckResource($answerCheckDto);
     }
 }
+
+
 <?php
 
 namespace App\UseCases\V1\Answer;
 
-use App\Services\V1\Answer\AnswerCheckService;
+use App\Services\V1\Answer\AnswerService;
 use App\Dtos\V1\Answer\AnswerCheckDto;
 
-class AnswerCheckUseCase
+class EvaluateAnswerUseCase
 {
     public function __construct(
-        protected AnswerCheckService $answerCheckService
-    ) {
-    }
+        protected AnswerService $answerService
+    ) {}
 
     /**
      * リクエストされた JSON データを使い、
      * OpenAI への問い合わせ結果を取得して DTO にまとめる
      */
-    public function handle(array $data): AnswerCheckDto
+    public function handle(string $userId, string $userQuestionId, array $data): AnswerCheckDto
     {
-        return $this->answerCheckService->checkAnswer($data);
+        return $this->answerService->evaluateAnswer($userId, $userQuestionId, $data);
     }
 }
 
@@ -109,17 +167,29 @@ class AnswerCheckUseCase
 namespace App\Services\V1\Answer;
 
 use App\Dtos\V1\Answer\AnswerCheckDto;
+use App\Models\User\UserQuestion;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AnswerCheckService
+class AnswerService
 {
     /**
      * OpenAI API へリクエストを送り、レスポンスを取得する
      */
-    public function checkAnswer(array $data): AnswerCheckDto
+    public function evaluateAnswer(string $userId, string $userQuestionId, array $answerData): AnswerCheckDto
     {
+        $userQuestion = UserQuestion::where('id', $userQuestionId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!$userQuestion) {
+            throw new NotFoundHttpException(
+                __("errors.api.answer.user_question_not_found", ['id' => $userQuestionId])
+            );
+        }
+
         // ユーザーのリクエストデータ全体をJSON文字列に変換してプロンプトへ埋め込む
-        $requestJson = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $requestJson = json_encode($answerData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         $prompt = <<<EOT
 {#条件}に従って以下の{#RequestJSON}のuser_answer が question に正答しているか確認してください。
@@ -144,7 +214,7 @@ explanation: この問題の解説。LLMが入力する
 {$requestJson}
 
 
-# サンプル回答フォーマット
+# 回答フォーマット
 {
   "question_text": {
     "ja": "▢にあてはまる数を答えなさい。",
@@ -226,6 +296,7 @@ EOT;
         return new AnswerCheckDto(content: $parsedContent);
     }
 }
+
 <?php
 
 namespace App\Dtos\V1\Answer;
@@ -406,3 +477,137 @@ enum UserQuestionSetStatus: int
     }
 }
 
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('user_questions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('user_question_set_id');
+            $table->uuid('question_id');
+            $table->integer('status')->default(1);
+            $table->json('answer_data')->nullable();
+            $table->timestamp('answered_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('user_question_set_id')->references('id')->on('user_question_sets')->onDelete('cascade');
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('user_questions');
+    }
+};
+<?php
+
+namespace App\Http\Requests\API\V1\Answer;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreAnswerRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        // 認可ロジックを実装する場合はここに
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'answer_data'                            => 'required|array',
+            'answer_data.question_text'              => 'required|array',
+            'answer_data.question_text.ja'           => 'required|string',
+            'answer_data.question_text.en'           => 'required|string',
+            'answer_data.explanation'                => 'sometimes|array',
+            'answer_data.explanation.ja'             => 'nullable|string',
+            'answer_data.explanation.en'             => 'nullable|string',
+            'answer_data.question'                   => 'required|string',
+            'answer_data.problem_id'                 => 'required|string',
+            'answer_data.fields'                     => 'required|array',
+            'answer_data.fields.*.field_id'          => 'required|string',
+            'answer_data.fields.*.user_answer'       => 'required|string',
+            'answer_data.fields.*.is_collect'        => 'sometimes|string|nullable',
+            'answer_data.fields.*.collect_answer'    => 'sometimes|string|nullable',
+            'answer_data.fields.*.field_explanation' => 'sometimes|array',
+            'answer_data.fields.*.field_explanation.ja' => 'sometimes|string|nullable',
+            'answer_data.fields.*.field_explanation.en' => 'sometimes|string|nullable',
+        ];
+    }
+}
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('questions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('level_id');
+            $table->uuid('difficulty_id');
+            $table->string('json_id')->nullable()->unique();
+            $table->json('metadata')->nullable();
+            $table->string('version')->default('0.0.1');
+            $table->integer('status')->default(1);
+            $table->integer('evaluation_method')->default(1);
+            $table->integer('checker_method')->nullable();
+            $table->json('llm_evaluation_prompt')->nullable();
+            $table->json('llm_evaluation_response_format')->nullable();
+            $table->integer('question_type')->default(1);
+            $table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
+            $table->string('learning_subject')->nullable()
+                ->comment('科目 (学習要件) e.g. "Arithmetic"');
+            $table->integer('learning_no')->nullable()
+                ->comment('学習要件の番号 e.g. 10');
+            $table->text('learning_requirement')->nullable()
+                ->comment('学習要件の内容 "Numbers and Calculation..."');
+            $table->text('learning_required_competency')->nullable()
+                ->comment('必要水準 "Understand multiplication..."');
+            $table->string('learning_category')->nullable()
+                ->comment('分類 e.g. "A", "B"');
+            $table->string('learning_grade_level')->nullable()
+                ->comment('学年 e.g. "Grade 2"');
+            $table->string('learning_url')->nullable()
+                ->comment('URLリンク e.g. "https://docs.google.com/..."');
+            $table->integer('order');
+            $table->boolean('generated_by_llm')->default(false);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('level_id')->references('id')->on('levels')->onDelete('cascade');
+            $table->foreign('difficulty_id')->references('id')->on('difficulties')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Schema::dropIfExists('questions');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+};
