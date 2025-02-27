@@ -190,8 +190,8 @@ class ImportQuestionsFromGithub extends Command
             $difficultyUuid = $this->findDifficultyUuid($questionJson['difficulty_id'] ?? null);
 
             // question_type, question_format を enum に変換
-            // "problem_type" を優先し、なければ "question_type"
-            $rawQuestionType = $questionJson['problem_type'] ?? $questionJson['question_type'] ?? null;
+            // "question_type" を優先し、なければ "question_type"
+            $rawQuestionType = $questionJson['question_type'] ?? $questionJson['question_type'] ?? null;
             $rawFormat       = $questionJson['question_format'] ?? null;
 
             $questionTypeValue   = $this->parseQuestionType($rawQuestionType);

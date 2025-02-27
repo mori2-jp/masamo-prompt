@@ -49,7 +49,7 @@ Route::prefix('v1')->group(function () {
   "level_id": "level-001",
   "difficulty_id": "diff-001",
   "version": "1.0.0",
-  "problem_type": "FILL_IN_THE_BLANK",
+  "question_type": "FILL_IN_THE_BLANK",
   "question_format": "NUMERIC_ANSWER",
   "question_text": {
     "ja": "▢にあてはまる数を答えなさい。",
@@ -125,7 +125,7 @@ JSON;
   "level_id": "level-001",
   "difficulty_id": "diff-001",
   "version": "1.0.0",
-  "problem_type": "SCENARIO",
+  "question_type": "SCENARIO",
   "question_format": "NUMERIC_ANSWER",
   "question_text": {
     "ja": "カレールー3つとりんご2つは必須で購入する必要があります。具材ごとの価格は次のとおり：りんご130円、カレールー100円、じゃがいも150円、にんじん200円、たまねぎ150円。予算は1,000円です。合計金額が予算内に収まるように買い物をし、(合計金額, お釣り)を導き出してください。",
@@ -235,7 +235,7 @@ JSON;
   "level_id": "lev_002",
   "difficulty_id": "diff_001",
   "version": "1.0.0",
-  "problem_type": "FILL_IN_THE_BLANK",
+  "question_type": "FILL_IN_THE_BLANK",
   "question_format": "NUMERIC_ANSWER",
   "question_text": {
     "ja": "▢にあてはまる数を答えなさい。",

@@ -198,7 +198,7 @@ $table->foreign('question_id')->references('id')->on('questions')->onDelete('cas
   "level_id": "level-001",
   "difficulty_id": "diff-001",
   "version": "1.0.0",
-  "problem_type": "SCENARIO",
+  "question_type": "SCENARIO",
   "question_format": "NUMERIC_ANSWER",
   "question_text": {
     "ja": "カレールー3つとりんご2つは必須で購入する必要があります。具材ごとの価格は次のとおり：りんご130円、カレールー100円、じゃがいも150円、にんじん200円、たまねぎ150円。予算は1,000円です。合計金額が予算内に収まるように買い物をし、(合計金額, お釣り)を導き出してください。",

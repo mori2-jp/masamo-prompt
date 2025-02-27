@@ -18,7 +18,7 @@
             $table->json('metadata')->nullable();
             $table->string('version')->default('0.0.1');
             $table->integer('status')->default(1);
-            $table->integer('problem_type')->default(1);
+            $table->integer('question_type')->default(1);
             $table->integer('order');
             $table->timestamps();
             $table->softDeletes();
