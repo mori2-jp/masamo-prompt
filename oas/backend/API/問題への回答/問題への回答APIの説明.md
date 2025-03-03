@@ -576,7 +576,6 @@ return new class extends Migration
             $table->json('llm_evaluation_prompt')->nullable();
             $table->json('llm_evaluation_response_format')->nullable();
             $table->integer('question_type')->default(1);
-            $table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
             $table->string('learning_subject')->nullable()
                 ->comment('科目 (学習要件) e.g. "Arithmetic"');
             $table->integer('learning_no')->nullable()

@@ -119,7 +119,6 @@ return new class extends Migration
             $table->integer('llm_evaluation_prompt_number')->nullable();
             $table->json('llm_evaluation_response_format')->nullable();
             $table->integer('question_type')->default(1);
-            $table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
             $table->json('learning_requirement_json')->nullable();
             $table->string('learning_subject')->nullable()
                 ->comment('科目 (学習要件) e.g. "Arithmetic"');
@@ -220,7 +219,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $version
  * @property int $status
  * @property int $question_type
- * @property int $question_format 出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など
  * @property string|null $learning_subject 科目 (学習要件) e.g. "Arithmetic"
  * @property int|null $learning_no 学習要件の番号 e.g. 10
  * @property string|null $learning_requirement 学習要件の内容 "Numbers and Calculation..."
@@ -518,7 +516,6 @@ class QuestionResource extends JsonResource
             'question_data'       => (!empty($dto->metadata)) ? json_decode($dto->metadata) : [],
             'version' => $dto->version,
             'question_type'       => $dto->question_type,
-            'question_format' => $dto->question_format,
         ];
     }
 }

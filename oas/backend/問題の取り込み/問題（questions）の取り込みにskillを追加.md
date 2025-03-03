@@ -189,10 +189,9 @@ class ImportQuestionsFromGithub extends Command
             $levelUuid      = $this->findLevelUuid($questionJson['level_id'] ?? null);
             $difficultyUuid = $this->findDifficultyUuid($questionJson['difficulty_id'] ?? null);
 
-            // question_type, question_format を enum に変換
+            // question_type を enum に変換
             // "question_type" を優先し、なければ "question_type"
             $rawQuestionType = $questionJson['question_type'] ?? $questionJson['question_type'] ?? null;
-            $rawFormat       = $questionJson['question_format'] ?? null;
 
             $questionTypeValue   = $this->parseQuestionType($rawQuestionType);
             $questionFormatValue = $this->parseQuestionFormat($rawFormat);
@@ -226,7 +225,6 @@ class ImportQuestionsFromGithub extends Command
             $question->difficulty_id   = $difficultyUuid;
             $question->version         = $version;
             $question->question_type   = $questionTypeValue;   // enum値(int)
-            $question->question_format = $questionFormatValue; // enum値(int)
             $question->status          = $statusValue;
 
             // question->metadata = JSONで受け取った metadata
@@ -401,30 +399,6 @@ class ImportQuestionsFromGithub extends Command
         }
     }
 
-    /**
-     * question_format 文字列 を Enum (int値) に変換
-     * e.g. "NUMBER", "NUMERIC_ANSWER"
-     */
-    private function parseQuestionFormat(?string $formatString): int
-    {
-        if (!$formatString) {
-            // デフォルト: MULTIPLE_CHOICE
-            return QuestionFormat::MULTIPLE_CHOICE->value;
-        }
-
-        // "NUMBER" も "NUMERIC_ANSWER" とみなす例など
-        $normalized = match ($formatString) {
-            'NUMBER' => 'NUMERIC_ANSWER',
-            default => $formatString
-        };
-
-        try {
-            return QuestionFormat::fromString($normalized)->value;
-        } catch (\InvalidArgumentException) {
-            // 例外ならデフォルトにフォールバック
-            return QuestionFormat::MULTIPLE_CHOICE->value;
-        }
-    }
 
     /**
      * status 文字列を QuestionStatus enum (int) に変換
@@ -462,7 +436,6 @@ return new class extends Migration
             $table->string('version')->default('0.0.1');
             $table->integer('status')->default(1);
             $table->integer('question_type')->default(1);
-            $table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
             $table->string('learning_subject')->nullable()
                 ->comment('科目 (学習要件) e.g. "Arithmetic"');
             $table->integer('learning_no')->nullable()
@@ -646,7 +619,6 @@ return new class extends Migration
   "difficulty_id": "diff_001",
   "version": "1.0.0",
   "question_type": "FILL_IN_THE_BLANK",
-  "question_format": "NUMBER",
   "question_text": {
     "ja": "▢にあてはまる数を答えなさい。",
     "en": "Please answer the numbers that fit in the blanks."

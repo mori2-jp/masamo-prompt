@@ -36,6 +36,47 @@
 # 画面認証構成（モノレポ）API
 - ユーザー画面用API(app ユーザーが利用する画面) api.masamo.yashio-corp.com or api.masamo.local
 
+# ディレクトリ構成
+masamo-server
+├── app
+│   ├── Console
+│   │   └── Commands
+│   ├── Dtos
+│   ├── Enums
+│   ├── Http
+│   │   ├── Controllers
+│   │   ├── Middleware
+│   │   ├── Requests
+│   │   └── Resources
+│   ├── Models
+│   ├── Providers
+│   ├── Services
+│   ├── Traits
+│   └── UseCases
+├── bootstrap
+├── config
+├── database
+│   ├── factories
+│   ├── migrations
+│   ├── seeders
+│   ├── .gitignore
+│   └── database.sqlite
+├── docs
+├── lang
+│   ├── en
+│   └── ja
+├── public
+├── resources
+│   ├── css
+│   ├── js
+│   ├── prompts
+│   └── views
+├── routes
+├── storage
+├── tests
+└── vendor
+
+
 # 実装方針
 1.
 ビジネスロジックは Model へ、

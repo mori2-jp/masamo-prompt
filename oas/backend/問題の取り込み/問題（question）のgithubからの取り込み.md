@@ -78,7 +78,6 @@ $table->json('metadata')->nullable();
 $table->string('version')->default('0.0.1');
 $table->integer('status')->default(1);
 $table->integer('question_type')->default(1);
-$table->integer('question_format')->default(1)->comment('出題形式: 1=選択式,2=数値回答,3=テキスト回答,4=画像選択など');
 $table->string('learning_subject')->nullable()
 ->comment('科目 (学習要件) e.g. "Arithmetic"');
 $table->integer('learning_no')->nullable()
@@ -125,7 +124,6 @@ $table->foreign('question_id')->references('id')->on('questions')->onDelete('cas
   "difficulty_id": "diff-001",
   "version": "1.0.0",
   "question_type": "FILL_IN_THE_BLANK",
-  "question_format": "NUMBER",
   "question_text": {
     "ja": "▢にあてはまる数を答えなさい。",
     "en": "Please answer the numbers that fit in the blanks."
@@ -199,7 +197,6 @@ $table->foreign('question_id')->references('id')->on('questions')->onDelete('cas
   "difficulty_id": "diff-001",
   "version": "1.0.0",
   "question_type": "SCENARIO",
-  "question_format": "NUMERIC_ANSWER",
   "question_text": {
     "ja": "カレールー3つとりんご2つは必須で購入する必要があります。具材ごとの価格は次のとおり：りんご130円、カレールー100円、じゃがいも150円、にんじん200円、たまねぎ150円。予算は1,000円です。合計金額が予算内に収まるように買い物をし、(合計金額, お釣り)を導き出してください。",
     "en": "You must buy at least 3 curry roux and 2 apples. Prices per item: apple 130 yen, curry roux 100 yen, potato 150 yen, carrot 200 yen, onion 150 yen, with a total budget of 1,000 yen. Make sure the total cost does not exceed the budget and answer (total cost, change)."
