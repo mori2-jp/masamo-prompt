@@ -14,14 +14,69 @@
 # 要件
 多言語対応 (vue-i18n)
 
-## ディレクトリ構成
+# 実装方針
+生成また修正変更するコードはそのコードだけは必ず省略せずに必ず全てアウトプットすること。
+
+仕様はソースコードにまとめてコメントとして残すこと
+
+TypeScript を厳格に使用すること。型が存在しないなら必ず型を作成してください。
+
+# ディレクトリ構成
+front-app
+├─ .vscode
+├─ docs
+├─ e2e
+├─ node_modules
+├─ public
+└─ src
+├─ api
+│  ├─ core
+│  ├─ endpoints
+│  └─ index.ts
+├─ assets
+│  ├─ images
+│  ├─ base.scss
+│  ├─ main.scss
+│  └─ variables.scss
+├─ components
+├─ composables
+├─ locales
+├─ pages
+├─ router
+├─ services
+├─ store
+├─ types
+│  ├─ api
+│  ├─ common
+│  ├─ enums
+│  ├─ models
+│  └─ payloads
+├─ App.vue
+├─ i18n.ts
+├─ main.ts
+├─ auto-imports.d.ts
+├─ components.d.ts
+├─ env.d.ts
+├─ eslint.config.ts
+├─ index.html
+├─ package.json
+├─ package-lock.json
+├─ playwright.config.ts
+├─ README.md
+├─ tsconfig.app.json
+├─ tsconfig.json
+├─ tsconfig.node.json
+└─ tsconfig.vitest.json
+
+
+## ディレクトリ構成（説明）
 - src/
     - assets/
         - 静的リソース（画像やフォントなど）を配置
     - components/
         - 再利用可能な Vue コンポーネントを配置
     - composables/
-        - UI 周りのロジックを中心とした再利用可能なロジックをまとめる
+        - UI 周りのロジックを中心とした再利用可能なロジックをまとめる。API コールなどのService層の呼び出しや、Storeへのデータの保存や取り出しは　composable から行う。
         - 例）フォームバリデーション、表示用ユーティリティなど
     - constants/
         - 共通で使用する定数を配置
@@ -46,6 +101,76 @@
 - tests/
     - 単体テストや統合テストなどを配置
 
+
+# package.json
+```json
+{
+  "name": "vue3-lab",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@vue-flow/core": "^1.42.1",
+    "@mdi/font": "^7.4.47",
+    "@vueuse/core": "^12.5.0",
+    "ant-design-vue": "^4.2.6",
+    "axios": "^1.7.9",
+    "fp-ts": "^2.16.9",
+    "konva": "^9.3.18",
+    "pinia": "^2.3.1",
+    "swiper": "^11.2.2",
+    "vue": "^3.5.13",
+    "vue-i18n": "^11.0.1",
+    "vue-konva": "^3.2.0",
+    "vue-router": "^4.5.0",
+    "vue3-google-login": "^2.0.33",
+    "vuetify": "^3.7.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@tsconfig/node22": "^22.0.0",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.10.7",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/eslint-plugin": "1.1.25",
+    "@vue/eslint-config-prettier": "^10.1.0",
+    "@vue/eslint-config-typescript": "^14.3.0",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.18.0",
+    "eslint-plugin-playwright": "^2.1.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "jiti": "^2.4.2",
+    "jsdom": "^26.0.0",
+    "npm-run-all2": "^7.0.2",
+    "prettier": "^3.4.2",
+    "sass-embedded": "^1.83.4",
+    "typescript": "~5.7.3",
+    "unplugin-auto-import": "^19.0.0",
+    "unplugin-vue-components": "^28.0.0",
+    "unplugin-vue-router": "^0.11.2",
+    "vite": "^6.0.11",
+    "vite-plugin-vue-devtools": "^7.7.0",
+    "vitest": "^3.0.2",
+    "vue-tsc": "^2.2.0"
+  }
+}
+
+```
 
 # カラーコードなど
 // assets/variables.scss
@@ -199,5 +324,9 @@ components/atoms
 components/molecules
 components/organisms
 
+
+
 # オーダー
 回答は日本語でお願い。
+
+読み込んだらオーダーするので返事してください
