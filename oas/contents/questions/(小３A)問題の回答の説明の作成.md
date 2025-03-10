@@ -814,8 +814,8 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
     }
   ],
   "evaluation_spec": {
-    "evaluation_method": "LLM",
-    "llm_prompt_number": 1,
+    "evaluation_method": "CODE",
+    "checker_method": "CHECK_BY_EXACT_MATCH",
     "response_format": {
       "is_correct": "boolean",
       "score": "number",
@@ -824,52 +824,52 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
         "en": "Please answer the numbers that fit in the blanks."
       },
       "explanation": {
-        "ja": "この問題では、3桁の引き算を位ごとに分解し、どこで繰り下がりが必要になるかを学ぶことが目的です。実際には「10 からまとめて引く」など繰り下がりの手順がありますが、ここではあえて各位を独立に考えたあと最後にまとめる方法で、繰り下がりのイメージをつかんでもらいます。",
-        "en": "In this problem, we focus on subtracting three-digit numbers by separating each place value to understand where borrowing might occur. Although practical subtraction often uses direct borrowing steps, here we deliberately break down each digit and combine the results at the end to visualize the borrowing process."
+        "ja": "",
+        "en": ""
       },
       "question": {
-        "ja": "614 - 237 = (600 - 200) + (10 - 30) + (4 - 7) = ▢ + ▢ + ▢ = ▢",
-        "en": "614 - 237 = (600 - 200) + (10 - 30) + (4 - 7) = ▢ + ▢ + ▢ = ▢"
+        "ja": "658 - 324 = (600 - 300) + (50 - 20) + (8 - 4) = ▢ + ▢ + ▢ = ▢",
+        "en": "658 - 324 = (600 - 300) + (50 - 20) + (8 - 4) = ▢ + ▢ + ▢ = ▢"
       },
       "fields": [
         {
           "field_id": "f_1",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": 400,
+          "collect_answer": 300,
           "field_explanation": {
-            "ja": "600 から 200 を引くと 400 になります。",
-            "en": "Subtracting 200 from 600 results in 400."
+            "ja": "600から300を引くと300になるからです。",
+            "en": "Subtracting 300 from 600 gives 300."
           }
         },
         {
           "field_id": "f_2",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": -20,
+          "collect_answer": 30,
           "field_explanation": {
-            "ja": "10 から 30 を引くと -20（マイナス20）になります。",
-            "en": "Subtracting 30 from 10 results in -20."
+            "ja": "50から20を引くと30になるからです。",
+            "en": "Subtracting 20 from 50 gives 30."
           }
         },
         {
           "field_id": "f_3",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": -3,
+          "collect_answer": 4,
           "field_explanation": {
-            "ja": "4 から 7 を引くと -3（マイナス3）になります。",
-            "en": "Subtracting 7 from 4 results in -3."
+            "ja": "8から4を引くと4になるからです。",
+            "en": "Subtracting 4 from 8 gives 4."
           }
         },
         {
           "field_id": "f_4",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": 377,
+          "collect_answer": 334,
           "field_explanation": {
-            "ja": "400 + (-20) + (-3) を合わせると 377 になるからです。",
-            "en": "When you combine 400, -20, and -3, you get 377."
+            "ja": "300 + 30 + 4 を合わせると334になるからです。",
+            "en": "When we sum 300, 30, and 4, we get 334."
           }
         }
       ]
@@ -877,21 +877,22 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
   },
   "metadata": {
     "question_type": "FILL_IN_THE_BLANK",
-    "question": {
-      "ja": "614 - 237 = (600 - 200) + (10 - 30) + (4 - 7) = ▢ + ▢ + ▢ = ▢",
-      "en": "614 - 237 = (600 - 200) + (10 - 30) + (4 - 7) = ▢ + ▢ + ▢ = ▢"
-    },
+    "question_format": "NUMERIC_ANSWER",
     "question_text": {
       "ja": "つぎの ▢ にあてはまる数を答えなさい。",
       "en": "Please answer the numbers that fit in the blanks."
     },
     "explanation": {
-      "ja": "繰り下がりのある3桁の引き算を、あえて位ごとに分けて引き算する方法です。このやり方では途中で負の数が出ますが、最後に合計すると正しい答えが求められます。筆算と同じ仕組みを、目に見える形で理解しましょう。",
-      "en": "This exercise demonstrates a subtraction problem with borrowing by splitting the digits. Although negative intermediate results may appear, combining them at the end yields the correct answer. This approach mirrors the concept behind column subtraction in a visible way."
+      "ja": "3桁のひき算を位ごとに計算する練習です。途中でマイナスの数が出ないように、1のくらい、10のくらい、100のくらいそれぞれでしっかり引き算してから合計して答えを出します。このやり方で、くり下がりのある計算もしっかり練習しましょう。",
+      "en": "This problem practices three-digit subtraction by splitting each place value and making sure no negative intermediate results occur. By subtracting digit by digit and then summing the partial differences, you can solidify your understanding of borrowing in subtraction."
     },
     "background": {
-      "ja": "3桁の引き算では、繰り下がりの手順が分かりにくいことがあります。位を分解して考えると、どの段階でどれだけ繰り下げる必要があるかが理解しやすくなります。",
-      "en": "When subtracting three-digit numbers, borrowing can be confusing. By breaking down the place values, it becomes clearer where and how much you need to borrow."
+      "ja": "3桁どうしのひき算で、位を分けて計算すると、くり下がりの考え方がわかりやすくなります。筆算の手順をイメージするために、各位の差をそれぞれ計算して最後に合計する方法で学習します。",
+      "en": "When subtracting three-digit numbers, separating each place value makes borrowing clearer. This setup mirrors the steps in column subtraction, helping learners grasp the concept of subtracting each digit and then summing the results."
+    },
+    "question": {
+      "ja": "658 - 324 = (600 - 300) + (50 - 20) + (8 - 4) = ▢ + ▢ + ▢ = ▢",
+      "en": "658 - 324 = (600 - 300) + (50 - 20) + (8 - 4) = ▢ + ▢ + ▢ = ▢"
     },
     "input_format": {
       "type": "fixed",
@@ -899,25 +900,25 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
         {
           "field_id": "f_1",
           "attribute": "number",
-          "collect_answer": "400",
+          "collect_answer": "300",
           "user_answer": "number"
         },
         {
           "field_id": "f_2",
           "attribute": "number",
-          "collect_answer": "-20",
+          "collect_answer": "30",
           "user_answer": "number"
         },
         {
           "field_id": "f_3",
           "attribute": "number",
-          "collect_answer": "-3",
+          "collect_answer": "4",
           "user_answer": "number"
         },
         {
           "field_id": "f_4",
           "attribute": "number",
-          "collect_answer": "377",
+          "collect_answer": "334",
           "user_answer": "number"
         }
       ],
@@ -925,31 +926,31 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
         {
           "type": "text",
           "content": {
-            "ja": "614 - 237 = ",
-            "en": "614 - 237 = "
+            "ja": "658 - 324 = ",
+            "en": "658 - 324 = "
           },
-          "order": 10
+          "order": 1
         },
         {
           "type": "newline",
-          "order": 15
+          "order": 2
         },
         {
           "type": "text",
           "content": {
-            "ja": "(600 - 200) + (10 - 30) + (4 - 7) = ",
-            "en": "(600 - 200) + (10 - 30) + (4 - 7) = "
+            "ja": "(600 - 300) + (50 - 20) + (8 - 4) = ",
+            "en": "(600 - 300) + (50 - 20) + (8 - 4) = "
           },
-          "order": 20
+          "order": 3
         },
         {
           "type": "newline",
-          "order": 25
+          "order": 4
         },
         {
           "type": "input_field",
           "field_id": "f_1",
-          "order": 30
+          "order": 5
         },
         {
           "type": "text",
@@ -957,12 +958,12 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
             "ja": " + ",
             "en": " + "
           },
-          "order": 40
+          "order": 6
         },
         {
           "type": "input_field",
           "field_id": "f_2",
-          "order": 50
+          "order": 7
         },
         {
           "type": "text",
@@ -970,12 +971,12 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
             "ja": " + ",
             "en": " + "
           },
-          "order": 60
+          "order": 8
         },
         {
           "type": "input_field",
           "field_id": "f_3",
-          "order": 70
+          "order": 9
         },
         {
           "type": "text",
@@ -983,12 +984,12 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
             "ja": " = ",
             "en": " = "
           },
-          "order": 80
+          "order": 10
         },
         {
           "type": "input_field",
           "field_id": "f_4",
-          "order": 90
+          "order": 11
         }
       ]
     }
