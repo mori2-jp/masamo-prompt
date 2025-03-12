@@ -18,15 +18,20 @@ ja, en
 ーーJSON仕様
 json_id：必須、文字列
 order：必須、数値
-unit_id：必須、文字列、Levels テーブルのjson_idに一致する値があること
+unit_id：必須、文字列、Units テーブルのjson_idに一致する値があること
 unit：必須、オブジェクト（言語定数全て含んでいるか）。
 title：必須、オブジェクト（言語定数全て含んでいるか）。
 description：必須、オブジェクト（言語定数全て含んでいるか）。
+background：必須、オブジェクト（言語定数全て含んでいるか）。
 memo：必須、文字列
 version： 必須、文字列、文字列が x.x.x のようなバージョニング形式になっているか
 status：必須、QuestionSetStatus に値が存在しているか
 questions：必須、配列。questions テーブルの json_id に値が存在しているか。
-generate_question_prompt：必須、オブジェクト（言語定数全て含んでいるか）。
+
+llm_generation_status: 必須、QuestionSetLLMGenerationStatus に値が存在しているか
+
+generate_question_prompt：llm_generation_statusが、ENABLED の時に必須、オブジェクト（言語定数全て含んでいるか）。
+generate_question_prompt_number：llm_generation_statusが、ENABLED の時に必須、数字。/resources/prompt/generate/question/{generate_question_prompt_number}.txt が存在しているか確認。無ければエラー。
 
 --- 問題セットJSONの全体構造
 ```json
@@ -46,17 +51,24 @@ generate_question_prompt：必須、オブジェクト（言語定数全て含�
     "ja": "",
     "en": ""
   },
+  "background": {
+    "ja": "",
+    "en": ""
+  },
+  "generate_question_prompt": {
+    "ja": "",
+    "en": ""
+  },
+  "generate_question_prompt_number": 1,
+  "llm_generation_status": "ENABLED",
+
   "memo": "4桁-3桁の引き算",
   "version": "1.0.0",
   "status": "PUBLISHED",
   "questions": [
     "ques_s1_g3_sec100_u300_diff100_qt51_v100_1500",
     "ques_s1_g3_sec100_u300_diff100_qt51_v100_1600"
-  ],
-  "generate_question_prompt": {
-    "ja": "",
-    "en": ""
-  }
+  ]
 }
 
 
@@ -229,16 +241,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('levels', function (Blueprint $table) {
+        Schema::create('units', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('subject_id');
-            $table->string('json_id')->nullable()->unique()->comment('リポジトリ上で管理するための一意識別子');
-            $table->text('description')->nullable();
-            $table->text('memo')->nullable();
+            $table->uuid('level_id');
+            $table->uuid('grade_id');
+            $table->uuid('section_id');
+            $table->string('json_id')->nullable()->unique();
+            $table->longText('requirement')->nullable();
+            $table->longText('required_competency')->nullable();
+            $table->longText('background')->nullable();
             $table->string('version')->default('0.0.1');
+            $table->integer('status')->default(1);
             $table->integer('order');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
+            $table->foreign('level_id')->references('id')->on('levels')->onDelete('cascade');
+            $table->foreign('grade_id')->references('id')->on('grades')->onDelete('cascade');
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
         });
     }
 
@@ -247,7 +269,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('levels');
+        Schema::dropIfExists('units');
     }
 };
 
@@ -292,6 +314,51 @@ enum QuestionSetStatus: int
             'HIDDEN'         => self::HIDDEN,
             'TEST_PUBLISHED' => self::TEST_PUBLISHED,
             default => throw new \InvalidArgumentException("Unknown status string: {$statusString}")
+        };
+    }
+}
+
+```
+--- QuestionSetLLMGenerationStatus Enum
+```php
+<?php
+
+namespace App\Enums;
+
+/**
+ * QuestionSetにおける LLM生成ステータスを表すEnum
+ */
+enum QuestionSetLLMGenerationStatus: int
+{
+    /**
+     * LLMによる問題生成を行わない
+     */
+    case DISABLED = 0;
+
+    /**
+     * LLMによる問題生成を行う
+     */
+    case ENABLED  = 1;
+
+    public function label(): string
+    {
+        return match($this) {
+            self::DISABLED => 'LLM生成なし',
+            self::ENABLED  => 'LLM生成あり',
+        };
+    }
+
+    /**
+     * 文字列から QuestionSetLLMGenerationStatus を取得
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString(string $raw): self
+    {
+        return match (strtoupper($raw)) {
+            'DISABLED' => self::DISABLED,
+            'ENABLED'  => self::ENABLED,
+            default => throw new \InvalidArgumentException("Unknown QuestionSetLLMGenerationStatus: {$raw}")
         };
     }
 }
