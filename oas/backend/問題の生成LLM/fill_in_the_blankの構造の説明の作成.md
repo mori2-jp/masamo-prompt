@@ -1,87 +1,25 @@
-あなたは小学生向けの問題を作成するシステムです。
-【共通ルール】及び【個別要望】に従って【問題JSONの例】を参考に、【問題セット】に関連する問題を作成して【JSONルール】を参考に【問題JSONの例】と同様のフォーマットでJSON出力してください。
+以下のQuestionJsonの構造のevaluation_specと、metadataの説明を作成してもらえませんか？
+Fill_in_the_blank 特有の構造です。
 
-【作問ルール】（評価メソッドと、出題種類によって切り替え）
+evaluation_spec 以下は、ユーザーの回答の正誤評価に使うデータです。
 
-【共通ルール】
-- 回答は、プレーンなJSONで出力すること。
--【問題JSONの例】は、この【問題セット】に紐づく問題です。
-- 学習対象：【問題JSONの例】learning_subject の 【問題JSONの例】learning_grade_level の生徒。解説は学習対象に分かりやすい説明であること。
-- 生成する問題は、【問題JSONの例】と同じにならないようにしてください
+このQuestionJsonは、Vue.jsで作成されたフロントエンドのアプリケーションで、
+問題画面のUIを構築するときのルールを定義しています。
+metadata が、回答の入力ボックスやデータの種類などを定義しています。
 
-【個別要望】(question_sets の generate_question_prompt をインサートする）
-  "generate_question_prompt": {
-    "ja": "3桁の整数同士の足し算（繰り上がりあり・なし）を中心に、くり返し練習できる問題を作成してください。位を正しくそろえて計算する重要性を意識させるため、繰り上がりが一度起きる問題や、二度起きる問題など、難易度にバリエーションを持たせてください。",
-    "en": "Please create practice problems focusing on three-digit addition (both with and without carrying). Provide a range of difficulties, including problems with single and multiple carries, to reinforce the importance of aligning digits correctly."
-  },
-
-【問題セット】（インサート）
-{
-  "json_id": "qset_s1_g3_sec100_u300_v100_100",
-  "order": 100,
-  "unit_id": "unit_s1_g3_sec100_300",
-  "unit": {
-    "ja": "3位数や4位数の加法及び減法",
-    "en": "Addition and Subtraction of Three- and Four-Digit Numbers"
-  },
-  "title": {
-    "ja": "3桁・4桁の足し算・引き算をマスターしよう",
-    "en": "Mastering Addition and Subtraction of Three- and Four-Digit Numbers"
-  },
-  "description": {
-    "ja": "このドリルでは、3桁や4桁の整数同士の加減計算に慣れることを目指します。繰り上がり・繰り下がりを含む筆算の正しい手順を身につけ、正確に計算できるようになりましょう。",
-    "en": "In this drill, you will practice adding and subtracting three- or four-digit numbers. Focus on learning the correct written methods for carrying and borrowing, and aim to calculate with accuracy."
-  },
-  "background": {
-    "ja": "このドリルは、繰り上がり・繰り下がりの処理を伴う3桁＋3桁の加法問題を中心に構成しています。位ごとに正しく計算できるようになることを重視し、例えば「315+276」や「459+276」のように複数の繰り上がりが絡む問題を含んでいます。4桁の加減算にも応用可能な力を養うため、位取りを意識させる練習を重ねることを狙いとしています。類似の例として、単純な2桁や4桁の問題も関連が深いですが、今回は3桁どうしの組み合わせを中心に問題を配置しています。（ユーザーには非表示）",
-    "en": "This drill mainly features three-digit addition problems requiring you to handle carrying and borrowing properly. For instance, you will see exercises like '315+276' or '459+276,' both of which involve multiple carry steps. By concentrating on place-value alignment, you'll develop skills that also apply to four-digit addition and subtraction. Although two-digit or four-digit problems are closely related, our primary focus here is on three-digit computations. (Not displayed to the user)"
-  },
-  "generate_question_prompt": {
-    "ja": "3桁の整数同士の足し算（繰り上がりあり・なし）を中心に、くり返し練習できる問題を作成してください。位を正しくそろえて計算する重要性を意識させるため、繰り上がりが一度起きる問題や、二度起きる問題など、難易度にバリエーションを持たせてください。",
-    "en": "Please create practice problems focusing on three-digit addition (both with and without carrying). Provide a range of difficulties, including problems with single and multiple carries, to reinforce the importance of aligning digits correctly."
-  },
-  "generate_question_prompt_file_name": 1,
-  "llm_generation_status": "ENABLED",
-  "memo": "3桁の足し算ドリル",
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "questions": [
-    "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
-    "ques_s1_g3_sec100_u300_diff100_qt51_v100_200"
-  ]
-}
+特に、metadata の
+evaluation_spec.response_format.fields.は
+field_id　によって、
+metadata.input_format.fields　と
+関係していることをうまく説明したい
 
 
-【JSON項目の説明】（共通系なので別のプロンプトファイルで用意してコードでインサートする）
-order：【問題JSONの例】の order に +1した値
-id：【問題JSONの例】の id の一番最後の _ 以降に +1　して、一番最後の _ 以前の値を連結。例えば、qset_s1_g3_sec100_u300_v100_100　であれば一番最後の_の100に+1して、「qset_s1_g3_sec100_u300_v100_101」 とする
+わからないことがあれば質問してください。
 
-level_id：【問題JSONの例】と同じ
-grade_id：【問題JSONの例】と同じ
-difficulty_id：【問題JSONの例】と同じ
-version： 【問題JSONの例】と同じ
-status：【問題JSONの例】と同じ
-generated_by_llm：必須、boolean, true を指定
-created_at：必須、生成時の時刻（UTC）を、Y-m-d H:i:s 形式で
-updated_at：必須、生成時の時刻（UTC）を、Y-m-d H:i:s 形式で
-
-skills:【問題JSONの例】と同じ
-skills.skill_id:【問題JSONの例】と同じ
-skills.name: 【問題JSONの例】と同じ
-
-learning_requirements: 【問題JSONの例】と同じ
-learning_requirements.learning_subject:  【問題JSONの例】と同じ
-learning_requirements.learning_no: 【問題JSONの例】と同じ
-learning_requirements.learning_requirement:  【問題JSONの例】と同じ
-learning_requirements.learning_required_competency: 【問題JSONの例】と同じ
-learning_requirements.learning_background: 【問題JSONの例】と同じ
-learning_requirements.learning_category: 【問題JSONの例】と同じ
-learning_requirements.learning_grade_level: 【問題JSONの例】と同じ
-learning_requirements.learning_url: 【問題JSONの例】と同じ
-
+ーー
 evaluation_spec：必須、オブジェクト
-evaluation_spec.evaluation_method: 【問題JSONの例】と同じ
-evaluation_spec.checker_method: 【問題JSONの例】と同じ
+evaluation_spec.evaluation_method: 必須、文字列、EvaluationMethod　に値が存在していること
+evaluation_spec.checker_method: evaluation_methodが”CODE”の時は必須、文字列型、EvaluationCheckerMethod　に値が存在していること
 evaluation_spec.llm_prompt_number: evaluation_methodが”LLM”の時は必須、数値。LLMに投げるプロンプトを管理するファイルと対応している。resources/prompts/evaluation/{x}.txt の {x}の箇所と対応しているので、このファイルが存在しているかバリデーションチェックする。
 evaluation_spec.response_format：必須、オブジェクト。LLMに正誤判定を依頼する時に指定するレスポンスの形や、CheckerMethod での正誤判定時のレスポンスに利用する
 evaluation_spec.response_format.is_correct：必須、テキスト型("boolean"のみ）。回答全体が正解かどうか表す
@@ -118,8 +56,8 @@ metadata.input_format.question_components.content：必須、オブジェクト�
 metadata.input_format.question_components.order: 必須、数値、重複する値が存在しないこと。問題を構築するときの表示順番
 
 
-
-【問題JSONの例】（QuestionSetにあったJSONを動的にインサートする）
+ーー参考のQuestion JSON
+```json
 {
   "order": 100,
   "id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
@@ -363,8 +301,4 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
   }
 }
 
-
-
-
-
-
+```

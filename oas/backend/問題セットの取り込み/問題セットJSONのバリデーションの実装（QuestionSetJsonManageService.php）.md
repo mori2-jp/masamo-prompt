@@ -31,7 +31,7 @@ questions：必須、配列。questions テーブルの json_id に値が存在�
 llm_generation_status: 必須、QuestionSetLLMGenerationStatus に値が存在しているか
 
 generate_question_prompt：llm_generation_statusが、ENABLED の時に必須、オブジェクト（言語定数全て含んでいるか）。
-generate_question_prompt_number：llm_generation_statusが、ENABLED の時に必須、数字。/resources/prompt/generate/question/{generate_question_prompt_number}.txt が存在しているか確認。無ければエラー。
+generate_question_prompt_file_name：llm_generation_statusが、ENABLED の時に必須、数字。/resources/prompt/generate/question/{generate_question_prompt_file_name}.txt が存在しているか確認。無ければエラー。
 
 --- 問題セットJSONの全体構造
 ```json
@@ -59,7 +59,7 @@ generate_question_prompt_number：llm_generation_statusが、ENABLED の時に�
     "ja": "",
     "en": ""
   },
-  "generate_question_prompt_number": 1,
+  "generate_question_prompt_file_name": 1,
   "llm_generation_status": "ENABLED",
 
   "memo": "4桁-3桁の引き算",
