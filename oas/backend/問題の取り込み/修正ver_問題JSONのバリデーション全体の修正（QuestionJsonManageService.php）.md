@@ -32,7 +32,13 @@ ja, en
 -- input_format.fields.type、evaluation_spec.response_format.fields.user_answer,metadata.input_format.fields.user_answer の定数
 number: 数値型
 
--- input_format.question_components.type定数
+-- input_format.question_components.type 定数
+text: テキスト
+image: 画像
+movie: 動画
+blank: 空欄。入力項目
+
+-- input_format.input_components.type 定数
 text: テキスト
 image: 画像
 movie: 動画
@@ -79,7 +85,7 @@ evaluation_spec.response_format.fields：evaluation_methodが”LLM”の時は�
 evaluation_spec.response_format.fields.field_id：必須、配列。ユーザーの回答の型。
 evaluation_spec.response_format.fields.user_answer：必須、input_format.fields.type、evaluation_spec.response_format.fields.user_answer,evaluation_spec.input_format.fields.collect_answer の定数に値があるか。ユーザーの回答。
 evaluation_spec.response_format.fields.is_correct：必須、テキスト型("boolean"のみ）。ユーザーの回答が正しいか
-evaluation_spec.response_format.fields.collect_answer：必須、オブジェクト（言語定数全て含んでいるか）。オブジェクトの中の値が、evaluation_spec.response_format.fields.user_answerで指定されている型と一致しているか。例えば、"number" の場合は、32 などの数値となっているか。問題の正解（ユーザーには隠す）
+evaluation_spec.response_format.fields.collect_answer：必須、オブジェクト（言語定数全て含んでいるか）。metadata.question_type が、FILL_IN_THE_BLANK の時は,オブジェクトの中の値が、evaluation_spec.response_format.fields.user_answerで指定されている型と一致しているか。例えば、"number" の場合は、32 などの数値となっているか。問題の正解（ユーザーには隠す）metadata.question_type が、FILL_IN_OPERATOR の時は,FillInOperator に存在する値になっているか。（ > < など）
 evaluation_spec.response_format.fields.field_explanation: 必須、オブジェクト、言語ごとにそれぞれ オブジェクトの中の値は "{$言語設定例えば"ja"など}": "文字列"が含まれていること。空文字禁止
 
 metadata.question_type：必須、App\Enums\QuestionType.php に値が存在しているか。JSONには、文字列でも数値でもどちらでも入力可にする
@@ -97,14 +103,14 @@ metadata.input_format.fields.user_answer: 必須、次の条件を満たした�
 metadata.input_format.fields.collect_answer: 絶対に存在してはいけない。ユーザーに回答が見えてしまうため。
 
 metadata.input_format.question_components: 必須（問題を更生する要素）
-metadata.input_format.question_components.attribute：必須、input_format.question_components.type定数と値が合っているか
+metadata.input_format.question_components.type：必須、input_format.question_components.type定数と値が合っているか
 metadata.input_format.question_components.content：必須、オブジェクト、言語定数と一致する値が全て含まれているか
 metadata.input_format.question_components.order: 必須、数値、重複する値が存在しないこと。問題を構築するときの表示順番
 
-metadata.input_format.input_components: 必須（回答の選択肢）
-metadata.input_format.question_components.attribute：必須、input_format.question_components.type定数と値が合っているか
-metadata.input_format.question_components.content：必須、オブジェクト、言語定数と一致する値が全て含まれているか
-metadata.input_format.question_components.order: 必須、数値、重複する値が存在しないこと。問題を構築するときの表示順番
+metadata.input_format.input_components: metadata.question_type が、FILL_IN_OPERATOR の時は必須。（回答の選択肢。入力キーパッドのボタン）
+metadata.input_format.input_components.type：必須、input_format.input_components.type定数と値が合っているか
+metadata.input_format.input_components.content：必須、オブジェクト、言語定数と一致するキーが全て含まれているか。FillInOperator に存在する値になっているか。（ > < など）
+metadata.input_format.input_components.order: 必須、数値、重複する値が存在しないこと。入力キーパッドを構築するときの表示順番
 
 
 --- 問題JSONの全体構造
@@ -379,6 +385,8 @@ metadata.input_format.question_components.order: 必須、数値、重複する�
 // 8) generate_question_prompt => そのまま
 // 9) generate_question_prompt_file_name => そのまま
 
+ちゃんと解説してね
+
 ビジネスロジックは Model へ、
 ビジネスロジックへのアクセスは service を介して行うこと。
 
@@ -533,6 +541,7 @@ enum QuestionType: int
     case FILL_IN_THE_BLANK       = 51;
     case SCENARIO                = 101;
     case MULTIPLE_CHOICE         = 151;
+    case FILL_IN_OPERATOR         = 201;
 
 //    case SIMPLE_ARITHMETIC        = 10;
 //    case COMBINATION             = 101;
@@ -557,6 +566,7 @@ enum QuestionType: int
             self::FILL_IN_THE_BLANK      => 'Fill-in-the-Blank Problem',        // 穴埋め問題: 問題文や式に空所があり、そこを埋める形式
             self::SCENARIO               => 'Scenario Problem',                 // シナリオ問題: 状況や経過を踏まえて解決する（回答が一意じゃない）
             self::MULTIPLE_CHOICE        => 'Multiple Choice Problem',          // 選択問題: 複数の選択肢から答えを選ぶ
+            self::FILL_IN_OPERATOR        => 'FILL_IN_OPERATOR Problem',          // 演算子の選択問題
 
 //            self::SIMPLE_ARITHMETIC      => 'Simple Arithmetic Problem',        // 単純計算問題: 簡単な計算式や数値操作を問う
 //            self::COMBINATION            => 'Combination Problem',              // 組み合わせ問題: 対応するペアやグループをマッチさせる
@@ -590,10 +600,12 @@ enum QuestionType: int
             'FILL_IN_THE_BLANK' => self::FILL_IN_THE_BLANK,
             'SCENARIO'          => self::SCENARIO,
             'MULTIPLE_CHOICE'   => self::MULTIPLE_CHOICE,
+            'FILL_IN_OPERATOR'   => self::FILL_IN_OPERATOR,
             default => throw new \InvalidArgumentException("Unknown QuestionType string: {$typeString}")
         };
     }
 }
+
 ```
 --- QuestionStatus enum
 ```php
@@ -669,6 +681,54 @@ return new class extends Migration
 };
 
 ```
+--- FillInOperator Enum
+```php
+<?php
+
+namespace App\Enums;
+
+/**
+ * 大小比較や等号など、FILL_IN_OPERATOR問題で
+ * ユーザーが入力すべき演算子を列挙する Enum
+ */
+enum FillInOperator: string
+{
+    case Greater = '>';
+    case Less = '<';
+    case Equal = '=';
+
+    /**
+     * 演算子に対応するラベルを取得します。
+     * ここでは演算子そのものをラベルとして返していますが、
+     * 必要に応じて日本語/英語混在に変えることもできます。
+     */
+    public function label(): string
+    {
+        return match($this) {
+            self::Greater => '>',
+            self::Less    => '<',
+            self::Equal   => '=',
+        };
+    }
+
+    /**
+     * 演算子の配列を取得します。
+     * [文字列 => stringラベル] の配列として返す例です。
+     * キーをEnumの value にし、バリューを label() にするケースが多いです。
+     */
+    public static function labels(): array
+    {
+        return [
+            self::Greater->value => self::Greater->label(),
+            self::Less->value    => self::Less->label(),
+            self::Equal->value   => self::Equal->label(),
+        ];
+    }
+}
+
+```
+
+
 --- EvaluationMethod Enum
 ```php
 <?php
@@ -1251,98 +1311,84 @@ namespace App\Services\Utils\Question;
 use App\Enums\EvaluationCheckerMethod;
 use App\Enums\EvaluationMethod;
 use App\Enums\QuestionMetadataInputFormatFieldAttribute;
+use App\Enums\QuestionStatus;
 use App\Enums\QuestionType;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use App\Models\Question\Question;
+use App\Models\Question\QuestionTranslation;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Class QuestionJsonManageService
  *
  * 【概要】
- * このサービスクラスは、問題データ（QuestionJSON）のバリデーションおよび
- * メタデータのローカライズ処理などを担当する。
- * QuestionJSON は GitHub等からインポートされることを想定し、
- * question_typeごとのルール増加にも対応可能な設計としている。
+ *   このサービスクラスは、問題データ（QuestionJSON）のバリデーションおよび
+ *   DBへの登録（upsert）処理を行う共通ロジックを提供します。
+ *   もともと ImportQuestionsFromGithub で行っていた JSON のバリデーション/DB登録を移管し、
+ *   他の機能（LLM 生成問題の取り込みなど）でも共通利用できるようにしました。
+ *
+ * 【機能一覧】
+ *   1) validateQuestionJson() ：QuestionJSON 全体をバリデーションする
+ *   2) upsertQuestionByJson() ：バリデーション後に Question テーブルへ upsert する
+ *   3) validateUserAnswer()   ：ユーザー回答データをバリデーションする（サンプル）
+ *   4) localizeMetadata()     ：metadata をアプリケーションロケールに合わせて整形（サンプル）
+ *   5) localizeLlmResult()    ：LLM応答をアプリケーションロケールに合わせて整形（サンプル）
+ *
+ * 【備考】
+ *   - validateQuestionJson() では、トップレベルルールの他に、アフターコールバックで
+ *     level_id / grade_id / difficulty_id / skills / evaluation_spec / metadata など
+ *     詳細チェックを行っています。
+ *   - upsertQuestionByJson() 内でバリデーション通過後、Question/QuestionTranslation/Skills の
+ *     更新を行うことで、GitHubインポートでも LLM生成問題取り込みでも同一メソッドを利用できます。
  */
 class QuestionJsonManageService
 {
     /**
-     * 言語定数 (アプリケーション全体で共通利用)
+     * アプリがサポートする言語一覧
      */
     public const LANGUAGES = ['ja', 'en'];
 
     /**
-     * input_format.type の定数（解答形式）
+     * fields[].user_answer でサポートしている属性
      */
-    public const INPUT_FORMAT_TYPES = [
-        'fixed',   // 解答欄数を固定
-        'custom',  // 解答欄数を自由
-    ];
+    public const FIELD_TYPE = ['number', 'string'];
 
     /**
-     * フィールド系の定数（"number" のみをサポート）
-     * （input_format.fields.type, evaluation_spec.response_format.fields.user_answer など）
+     * question_components.type でサポートしている属性
      */
-    public const FIELD_TYPE = [
-        'number',
-    ];
+    public const VALID_COMPONENT_TYPES = ['text','image','movie','input_field','newline','options'];
 
     /**
-     * question_components.type のうち、有効とみなす一覧
+     * question_components のうち content(多言語オブジェクト) が必須な type
      */
-    public const VALID_COMPONENT_TYPES = [
-        'text',
-        'image',
-        'movie',
-        'input_field',
-        'newline',
-        'options'
-    ];
+    private const COMPONENT_TYPES_REQUIRE_CONTENT = ['text','image','movie','options'];
 
     /**
-     * question_components.type のうち、content が必須となるタイプの一覧
-     * 例: text, image, movie は content オブジェクトが必須
-     * newline, input_field は content 不要
+     * [CHANGED] FILL_IN_OPERATOR のときに必須となる input_components の type/attribute で使える定数
+     *  (例: "text","image","movie","blank")
      */
-    private const COMPONENT_TYPES_REQUIRE_CONTENT = [
-        'text',
-        'image',
-        'movie',
-        'options'
-    ];
-
-    //============================================================
-    // メソッド仕様
-    //============================================================
+    private const VALID_INPUT_COMPONENTS_TYPES = ['text','image','movie','blank'];
 
     /**
-     * validateQuestionJson
-     * -------------------------------------------------
+     * --------------------------------------------------------------------------------
+     * QuestionJSON 全体をバリデーション
+     * --------------------------------------------------------------------------------
      * 【目的】
-     *   インポートされる問題JSON(QuestionJSON)全体に対するバリデーションを行う。
-     *   トップレベルの共通項目に対するルール検証、および
-     *   afterコールバックでDB存在チェック、evaluation_spec、metadataなどをチェックし、
-     *   不備があれば ValidationException を throw する。
-     *
-     * 【パラメータ】
-     *   @param array $json
-     *     - QuestionJSON全体を連想配列化したデータ
+     *   1) トップレベルの必須項目（id, order, metadata など）をチェック
+     *   2) after コールバックで DB存在チェック (level/grade/difficulty/skills)、
+     *      evaluation_spec や metadata構造を追加検証
+     *   3) バリデーションに通過しなければ ValidationException を投げる
      *
      * 【戻り値】
-     *   @return array
-     *     - バリデーションが通過した場合、整形済み配列を返す（Laravelのvalidate()仕様）
-     *     - エラー時は ValidationException を投げる
-     *
-     * 【利用場面】
-     *   - GitHub等からの一括インポート時や、問題作成画面からの登録時に呼び出す想定
+     *   - 検証が通ったあとの配列を返す ( Laravel の validate() と同じ )
+     *   - 失敗時は例外を投げる
      */
     public function validateQuestionJson(array $json): array
     {
-        // トップレベルバリデーション
-        $validator = Validator::make($json, $this->getTopLevelRules(), $this->messages());
+        // トップレベルのルール
+        $validator = \Validator::make($json, $this->getTopLevelRules(), $this->messages());
 
-        // after コールバックでさらに詳細チェック
+        // after コールバックでさらに詳細検証
         $validator->after(function ($v) use ($json) {
             $this->validateLevelGradeDifficulty($v, $json);
             $this->validateSkills($v, $json);
@@ -1350,154 +1396,354 @@ class QuestionJsonManageService
             $this->validateMetadata($v, $json);
         });
 
+        // 通過した場合は結果を返す
         return $validator->validate();
     }
 
     /**
-     * validateUserAnswer
-     * -------------------------------------------------
+     * --------------------------------------------------------------------------------
+     * QuestionJSON をデータベースへ upsert
+     * --------------------------------------------------------------------------------
      * 【目的】
-     *   ユーザー回答用JSONが、metadata.input_format と整合しているか動的にバリデーションする。
-     *   question_type="FILL_IN_THE_BLANK" 向けの実装を行っている。
+     *   - まず validateQuestionJson() を実施し、問題がなければ Question / QuestionTranslation /
+     *     question_skill ピボット等を更新 (upsert) する。
+     *   - GitHubインポート処理や LLM 生成問題の保存などに共通利用できる。
      *
      * 【パラメータ】
-     *   @param array $answerData
-     *     - ユーザー回答JSON (例: {"fields":[{"field_id":"f_1","attribute":"number","user_answer":4},...]})
-     *   @param array $metadata
-     *     - user_questions.metadata に格納されている配列
-     *
-     * 【処理概要】
-     *   - question_type が FILL_IN_THE_BLANK であればチェックを実施
-     *   - input_format.type (fixed/custom) ごとにフィールド数や型をチェック
-     *   - attribute='number' の場合、実際の回答値が数値か等を確認
-     *   - 不整合があれば ValidationException をthrow
+     *   @param array $questionJson
+     *     - 取り込みたい問題 JSON
      *
      * 【戻り値】
-     *   @return void
-     *
-     * 【利用場面】
-     *   - AnswerService などで実際にユーザーの入力を受け取った際に検証する
-     *   - 将来的に question_type が増えたら分岐を追加
+     *   @return bool
+     *     - true なら登録成功、 false ならバリデーションエラー等でスキップ扱い
      */
-    public function validateUserAnswer(array $answerData, array $metadata): void
+    public function upsertQuestionByJson(array $questionJson): bool
     {
-        // question_type='FILL_IN_THE_BLANK' 以外はスキップ
-        $qt = $metadata['question_type'] ?? null;
-        if ($qt !== 'FILL_IN_THE_BLANK') {
-            // 未実装
+        // バリデーション
+        try {
+            $this->validateQuestionJson($questionJson);
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            // バリデーション失敗 → false
+            return false;
+        }
+
+        // JSON 内の必須 key チェック
+        $jsonId = $questionJson['id'];
+        $metadata = $questionJson['metadata'] ?? [];
+        if (empty($metadata)) {
+            // metadata が空なら取り込み不可
+            return false;
+        }
+
+        // Question レコードの新規 or 既存を確認
+        /** @var Question|null $question */
+        $question = Question::where('json_id', $jsonId)->first();
+
+        // JSON上の order, version, status を取得
+        $jsonOrder    = $questionJson['order'] ?? 9999;
+        $version      = $questionJson['version'] ?? '0.0.1';
+        $rawStatus    = $questionJson['status'] ?? null;
+        $statusValue  = $rawStatus
+            ? $this->parseQuestionStatus($rawStatus)
+            : QuestionStatus::DRAFT->value;
+
+        // level/grade/difficulty を DB から取得
+        $levelUuid      = $this->findLevelUuid($questionJson['level_id'] ?? null);
+        $gradeUuid      = $this->findGradeUuid($questionJson['grade_id'] ?? null);
+        $difficultyUuid = $this->findDifficultyUuid($questionJson['difficulty_id'] ?? null);
+
+        // 新規作成 or 既存更新
+        if (!$question) {
+            // 新規作成
+            $question = new Question();
+            $question->id      = (string) Str::uuid();
+            $question->json_id = $jsonId;
+
+            // order の初期値を設定 (DB内 max+1 と比較)
+            $maxOrder = Question::max('order');
+            if ($maxOrder === null) {
+                $maxOrder = 0;
+            }
+            $finalOrder = max($maxOrder + 1, $jsonOrder);
+
+            // order が既に使われている場合はインクリメントしていく
+            while (Question::where('order', $finalOrder)->exists()) {
+                $finalOrder++;
+            }
+            $question->order = $finalOrder;
+
+        } else {
+            // 既存の場合 → order を再調整
+            $this->reorderQuestion($question->id, $jsonOrder);
+        }
+
+        // Question メイン項目をセット
+        $question->level_id      = $levelUuid;
+        $question->grade_id      = $gradeUuid;
+        $question->difficulty_id = $difficultyUuid;
+        $question->version       = $version;
+        $question->status        = $statusValue;
+
+        // metadata の反映
+        $question->metadata = json_encode($metadata, JSON_UNESCAPED_UNICODE);
+        if (!empty($metadata)) {
+            $rawQuestionType = $metadata['question_type'] ?? null;
+            $questionTypeValue = $this->parseQuestionType($rawQuestionType);
+            $question->question_type = $questionTypeValue;
+        }
+
+        // evaluation_spec をセット
+        if (isset($questionJson['evaluation_spec'])) {
+            $eval = $questionJson['evaluation_spec'];
+            // evaluation_method (CODE / LLM)
+            $question->evaluation_method = isset($eval['evaluation_method'])
+                ? EvaluationMethod::fromString($eval['evaluation_method'])
+                : null;
+
+            // checker_method
+            $question->checker_method = isset($eval['checker_method'])
+                ? EvaluationCheckerMethod::fromString($eval['checker_method'])
+                : null;
+
+            // LLM関連
+            $question->llm_evaluation_prompt_file_name = $eval['llm_prompt_file_name'] ?? null;
+
+            // response_format
+            $question->evaluation_response_format = isset($eval['response_format'])
+                ? json_encode($eval['response_format'], JSON_UNESCAPED_UNICODE)
+                : null;
+        }
+
+        // 8) generated_by_llm
+        if (array_key_exists('generated_by_llm', $questionJson)) {
+            $question->generated_by_llm = (bool)$questionJson['generated_by_llm'];
+        }
+
+        // 9) learning_requirements のセット
+        $this->applyLearningRequirements($question, $questionJson);
+
+        // 10) セーブ (Question)
+        $question->save();
+
+        // 11) question_translations の upsert
+        $this->upsertQuestionTranslations($question, $questionJson);
+
+        // 12) skills → question_skill ピボットの更新
+        $this->applySkillsPivot($question, $questionJson);
+
+        return true;
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * 既存 question の order を再設定（衝突回避しながら更新）
+     * --------------------------------------------------------------------------------
+     */
+    private function reorderQuestion(string $questionId, int $targetOrder)
+    {
+        $question = Question::find($questionId);
+        if (!$question) {
             return;
         }
 
-        // input_format 存在チェック
-        $inFmt = $metadata['input_format'] ?? [];
-        if (!is_array($inFmt)) {
-            throw ValidationException::withMessages([
-                'metadata.input_format' => "metadata.input_formatが存在しません。"
-            ]);
+        // targetOrder が既に使われていれば +1 する
+        while (Question::where('order', $targetOrder)
+            ->where('id','!=',$questionId)
+            ->exists()) {
+            $targetOrder++;
         }
+        $question->order = $targetOrder;
+        $question->save();
+    }
 
-        // metadata側のfields
-        $metaFields = $inFmt['fields'] ?? [];
-        if (!is_array($metaFields)) {
-            throw ValidationException::withMessages([
-                'metadata.input_format.fields' => "metadata.input_format.fields が配列ではありません。"
-            ]);
-        }
+    /**
+     * --------------------------------------------------------------------------------
+     * skills 配列を DBの question_skill ピボットに反映する
+     * --------------------------------------------------------------------------------
+     * 【ロジック】
+     *  - JSON から skill_id を取り出し、skillsテーブルを検索
+     *  - 該当しないスキルはスキップ
+     *  - 既存との比較で追加/削除/並び順更新を行う
+     */
+    private function applySkillsPivot(Question $question, array $questionJson)
+    {
+        $skillsFromJson = $questionJson['skills'] ?? [];
+        $newSkillDbIds = [];
+        $skillIndexMap = [];
 
-        // fixed/custom
-        $type = $inFmt['type'] ?? '';
-        if (!in_array($type, ['fixed','custom'], true)) {
-            throw ValidationException::withMessages([
-                'metadata.input_format.type' => "input_format.type='{$type}' は未対応です。"
-            ]);
-        }
-
-        // ユーザー回答 fields
-        $answerFields = $answerData['fields'] ?? null;
-        if (!is_array($answerFields)) {
-            throw ValidationException::withMessages([
-                'fields' => "回答JSONの 'fields' が配列ではありません。"
-            ]);
-        }
-
-        // fixed の場合は fields件数の一致チェック
-        if ($type === 'fixed') {
-            $countMeta = count($metaFields);
-            $countAns  = count($answerFields);
-            if ($countMeta !== $countAns) {
-                throw ValidationException::withMessages([
-                    'fields' => "input_format.type=fixed ですが、fields数が一致しません。(metadata={$countMeta}, answer={$countAns})"
-                ]);
+        foreach ($skillsFromJson as $index => $skillData) {
+            $skillJsonId = $skillData['skill_id'] ?? null;
+            if (!$skillJsonId) {
+                continue;
             }
-        }
-
-        // メタデータ上の field_id -> 定義マップ
-        $metaFieldMap = [];
-        foreach ($metaFields as $mf) {
-            $fid = $mf['field_id'] ?? null;
-            if ($fid) {
-                $metaFieldMap[$fid] = $mf;
-            }
-        }
-
-        // ユーザー回答fields をチェック
-        foreach ($answerFields as $idx => $af) {
-            $fid = $af['field_id'] ?? '';
-            if (!$fid) {
-                throw ValidationException::withMessages([
-                    "fields.{$idx}.field_id" => "field_id は必須です。"
-                ]);
-            }
-            $attribute = $af['attribute'] ?? null;
-            $userAns   = $af['user_answer'] ?? null;
-
-            if (!$attribute) {
-                throw ValidationException::withMessages([
-                    "fields.{$idx}.attribute" => "attribute が存在しません。"
-                ]);
+            $skillDbId = DB::table('skills')
+                ->where('json_id', $skillJsonId)
+                ->value('id');
+            if (!$skillDbId) {
+                // DBに該当 skill が無ければスキップ
+                continue;
             }
 
-            // fixed の場合、metadataに存在しない field_idはエラー
-            if ($type === 'fixed' && !isset($metaFieldMap[$fid])) {
-                throw ValidationException::withMessages([
-                    "fields.{$idx}.field_id" => "metadataに存在しない field_id='{$fid}' です。"
-                ]);
-            }
+            // インデックス順を order に反映
+            $newSkillDbIds[] = $skillDbId;
+            $skillIndexMap[$skillDbId] = $index + 1;
+        }
 
-            // 'number'属性 → 数値回答か？
-            if ($attribute === 'number') {
-                if (!is_numeric($userAns)) {
-                    throw ValidationException::withMessages([
-                        "fields.{$idx}.user_answer" => "attribute='number' の場合 user_answer には数値が必要です。"
+        // 既存 pivot
+        $existingSkillDbIds = DB::table('question_skill')
+            ->where('question_id', $question->id)
+            ->pluck('skill_id')
+            ->toArray();
+
+        // JSON 側に無い skill を削除
+        $skillIdsToRemove = array_diff($existingSkillDbIds, $newSkillDbIds);
+        if (!empty($skillIdsToRemove)) {
+            DB::table('question_skill')
+                ->where('question_id', $question->id)
+                ->whereIn('skill_id', $skillIdsToRemove)
+                ->delete();
+        }
+
+        // JSON 側にある skill を upsert
+        foreach ($newSkillDbIds as $skillDbId) {
+            $existingPivot = DB::table('question_skill')
+                ->where('question_id', $question->id)
+                ->where('skill_id', $skillDbId)
+                ->first();
+
+            if ($existingPivot) {
+                // 既存 → 順番更新
+                DB::table('question_skill')
+                    ->where('id', $existingPivot->id)
+                    ->update([
+                        'order'      => $skillIndexMap[$skillDbId],
+                        'updated_at' => now(),
                     ]);
-                }
             } else {
-                // 将来的に他の属性があれば追加
-                throw ValidationException::withMessages([
-                    "fields.{$idx}.attribute" => "attribute='{$attribute}' は無効です。('number'のみ対応)"
+                // 新規
+                DB::table('question_skill')->insert([
+                    'id'          => (string) Str::uuid(),
+                    'question_id' => $question->id,
+                    'skill_id'    => $skillDbId,
+                    'order'       => $skillIndexMap[$skillDbId],
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
                 ]);
             }
         }
     }
 
+    /**
+     * --------------------------------------------------------------------------------
+     * question_translations へ多言語の質問文や解説文を upsert
+     * --------------------------------------------------------------------------------
+     */
+    private function upsertQuestionTranslations(Question $question, array $questionJson)
+    {
+        $locales = ['ja','en'];
+        $meta = $questionJson['metadata'] ?? [];
+
+        foreach ($locales as $locale) {
+            // metadata.question_text / metadata.explanation / metadata.background
+            $qText = $meta['question_text'][$locale] ?? null;
+            $qExp  = $meta['explanation'][$locale]   ?? null;
+            $qBack = $meta['background'][$locale]    ?? null;
+
+            // いずれかが存在する場合のみ upsert
+            if ($qText !== null || $qExp !== null) {
+                QuestionTranslation::updateOrCreate(
+                    [
+                        'question_id' => $question->id,
+                        'locale'      => $locale,
+                    ],
+                    [
+                        'question_text' => $qText,
+                        'explanation'   => $qExp,
+                        'background'    => $qBack,
+                    ]
+                );
+            }
+        }
+    }
 
     /**
-     * getTopLevelRules
-     * -------------------------------------------------
-     * 【目的】
-     *   QuestionJSON の最上位キー(order,idなど)に対する必須・形式ルールを定義する。
-     *
-     * 【戻り値】
-     *   @return array Laravelバリデーション用ルール配列
-     *
-     * 【補足】
-     *   - skills, learning_requirements, evaluation_spec, metadata なども
-     *     "必須の配列" というレベルでここに定義されている。
+     * --------------------------------------------------------------------------------
+     * learning_requirements (複数) を Question テーブルへ統合
+     * --------------------------------------------------------------------------------
+     * 【仕様】
+     *  - JSON 内の learning_requirements を学習要件の配列として受け取り、
+     *    Questionテーブルの learning_subject, learning_no, ... 等へ改行区切りで集約します。
+     */
+    private function applyLearningRequirements(Question $question, array $questionJson)
+    {
+        $items = $questionJson['learning_requirements'] ?? [];
+        if (!is_array($items) || empty($items)) {
+            return;
+        }
+
+        // とりあえず JSON 全体を保持
+        $question->learning_requirement_json = json_encode($items, JSON_UNESCAPED_UNICODE);
+
+        $subjects             = [];
+        $nos                  = [];
+        $requirements         = [];
+        $requiredCompetencies = [];
+        $backgrounds          = [];
+        $categories           = [];
+        $gradeLevels          = [];
+        $urls                 = [];
+
+        foreach ($items as $lr) {
+            if (isset($lr['learning_subject'])) {
+                $subjects[] = $lr['learning_subject'];
+            }
+            if (isset($lr['learning_no'])) {
+                $nos[] = (string) $lr['learning_no'];
+            }
+            if (isset($lr['learning_requirement'])) {
+                $requirements[] = $lr['learning_requirement'];
+            }
+            if (isset($lr['learning_required_competency'])) {
+                $requiredCompetencies[] = $lr['learning_required_competency'];
+            }
+            if (isset($lr['learning_background'])) {
+                $backgrounds[] = $lr['learning_background'];
+            }
+            if (isset($lr['learning_category'])) {
+                $categories[] = $lr['learning_category'];
+            }
+            if (isset($lr['learning_grade_level'])) {
+                $gradeLevels[] = $lr['learning_grade_level'];
+            }
+            if (isset($lr['learning_url'])) {
+                $urls[] = $lr['learning_url'];
+            }
+        }
+
+        // 改行区切りでまとめて保存
+        $question->learning_subject             = implode("\n", $subjects);
+        $question->learning_no                  = !empty($nos) ? (int)$nos[0] : null;
+        $question->learning_requirement         = implode("\n", $requirements);
+        $question->learning_required_competency = implode("\n", $requiredCompetencies);
+        $question->learning_background          = implode("\n", $backgrounds);
+        $question->learning_category            = implode("\n", $categories);
+        $question->learning_grade_level         = implode("\n", $gradeLevels);
+        $question->learning_url                 = implode("\n", $urls);
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * 下記以降はバリデーション関連メソッド
+     * --------------------------------------------------------------------------------
+     */
+
+    /**
+     * トップレベルのバリデーションルール
      */
     private function getTopLevelRules(): array
     {
         return [
-            // 基本必須
+            // 基本情報
             'order'         => ['required','integer'],
             'id'            => ['required','string'],
             'level_id'      => ['required','string'],
@@ -1509,11 +1755,9 @@ class QuestionJsonManageService
             'created_at'    => ['required','date_format:Y-m-d H:i:s'],
             'updated_at'    => ['required','date_format:Y-m-d H:i:s'],
 
-            // skills => 必須
-            'skills' => ['required','array'],
-
-            // learning_requirements => 必須
-            'learning_requirements'                               => ['required','array'],
+            // skills / learning_requirements
+            'skills'        => ['required','array'],
+            'learning_requirements' => ['required','array'],
             'learning_requirements.*.learning_subject'            => ['required','string'],
             'learning_requirements.*.learning_no'                 => ['required','integer'],
             'learning_requirements.*.learning_requirement'        => ['required','string'],
@@ -1523,48 +1767,33 @@ class QuestionJsonManageService
             'learning_requirements.*.learning_grade_level'        => ['required','string'],
             'learning_requirements.*.learning_url'                => ['sometimes','url'],
 
-            // evaluation_spec => 必須
+            // evaluation_spec
             'evaluation_spec'                   => ['required','array'],
             'evaluation_spec.evaluation_method' => ['required','string'],
 
-            // metadata => question_type / question_text / explanation / background / input_format
-            'metadata'                              => ['required','array'],
-            'metadata.question_type'                => ['required'],
-
-            // question_text, explanation, background の必須チェック(多言語)
-            'metadata.question_text'                => ['required','array'],
-            'metadata.question_text.ja'             => ['required','string'],
-            'metadata.question_text.en'             => ['required','string'],
-            'metadata.explanation'                  => ['required','array'],
-            'metadata.explanation.ja'               => ['required','string'],
-            'metadata.explanation.en'               => ['required','string'],
-            'metadata.background'                   => ['required','array'],
-            'metadata.background.ja'                => ['required','string'],
-            'metadata.background.en'                => ['required','string'],
-
-            'metadata.question'                     => ['required','array'],
-            'metadata.question.ja'                  => ['required','string'],
-            'metadata.question.en'                  => ['required','string'],
-
-            'metadata.input_format'                 => ['required','array'],
-            'metadata.input_format.type'            => ['required','string','in:fixed,custom'],
-            'metadata.input_format.fields'          => ['required','array'],
+            // metadata
+            'metadata'                          => ['required','array'],
+            'metadata.question_type'            => ['required'],
+            'metadata.question_text'            => ['required','array'],
+            'metadata.question_text.ja'         => ['required','string'],
+            'metadata.question_text.en'         => ['required','string'],
+            'metadata.explanation'              => ['required','array'],
+            'metadata.explanation.ja'           => ['required','string'],
+            'metadata.explanation.en'           => ['required','string'],
+            'metadata.background'               => ['required','array'],
+            'metadata.background.ja'            => ['required','string'],
+            'metadata.background.en'            => ['required','string'],
+            'metadata.question'                 => ['required','array'],
+            'metadata.question.ja'              => ['required','string'],
+            'metadata.question.en'              => ['required','string'],
+            'metadata.input_format'             => ['required','array'],
+            'metadata.input_format.fields'      => ['required','array'],
             'metadata.input_format.question_components' => ['required','array'],
         ];
     }
 
     /**
-     * messages
-     * -------------------------------------------------
-     * 【目的】
-     *   バリデーションエラーメッセージを日本語で定義する。
-     *
-     * 【戻り値】
-     *   @return array
-     *     - Laravel のバリデーションメッセージ配列
-     *
-     * 【補足】
-     *   - ':attribute' 部分などは実際のフィールドキーに置換される
+     * バリデーションエラーメッセージ
      */
     private function messages(): array
     {
@@ -1582,21 +1811,7 @@ class QuestionJsonManageService
     }
 
     /**
-     * validateLevelGradeDifficulty
-     * -------------------------------------------------
-     * 【目的】
-     *   level_id, grade_id, difficulty_id がDBに存在するかチェックする。
-     *   存在しない場合は validationエラーを発生させる。
-     *
-     * 【パラメータ】
-     *   @param $validator Laravelのバリデータインスタンス
-     *   @param array $json
-     *
-     * 【戻り値】
-     *   @return void
-     *
-     * 【補足】
-     *   - levels, grades, difficulties テーブルに対し json_id で存在確認
+     * level_id, grade_id, difficulty_id が DB 上に存在するか確認
      */
     private function validateLevelGradeDifficulty($validator, array $json)
     {
@@ -1605,40 +1820,33 @@ class QuestionJsonManageService
         $diffId  = $json['difficulty_id'] ?? null;
 
         if ($levelId) {
-            $exists = \DB::table('levels')->where('json_id', $levelId)->exists();
+            $exists = DB::table('levels')->where('json_id', $levelId)->exists();
             if (!$exists) {
-                $validator->errors()->add('level_id', "指定された level_id='{$levelId}' はDBに存在しません。");
+                $validator->errors()->add('level_id',
+                    "指定された level_id='{$levelId}' はDBに存在しません。"
+                );
             }
         }
         if ($gradeId) {
-            $exists = \DB::table('grades')->where('json_id', $gradeId)->exists();
+            $exists = DB::table('grades')->where('json_id', $gradeId)->exists();
             if (!$exists) {
-                $validator->errors()->add('grade_id', "指定された grade_id='{$gradeId}' はDBに存在しません。");
+                $validator->errors()->add('grade_id',
+                    "指定された grade_id='{$gradeId}' はDBに存在しません。"
+                );
             }
         }
         if ($diffId) {
-            $exists = \DB::table('difficulties')->where('json_id', $diffId)->exists();
+            $exists = DB::table('difficulties')->where('json_id', $diffId)->exists();
             if (!$exists) {
-                $validator->errors()->add('difficulty_id', "指定された difficulty_id='{$diffId}' はDBに存在しません。");
+                $validator->errors()->add('difficulty_id',
+                    "指定された difficulty_id='{$diffId}' はDBに存在しません。"
+                );
             }
         }
     }
 
     /**
-     * validateSkills
-     * -------------------------------------------------
-     * 【目的】
-     *   skills 配列の skill_id と name がDBのskillsテーブル上の json_id, display_name と合致するかチェック
-     *
-     * 【パラメータ】
-     *   @param $validator Laravelのバリデータインスタンス
-     *   @param array $json
-     *
-     * 【戻り値】
-     *   @return void
-     *
-     * 【補足】
-     *   - skill_id がDBにない場合や name が一致しない場合はバリデーションエラーを追加
+     * skills 配列 の内容を DBの skills テーブルと照合
      */
     private function validateSkills($validator, array $json)
     {
@@ -1651,35 +1859,27 @@ class QuestionJsonManageService
             $sid   = $sk['skill_id'] ?? null;
             $sname = $sk['name']     ?? null;
             if (!$sid || !$sname) {
-                // スキップするかどうかは仕様による
+                // skill_id or name がないならスキップ
                 continue;
             }
-            $row = \DB::table('skills')->where('json_id', $sid)->first();
+            $row = DB::table('skills')->where('json_id', $sid)->first();
             if (!$row) {
                 $validator->errors()->add("skills.{$idx}.skill_id",
-                    "skill_id='{$sid}' はDBに存在しません。");
+                    "skill_id='{$sid}' はDBに存在しません。"
+                );
                 continue;
             }
+            // name が DB上の display_name と一致しているか
             if ($row->display_name !== $sname) {
                 $validator->errors()->add("skills.{$idx}.name",
-                    "skill_id='{$sid}' の display_name と name='{$sname}' が一致しません。");
+                    "skill_id='{$sid}' の display_name と name='{$sname}' が一致しません。"
+                );
             }
         }
     }
 
     /**
-     * validateEvaluationSpec
-     * -------------------------------------------------
-     * 【目的】
-     *   evaluation_spec(evaluation_method, checker_method, llm_prompt_numberなど) のバリデーション
-     *   CODE/LLM ごとに必要な項目と形式があるかを確認
-     *
-     * 【パラメータ】
-     *   @param $validator Laravelのバリデータインスタンス
-     *   @param array $json
-     *
-     * 【戻り値】
-     *   @return void
+     * evaluation_method(CODE/LLM) や checker_method, response_format などを検証
      */
     private function validateEvaluationSpec($validator, array $json)
     {
@@ -1689,473 +1889,139 @@ class QuestionJsonManageService
             return;
         }
 
-        // CODE or LLM
+        // CODE / LLM
         try {
             $method = EvaluationMethod::fromString($methodRaw);
         } catch (\InvalidArgumentException) {
             $validator->errors()->add('evaluation_spec.evaluation_method',
-                "evaluation_method='{$methodRaw}' は無効です (CODE/LLM)。");
+                "evaluation_method='{$methodRaw}' は無効です (CODE/LLM)。"
+            );
             return;
         }
 
-        // CODE の場合
         if ($method === EvaluationMethod::CODE) {
             // checker_method 必須
             if (empty($eval['checker_method']) || !is_string($eval['checker_method'])) {
                 $validator->errors()->add('evaluation_spec.checker_method',
-                    "evaluation_method=CODE のため checker_method(文字列) が必須です。");
+                    "evaluation_method=CODE のため checker_method が必須です。"
+                );
             } else {
-                // enumチェック
                 try {
                     EvaluationCheckerMethod::fromString($eval['checker_method']);
                 } catch (\InvalidArgumentException) {
                     $validator->errors()->add('evaluation_spec.checker_method',
-                        "checker_method='{$eval['checker_method']}' は未定義です。");
+                        "checker_method='{$eval['checker_method']}' は未定義です。"
+                    );
                 }
             }
-
             // response_format 必須
             if (!isset($eval['response_format']) || !is_array($eval['response_format'])) {
                 $validator->errors()->add('evaluation_spec.response_format',
-                    "evaluation_method=CODE のため response_format(オブジェクト) が必須です。");
-            } else {
-                $this->validateResponseFormatForCode($validator, $json, $eval['response_format']);
+                    "evaluation_method=CODE のため response_format が必須です。"
+                );
             }
         }
-        // LLM の場合
         elseif ($method === EvaluationMethod::LLM) {
-            // llm_prompt_number 必須
-            if (!isset($eval['llm_prompt_number']) || !is_numeric($eval['llm_prompt_number'])) {
-                $validator->errors()->add('evaluation_spec.llm_prompt_number',
-                    "evaluation_method=LLM のため llm_prompt_number(数値) が必須です。");
+            // llm_prompt_file_name 必須
+            if (!isset($eval['llm_prompt_file_name'])) {
+                $validator->errors()->add('evaluation_spec.llm_prompt_file_name',
+                    "evaluation_method=LLM のため llm_prompt_file_name(文字列) が必須です。"
+                );
             } else {
-                $path = resource_path("prompts/evaluation/{$eval['llm_prompt_number']}.txt");
+                $path = resource_path("prompts/evaluation/{$eval['llm_prompt_file_name']}.txt");
                 if (!file_exists($path)) {
-                    $validator->errors()->add('evaluation_spec.llm_prompt_number',
-                        "LLM promptファイルが見つかりません。(path={$path})");
+                    $validator->errors()->add('evaluation_spec.llm_prompt_file_name',
+                        "LLM promptファイルが見つかりません。(path={$path})"
+                    );
                 }
             }
-
             if (!isset($eval['response_format']) || !is_array($eval['response_format'])) {
                 $validator->errors()->add('evaluation_spec.response_format',
-                    "evaluation_method=LLM のため response_format(オブジェクト) が必須です。");
-            } else {
-                $this->validateResponseFormatForLlm($validator, $eval['response_format']);
-            }
-        }
-    }
-
-
-    /**
-     * validateResponseFormatForCode
-     * -------------------------------------------------
-     * 【目的】
-     *   evaluation_method=CODE の場合の response_format 構造を検証
-     *   - is_correct, score が "boolean","number" か
-     *   - question_text, question などが metadata と一致しているか
-     *   - fields 配列があれば 1件ごとに検証
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $json 全体
-     *   @param array $resp response_format のオブジェクト
-     *
-     * 【戻り値】
-     *   @return void
-     */
-    private function validateResponseFormatForCode($validator, array $json, array $resp)
-    {
-        if (($resp['is_correct'] ?? '') !== 'boolean') {
-            $validator->errors()->add('evaluation_spec.response_format.is_correct',
-                "CODE: is_correct は 'boolean' のみ有効です。");
-        }
-
-        if (($resp['score'] ?? '') !== 'number') {
-            $validator->errors()->add('evaluation_spec.response_format.score',
-                "CODE: score は 'number' のみ有効です。");
-        }
-
-        // question_text => metadata一致チェック
-        if (empty($resp['question_text']) || !is_array($resp['question_text'])) {
-            $validator->errors()->add('evaluation_spec.response_format.question_text',
-                "CODE: question_text(オブジェクト) が必須です。");
-        } else {
-            $this->validateResponseFormatQuestionTextForCode($validator, $json, $resp['question_text']);
-        }
-
-        // explanation => 今回は必須にしておくが、一致チェックはしない
-        if (empty($resp['explanation']) || !is_array($resp['explanation'])) {
-            $validator->errors()->add('evaluation_spec.response_format.explanation',
-                "CODE: explanation(オブジェクト) が必須です。");
-        }
-
-        // question => metadata.question と一致
-        if (empty($resp['question']) || !is_array($resp['question'])) {
-            $validator->errors()->add('evaluation_spec.response_format.question',
-                "CODE: question(オブジェクト) が必須です。");
-        } else {
-            $this->validateResponseFormatQuestionForCode($validator, $json, $resp['question']);
-        }
-
-        // fields => あれば検証
-        if (!empty($resp['fields']) && is_array($resp['fields'])) {
-            foreach ($resp['fields'] as $idx => $f) {
-                $this->validateResponseFieldForCode($validator, $f, $idx);
-            }
-        }
-    }
-
-    /**
-     * validateResponseFormatQuestionTextForCode
-     * -------------------------------------------------
-     * 【目的】
-     *   CODE 用の question_text が metadata.question_text と一致しているか検証
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $json
-     *   @param array $obj question_text オブジェクト
-     *
-     * 【戻り値】
-     *   @return void
-     */
-    private function validateResponseFormatQuestionTextForCode($validator, array $json, array $obj)
-    {
-        foreach (self::LANGUAGES as $lang) {
-            $expected = $json['metadata']['question_text'][$lang] ?? '';
-            $actual   = $obj[$lang] ?? '';
-            if ($actual !== $expected) {
-                $validator->errors()->add(
-                    "evaluation_spec.response_format.question_text.{$lang}",
-                    "CODE: question_text.{$lang} は metadata.question_text.{$lang} と一致する必要があります( expected='{$expected}' )。"
+                    "evaluation_method=LLM のため response_format が必須です。"
                 );
             }
         }
     }
 
     /**
-     * validateResponseFormatQuestionForCode
-     * -------------------------------------------------
-     * 【目的】
-     *   CODE 用の question が metadata.question と一致しているか検証
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $json
-     *   @param array $obj question オブジェクト
-     *
-     * 【戻り値】
-     *   @return void
-     */
-    private function validateResponseFormatQuestionForCode($validator, array $json, array $obj)
-    {
-        $metaQ = $json['metadata']['question'] ?? [];
-        foreach (self::LANGUAGES as $lang) {
-            $expected = $metaQ[$lang] ?? '';
-            $actual   = $obj[$lang] ?? '';
-            if ($actual !== $expected) {
-                $validator->errors()->add("evaluation_spec.response_format.question.{$lang}",
-                    "CODE: question.{$lang} は metadata.question.{$lang} と一致する必要があります( expected='{$expected}' )。");
-            }
-        }
-    }
-
-    /**
-     * validateResponseFieldForCode
-     * -------------------------------------------------
-     * 【目的】
-     *   CODE 用 fields の 1要素をバリデーションする
-     *   - user_answer, collect_answer, field_explanation等
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $field
-     *   @param int $idx
-     *
-     * 【戻り値】
-     *   @return void
-     */
-    private function validateResponseFieldForCode($validator, array $field, int $idx)
-    {
-        if (empty($field['field_id']) || !is_string($field['field_id'])) {
-            $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.field_id",
-                "CODE: field_id は必須の文字列です。");
-        }
-
-        if (!empty($field['user_answer'])) {
-            if (!in_array($field['user_answer'], self::FIELD_TYPE, true)) {
-                $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.user_answer",
-                    "CODE: user_answer='{$field['user_answer']}' は無効です。(例:'number')");
-            }
-        }
-
-        if (!empty($field['is_correct']) && $field['is_correct'] !== 'boolean') {
-            $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.is_correct",
-                "CODE: is_correct は 'boolean' のみ有効です。");
-        }
-
-        if (($field['user_answer'] ?? '') === 'number') {
-            if (!isset($field['collect_answer']) || !is_numeric($field['collect_answer'])) {
-                $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.collect_answer",
-                    "CODE: collect_answer は数値が必要です (user_answer='number')。");
-            }
-        }
-
-        if (!empty($field['field_explanation']) && is_array($field['field_explanation'])) {
-            foreach (self::LANGUAGES as $lang) {
-                $txt = $field['field_explanation'][$lang] ?? null;
-                if (!is_string($txt) || trim($txt) === '') {
-                    $validator->errors()->add(
-                        "evaluation_spec.response_format.fields.{$idx}.field_explanation.{$lang}",
-                        "CODE: field_explanation.{$lang} は必須の文字列で、空文字は許可されません。"
-                    );
-                }
-            }
-        }
-    }
-
-    /**
-     * validateResponseFormatForLlm
-     * -------------------------------------------------
-     * 【目的】
-     *   evaluation_method=LLM の場合の response_format 構造を検証
-     *   - is_correct, score が "boolean","number" か
-     *   - question_text, explanation, question が langごとに "text" かどうか
-     *   - fields は必須で、user_answer='number' なら collect_answerは数値
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $resp
-     *
-     * 【戻り値】
-     *   @return void
-     */
-    private function validateResponseFormatForLlm($validator, array $resp)
-    {
-        if (($resp['is_correct'] ?? '') !== 'boolean') {
-            $validator->errors()->add('evaluation_spec.response_format.is_correct',
-                "LLM: is_correct は 'boolean' のみ有効です。");
-        }
-
-        if (($resp['score'] ?? '') !== 'number') {
-            $validator->errors()->add('evaluation_spec.response_format.score',
-                "LLM: score は 'number' のみ有効です。");
-        }
-
-        // question_text => langごと 'text'
-        if (empty($resp['question_text']) || !is_array($resp['question_text'])) {
-            $validator->errors()->add('evaluation_spec.response_format.question_text',
-                "LLM: question_text(オブジェクト) は必須です。");
-        } else {
-            foreach (self::LANGUAGES as $lang) {
-                if (!isset($resp['question_text'][$lang])) {
-                    $validator->errors()->add("evaluation_spec.response_format.question_text.{$lang}",
-                        "LLM: question_text.{$lang} がありません。");
-                } else {
-                    if ($resp['question_text'][$lang] !== 'text') {
-                        $validator->errors()->add("evaluation_spec.response_format.question_text.{$lang}",
-                            "LLM: question_text.{$lang} は 'text' のみ有効です。"
-                        );
-                    }
-                }
-            }
-        }
-
-        // explanation => langごと 'text'
-        if (empty($resp['explanation']) || !is_array($resp['explanation'])) {
-            $validator->errors()->add('evaluation_spec.response_format.explanation',
-                "LLM: explanation(オブジェクト) は必須です。");
-        } else {
-            foreach (self::LANGUAGES as $lang) {
-                if (!isset($resp['explanation'][$lang])) {
-                    $validator->errors()->add("evaluation_spec.response_format.explanation.{$lang}",
-                        "LLM: explanation.{$lang} がありません。");
-                } else {
-                    if ($resp['explanation'][$lang] !== 'text') {
-                        $validator->errors()->add("evaluation_spec.response_format.explanation.{$lang}",
-                            "LLM: explanation.{$lang} は 'text' のみ有効です。"
-                        );
-                    }
-                }
-            }
-        }
-
-        // question => langごと 'text'
-        if (empty($resp['question']) || !is_array($resp['question'])) {
-            $validator->errors()->add('evaluation_spec.response_format.question',
-                "LLM: question(オブジェクト) は必須です。");
-        } else {
-            foreach (self::LANGUAGES as $lang) {
-                if (!isset($resp['question'][$lang])) {
-                    $validator->errors()->add("evaluation_spec.response_format.question.{$lang}",
-                        "LLM: question.{$lang} がありません。");
-                } else {
-                    if ($resp['question'][$lang] !== 'text') {
-                        $validator->errors()->add("evaluation_spec.response_format.question.{$lang}",
-                            "LLM: question.{$lang} は 'text' のみ有効です。"
-                        );
-                    }
-                }
-            }
-        }
-
-        // fields => 必須配列
-        if (empty($resp['fields']) || !is_array($resp['fields'])) {
-            $validator->errors()->add('evaluation_spec.response_format.fields',
-                "LLM: fields(配列) は必須です。");
-        } else {
-            foreach ($resp['fields'] as $idx => $field) {
-                $this->validateResponseFieldForLlm($validator, $field, $idx);
-            }
-        }
-    }
-
-    /**
-     * validateResponseFieldForLlm
-     * -------------------------------------------------
-     * 【目的】
-     *   LLM 用 fields の1要素をバリデーション
-     *   - field_id, user_answer="number", is_correct="boolean", collect_answer=数値, field_explanation(多言語)
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $field
-     *   @param int $idx
-     *
-     * 【戻り値】
-     *   @return void
-     */
-    private function validateResponseFieldForLlm($validator, array $field, int $idx)
-    {
-        if (empty($field['field_id']) || !is_string($field['field_id'])) {
-            $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.field_id",
-                "LLM: field_id は必須の文字列です。");
-        }
-
-        if (($field['user_answer'] ?? '') !== 'number') {
-            $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.user_answer",
-                "LLM: user_answer は 'number' のみ有効です。");
-        }
-
-        if (($field['is_correct'] ?? '') !== 'boolean') {
-            $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.is_correct",
-                "LLM: is_correct は 'boolean' のみ有効です。");
-        }
-
-        if (($field['user_answer'] ?? '') === 'number') {
-            if (!isset($field['collect_answer']) || !is_numeric($field['collect_answer'])) {
-                $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.collect_answer",
-                    "LLM: collect_answer は数値を指定してください (user_answer='number')。"
-                );
-            }
-        }
-
-        if (empty($field['field_explanation']) || !is_array($field['field_explanation'])) {
-            $validator->errors()->add("evaluation_spec.response_format.fields.{$idx}.field_explanation",
-                "LLM: field_explanation(オブジェクト) は必須です。");
-        } else {
-            foreach (self::LANGUAGES as $lang) {
-                if (!isset($field['field_explanation'][$lang])
-                    || !is_string($field['field_explanation'][$lang])
-                    || trim($field['field_explanation'][$lang]) === ''
-                ) {
-                    $validator->errors()->add(
-                        "evaluation_spec.response_format.fields.{$idx}.field_explanation.{$lang}",
-                        "LLM: field_explanation.{$lang} は非空文字列が必須です。"
-                    );
-                }
-            }
-        }
-    }
-
-    /**
-     * validateMetadata
-     * -------------------------------------------------
-     * 【目的】
-     *   metadata 以下の question_type, question_text, explanation, background, input_format の整合性を検証
-     *   - question_type が QuestionType enum か
-     *   - input_format.fields => field_id重複なし, attribute='number' など
-     *   - question_components => type='input_field'なら field_id 必須、type='newline'なら content不要 など
-     *
-     * 【パラメータ】
-     *   @param $validator
-     *   @param array $json 全体
-     *
-     * 【戻り値】
-     *   @return void
+     * metadata.question_type / input_format などを検証
      */
     private function validateMetadata($validator, array $json)
     {
         $meta = $json['metadata'] ?? [];
         $qtRaw = $meta['question_type'] ?? null;
 
-        // question_type => Enumチェック
+        // question_type が有効な Enumか
+        $questionTypeValue = null;
         if ($qtRaw) {
             try {
-                QuestionType::fromString((string)$qtRaw);
+                $questionTypeValue = \App\Enums\QuestionType::fromString((string)$qtRaw)->value;
             } catch (\InvalidArgumentException) {
                 $validator->errors()->add('metadata.question_type',
-                    "question_type='{$qtRaw}' は未定義です。");
+                    "question_type='{$qtRaw}' は未定義です。"
+                );
             }
         }
 
-        // input_format.type が self::INPUT_FORMAT_TYPES に含まれているか
-        $inputFormatType = $meta['input_format']['type'] ?? null;
-        if ($inputFormatType && !in_array($inputFormatType, self::INPUT_FORMAT_TYPES, true)) {
-            $validator->errors()->add(
-                'metadata.input_format.type',
-                "input_format.type='{$inputFormatType}' は有効な値ではありません。("
-                . implode(',', self::INPUT_FORMAT_TYPES) . " のいずれかを指定してください)"
-            );
-        }
-
-        // fields の定義チェック
+        // fields
         $fieldsArr = $meta['input_format']['fields'] ?? [];
         if (is_array($fieldsArr)) {
             $fieldIds = [];
             foreach ($fieldsArr as $idx => $f) {
-                // field_id => f_\d+ 形式
+                // field_id='f_数字'形式
                 if (empty($f['field_id']) || !preg_match('/^f_\d+$/', $f['field_id'])) {
                     $validator->errors()->add("metadata.input_format.fields.{$idx}.field_id",
-                        "field_id='f_数字'形式が必須です。");
+                        "field_id='f_数字'形式が必須です。"
+                    );
                 }
-
                 // 重複チェック
                 if (in_array($f['field_id'] ?? '', $fieldIds, true)) {
                     $validator->errors()->add("metadata.input_format.fields.{$idx}.field_id",
-                        "field_id='{$f['field_id']}' が重複しています。");
+                        "field_id='{$f['field_id']}' が重複しています。"
+                    );
                 }
                 $fieldIds[] = $f['field_id'] ?? '';
 
-                // attribute => 'number'
+                // attribute
                 $attrRaw = $f['attribute'] ?? null;
                 if (!$attrRaw) {
                     $validator->errors()->add("metadata.input_format.fields.{$idx}.attribute",
-                        "attribute が指定されていません。");
-                    continue;
-                }
-                // Enum化 (InputFieldAttribute::fromString)
-                try {
-                    QuestionMetadataInputFormatFieldAttribute::fromString($attrRaw);
-                } catch (\InvalidArgumentException $e) {
-                    $validator->errors()->add("metadata.input_format.fields.{$idx}.attribute",
-                        "attribute='{$attrRaw}' はサポート対象外です。(例:'number','text','textarea')");
+                        "attribute が指定されていません。"
+                    );
+                } else {
+                    // enumチェック
+                    try {
+                        QuestionMetadataInputFormatFieldAttribute::fromString($attrRaw);
+                    } catch (\InvalidArgumentException) {
+                        $validator->errors()->add("metadata.input_format.fields.{$idx}.attribute",
+                            "attribute='{$attrRaw}' はサポート対象外です。"
+                        );
+                    }
                 }
 
-                // user_answer => "number"
+                // user_answer => 'number' のみ
                 if (!isset($f['user_answer']) || !is_string($f['user_answer'])) {
                     $validator->errors()->add("metadata.input_format.fields.{$idx}.user_answer",
-                        "user_answer は必須の文字列です(例:'number')。");
+                        "user_answer は必須の文字列です。"
+                    );
                 } else {
                     if (!in_array($f['user_answer'], self::FIELD_TYPE, true)) {
                         $validator->errors()->add("metadata.input_format.fields.{$idx}.user_answer",
-                            "user_answer='{$f['user_answer']}' は 'number' のみ有効です。");
+                            "user_answer='{$f['user_answer']}' は 'number' のみ有効です。"
+                        );
                     }
+                }
+
+                // collect_answer は基本的に metadata では非公開(禁止)
+                if (array_key_exists('collect_answer', $f)) {
+                    $validator->errors()->add("metadata.input_format.fields.{$idx}.collect_answer",
+                        "collect_answer は指定できません。"
+                    );
                 }
             }
         }
 
-        // question_components の検証 (input_field数==fields数など)
+        // question_components
         $comps = $meta['input_format']['question_components'] ?? [];
         if (is_array($comps)) {
             $inputFieldCount = 0;
@@ -2164,20 +2030,20 @@ class QuestionJsonManageService
                 $ctype = $comp['type'] ?? '';
                 if (!in_array($ctype, self::VALID_COMPONENT_TYPES, true)) {
                     $validator->errors()->add("metadata.input_format.question_components.{$cidx}.type",
-                        "不正なコンポーネントtype='{$ctype}'です。");
+                        "不正なコンポーネントtype='{$ctype}'です。"
+                    );
                 }
-
-                // input_field => field_id 必須
+                // input_field => field_id必須 & カウント
                 if ($ctype === 'input_field') {
                     $inputFieldCount++;
                     if (!isset($comp['field_id'])) {
                         $validator->errors()->add("metadata.input_format.question_components.{$cidx}.field_id",
-                            "type=input_field の場合 field_id が必須です。");
+                            "type=input_field の場合 field_id が必須です。"
+                        );
                     }
                 }
-                // newline => content 不要
+                // content が必須な type
                 elseif (in_array($ctype, self::COMPONENT_TYPES_REQUIRE_CONTENT, true)) {
-                    // text, image, movie は content 必須
                     if (empty($comp['content']) || !is_array($comp['content'])) {
                         $validator->errors()->add(
                             "metadata.input_format.question_components.{$cidx}.content",
@@ -2195,65 +2061,342 @@ class QuestionJsonManageService
                         }
                     }
                 }
-                // order => 数値+重複禁止
+                // order => 数値 & 重複チェック
                 if (!isset($comp['order']) || !is_numeric($comp['order'])) {
                     $validator->errors()->add("metadata.input_format.question_components.{$cidx}.order",
-                        "order(数値) は必須です。");
+                        "order(数値) は必須です。"
+                    );
                 } else {
                     if (in_array($comp['order'], $orders, true)) {
                         $validator->errors()->add("metadata.input_format.question_components.{$cidx}.order",
-                            "order='{$comp['order']}' が重複しています。");
+                            "order='{$comp['order']}' が重複しています。"
+                        );
                     }
                     $orders[] = $comp['order'];
                 }
             }
-
             // input_field数 と fields数 が一致するか
             $fieldsCount = count($fieldsArr);
             if ($inputFieldCount !== $fieldsCount) {
                 $validator->errors()->add("metadata.input_format.question_components",
-                    "input_field要素数({$inputFieldCount}) と fields数({$fieldsCount}) が一致しません。");
+                    "input_field要素数({$inputFieldCount}) と fields数({$fieldsCount}) が一致しません。"
+                );
+            }
+        }
+
+        // [CHANGED] 下記: question_type=FILL_IN_OPERATOR の場合、 input_components が必須
+        if ($questionTypeValue === QuestionType::FILL_IN_OPERATOR->value) {
+            $icKey = 'metadata.input_format.input_components';
+            if (!isset($meta['input_format']['input_components'])) {
+                $validator->errors()->add($icKey,
+                    "FILL_IN_OPERATOR のため input_components が必須です。"
+                );
+                return; // これ以降の検証は難しいので return
+            }
+
+            $inputComps = $meta['input_format']['input_components'];
+            if (!is_array($inputComps)) {
+                $validator->errors()->add($icKey,
+                    "FILL_IN_OPERATOR のため input_components は配列である必要があります。"
+                );
+                return;
+            }
+
+            $icOrders = [];
+            foreach ($inputComps as $idx => $ic) {
+                // type 必須 & 値チェック
+                $typeVal = $ic['type'] ?? null;
+                if (!$typeVal) {
+                    $validator->errors()->add("{$icKey}.{$idx}.type", 
+                        "type が必須です。"
+                    );
+                } elseif (!in_array($typeVal, self::VALID_INPUT_COMPONENTS_TYPES, true)) {
+                    $validator->errors()->add("{$icKey}.{$idx}.type",
+                        "不正な type='{$typeVal}' です。"
+                    );
+                }
+
+                // attribute も必須 & 値チェック
+                $attrVal = $ic['attribute'] ?? null;
+                if (!$attrVal) {
+                    $validator->errors()->add("{$icKey}.{$idx}.attribute",
+                        "attribute が必須です。"
+                    );
+                } elseif (!in_array($attrVal, self::VALID_INPUT_COMPONENTS_TYPES, true)) {
+                    $validator->errors()->add("{$icKey}.{$idx}.attribute",
+                        "不正な attribute='{$attrVal}' です。"
+                    );
+                }
+
+                // content => 多言語で FillInOperator の値になっているか
+                if (empty($ic['content']) || !is_array($ic['content'])) {
+                    $validator->errors()->add("{$icKey}.{$idx}.content",
+                        "content(オブジェクト) が必須です。"
+                    );
+                } else {
+                    foreach (self::LANGUAGES as $lang) {
+                        if (!isset($ic['content'][$lang])) {
+                            $validator->errors()->add("{$icKey}.{$idx}.content.{$lang}",
+                                "content.{$lang} がありません。"
+                            );
+                        } else {
+                            $val = $ic['content'][$lang];
+                            // FillInOperator enum に含まれるかチェック
+                            // 例: ">", "<", "="
+                            try {
+                                \App\Enums\FillInOperator::from($val);
+                            } catch (\ValueError $ve) {
+                                $validator->errors()->add("{$icKey}.{$idx}.content.{$lang}",
+                                    "不正な演算子 '{$val}' です。"
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // order => 数値 & 重複
+                if (!isset($ic['order']) || !is_numeric($ic['order'])) {
+                    $validator->errors()->add("{$icKey}.{$idx}.order",
+                        "order(数値) は必須です。"
+                    );
+                } else {
+                    if (in_array($ic['order'], $icOrders, true)) {
+                        $validator->errors()->add("{$icKey}.{$idx}.order",
+                            "order='{$ic['order']}' が重複しています。"
+                        );
+                    }
+                    $icOrders[] = $ic['order'];
+                }
+            }
+        }
+        // [CHANGED] ここまで
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * 文字列→QuestionType enum の int値に変換（未定義なら CALCULATION）
+     * --------------------------------------------------------------------------------
+     */
+    private function parseQuestionType(?string $typeString): int
+    {
+        if (!$typeString) {
+            // デフォルト
+            return QuestionType::CALCULATION->value;
+        }
+        try {
+            return QuestionType::fromString($typeString)->value;
+        } catch (\InvalidArgumentException) {
+            return QuestionType::CALCULATION->value;
+        }
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * 文字列→QuestionStatus enum の int値に変換（未定義なら DRAFT）
+     * --------------------------------------------------------------------------------
+     */
+    private function parseQuestionStatus(string $statusString): int
+    {
+        try {
+            return QuestionStatus::fromString($statusString)->value;
+        } catch (\InvalidArgumentException) {
+            return QuestionStatus::DRAFT->value;
+        }
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * level_id → levelsテーブル(json_id)検索 → UUID
+     * --------------------------------------------------------------------------------
+     */
+    private function findLevelUuid(?string $levelJsonId): ?string
+    {
+        if (!$levelJsonId) {
+            return null;
+        }
+        return DB::table('levels')
+            ->where('json_id', $levelJsonId)
+            ->value('id') ?: null;
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * grade_id → gradesテーブル(json_id)検索 → UUID
+     * --------------------------------------------------------------------------------
+     */
+    private function findGradeUuid(?string $gradeJsonId): ?string
+    {
+        if (!$gradeJsonId) {
+            return null;
+        }
+        return DB::table('grades')
+            ->where('json_id', $gradeJsonId)
+            ->value('id') ?: null;
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * difficulty_id → difficultiesテーブル(json_id)検索 → UUID
+     * --------------------------------------------------------------------------------
+     */
+    private function findDifficultyUuid(?string $difficultyJsonId): ?string
+    {
+        if (!$difficultyJsonId) {
+            return null;
+        }
+        return DB::table('difficulties')
+            ->where('json_id', $difficultyJsonId)
+            ->value('id') ?: null;
+    }
+
+    /**
+     * --------------------------------------------------------------------------------
+     * ③ ユーザー回答のバリデーション例
+     * --------------------------------------------------------------------------------
+     * 【目的】
+     *   - question_type='FILL_IN_THE_BLANK' を例にした回答検証
+     *   - metadata.input_format との整合性 (fields数/attribute/field_id) をチェック
+     *   - ここでは一部簡易実装のみ示している。 (実運用では他 question_type にも対応)
+     */
+    public function validateUserAnswer(array $answerData, array $metadata): void
+    {
+        $qt = $metadata['question_type'] ?? null;
+        if ($qt !== 'FILL_IN_THE_BLANK') {
+            // 他タイプは別途実装を考える
+            return;
+        }
+
+        // input_format がない
+        $inFmt = $metadata['input_format'] ?? [];
+        if (!is_array($inFmt)) {
+            throw new \Illuminate\Validation\ValidationException(
+                \Validator::make([],[]),
+                "metadata.input_formatが存在しません。"
+            );
+        }
+
+        // fields
+        $metaFields = $inFmt['fields'] ?? [];
+        if (!is_array($metaFields)) {
+            throw new \Illuminate\Validation\ValidationException(
+                \Validator::make([],[]),
+                "metadata.input_format.fields が配列ではありません。"
+            );
+        }
+
+        // type=fixed/custom
+        $type = $inFmt['type'] ?? '';
+        if (!in_array($type, ['fixed','custom'], true)) {
+            throw new \Illuminate\Validation\ValidationException(
+                \Validator::make([],[]),
+                "input_format.type='{$type}' は未対応です。"
+            );
+        }
+
+        // 回答 JSON
+        $answerFields = $answerData['fields'] ?? null;
+        if (!is_array($answerFields)) {
+            throw new \Illuminate\Validation\ValidationException(
+                \Validator::make([],[]),
+                "回答JSONの 'fields' が配列ではありません。"
+            );
+        }
+
+        // fixed => fields数が一致するか
+        if ($type === 'fixed') {
+            $countMeta = count($metaFields);
+            $countAns  = count($answerFields);
+            if ($countMeta !== $countAns) {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Validator::make([],[]),
+                    "fields数が一致しません。(metadata={$countMeta}, answer={$countAns})"
+                );
+            }
+        }
+
+        // field_id -> 定義マップ
+        $metaFieldMap = [];
+        foreach ($metaFields as $mf) {
+            $fid = $mf['field_id'] ?? null;
+            if ($fid) {
+                $metaFieldMap[$fid] = $mf;
+            }
+        }
+
+        // 回答の1件ずつチェック
+        foreach ($answerFields as $idx => $af) {
+            $fid = $af['field_id'] ?? '';
+            if (!$fid) {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Validator::make([],[]),
+                    "fields.{$idx}.field_id は必須です。"
+                );
+            }
+            $attribute = $af['attribute'] ?? null;
+            $userAns   = $af['user_answer'] ?? null;
+
+            if (!$attribute) {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Validator::make([],[]),
+                    "fields.{$idx}.attribute が存在しません。"
+                );
+            }
+
+            // fixed => metadataにない field_id はエラー
+            if ($type === 'fixed' && !isset($metaFieldMap[$fid])) {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Validator::make([],[]),
+                    "metadataに存在しない field_id='{$fid}' です。"
+                );
+            }
+
+            // attribute='number' => user_answer は数値
+            if ($attribute === 'number') {
+                if (!is_numeric($userAns)) {
+                    throw new \Illuminate\Validation\ValidationException(
+                        \Validator::make([],[]),
+                        "attribute='number' の場合 user_answer には数値が必要です。"
+                    );
+                }
+            } else {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Validator::make([],[]),
+                    "attribute='{$attribute}' は無効です。('number'のみ対応)"
+                );
             }
         }
     }
 
     /**
-     * localizeMetadata
-     * -------------------------------------------------
-     * 【目的】
-     *   QuestionJSON の metadata を、現在のアプリケーションロケールに合わせて
-     *   特定キーを文字列化する（多言語対応のオブジェクト→単一言語の文字列に変換）。
-     *   background はレスポンス不要として削除する例も記載。
-     *
-     * 【パラメータ】
-     *   @param array $metadata
-     *
-     * 【戻り値】
-     *   @return array ローカライズ後の配列
-     *
-     * 【補足】
-     *   - "text" type コンポーネントの場合は content[locale] のみを取り出す
-     *   - background は削除
+     * --------------------------------------------------------------------------------
+     * ④ metadata を現在のアプリケーションロケールに合わせて整形（サンプル）
+     * --------------------------------------------------------------------------------
      */
     public function localizeMetadata(array $metadata): array
     {
-        $locale = App::getLocale();
+        $locale = \App::getLocale();
 
+        // question_text
         if (isset($metadata['question_text']) && is_array($metadata['question_text'])) {
             $metadata['question_text'] = $metadata['question_text'][$locale] ?? '';
         }
+
+        // explanation
         if (isset($metadata['explanation']) && is_array($metadata['explanation'])) {
             $metadata['explanation']   = $metadata['explanation'][$locale] ?? '';
         }
 
+        // background は表示しない例
         if (isset($metadata['background']) && is_array($metadata['background'])) {
             unset($metadata['background']);
         }
 
+        // question
         if (isset($metadata['question']) && is_array($metadata['question'])) {
             $metadata['question'] = $metadata['question'][$locale] ?? '';
         }
 
+        // question_components -> textコンポーネントの content は多言語を取得
         if (isset($metadata['input_format']['question_components'])
             && is_array($metadata['input_format']['question_components'])) {
             foreach ($metadata['input_format']['question_components'] as $i => $comp) {
@@ -2270,33 +2413,20 @@ class QuestionJsonManageService
     }
 
     /**
-     * localizeLlmResult
-     * -------------------------------------------------
-     * 【目的】
-     *   LLMの評価結果JSON( is_correct, score, question_text[ja/en], fields[*] など ) を
-     *   現行ロケールに準じて単一文字列に変換する。
-     *
-     * 【パラメータ】
-     *   @param array $llmResult
-     *     - LLM API が返す JSON形式 (例: {is_correct, score, question_text:{ja:"...",en:"..."}, ...})
-     *
-     * 【戻り値】
-     *   @return array
-     *     - ローカライズ後の配列 {"is_correct"=>"false","question_text"=>"...", ...}
-     *
-     * 【利用場面】
-     *   - AnswerServiceなどで LLM結果をユーザー向けに返す際に、現在言語の文言に整形
+     * --------------------------------------------------------------------------------
+     * ⑤ LLM応答 (evaluation) のローカライズ例
+     * --------------------------------------------------------------------------------
      */
     public function localizeLlmResult(array $llmResult): array
     {
-        $locale = App::getLocale();
+        $locale = \App::getLocale();
 
         $mapped = [];
         // is_correct -> "true"/"false"
         $rawIsCorrect = data_get($llmResult, 'is_correct', false);
         $mapped['is_correct'] = ($rawIsCorrect === true || $rawIsCorrect === "true") ? "true" : "false";
 
-        // score -> そのまま(数値)
+        // score
         $mapped['score'] = data_get($llmResult, 'score', 0);
 
         // question_text
@@ -2326,7 +2456,7 @@ class QuestionJsonManageService
                 $mf['field_id'] = (string) data_get($f, 'field_id', '');
                 $mf['user_answer'] = (string) data_get($f, 'user_answer', '');
                 $rawCorrect = data_get($f, 'is_correct', false);
-                $mf['is_correct'] = ($rawCorrect === true || $rawCorrect === "true") ? "true":"false";
+                $mf['is_correct'] = ($rawCorrect === true || $rawCorrect === "true") ? "true" : "false";
                 $mf['collect_answer'] = data_get($f, 'collect_answer', '');
 
                 $fieldExpArr = data_get($f, 'field_explanation', []);
