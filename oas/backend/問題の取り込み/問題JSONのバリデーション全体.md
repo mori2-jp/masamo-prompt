@@ -18,9 +18,6 @@ JSONのバリデーション処理を持つクラスでは、JSONデータの再
 ーー言語定数
 ja, en
 
---input_format type 定数
-fixed: 固定。ユーザーは項目の増減はコントロール出来ず、input_format.fields の内容に固定
-custom: input_format.fields の内容はあくまでもデフォルト表記で、固定されず、ユーザー自由に回答の数を増減出来る。
 
 -- input_format.fields.type、evaluation_spec.response_format.fields.user_answer,evaluation_spec.response_format.fields.collect_answer の定数
 number: 数値型
@@ -83,7 +80,6 @@ question_type：必須、App\Enums\QuestionType.php に値が存在している�
 question ：必須、オブジェクト（言語定数全て含んでいるか）。問題文
 
 input_format: 必須、オブジェクト（言語定数全て含んでいるか）
-input_format.type: 必須、input_format type 定数と値が一致しているか。
 input_format.fields: 必須、配列。ユーザが回答する入力フォームの仕様を定義
 input_format.fields.field_id: 必須、f_x のフォーマットになっているか。同じ fields 内に重複した値が存在しないか。 question_components内の type: "blank"の数と総数が合っているか。
 input_format.fields.attribute: 必須、（input_format.fields.type、evaluation_spec.response_format.fields.user_answer,evaluation_spec.response_format.fields.collect_answer の定数に値が存在しているか）。ブランクのフォームの属性。例えば number であれば、<input type="number">になる
@@ -187,7 +183,6 @@ input_format.question_components.order: 必須、数値、重複する値が存�
       "en": "3 + 5 = 5 + ▢ = ▢"
     },
     "input_format": {
-      "type": "fixed",
       "fields": [
         {
           "field_id": "f_1",

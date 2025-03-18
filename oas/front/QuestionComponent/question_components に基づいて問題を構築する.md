@@ -184,7 +184,6 @@ const createHTMLFromJson = (metadata:QuestionMetadataType) => {
   const searchValue = '▢'
   //input detais
   const inputFields = metadata.input_format.fields
-  const type = metadata.input_format.type
 
   const inputBoxes = []
 

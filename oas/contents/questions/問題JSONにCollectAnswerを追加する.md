@@ -95,7 +95,6 @@ evaluation_spec.response_format.fields.collect_answer：evaluation_methodが”L
       "en": "3 + 5 = 5 + ▢ = ▢"
     },
     "input_format": {
-      "type": "fixed",
       "fields": [
         {
           "field_id": "f_1",

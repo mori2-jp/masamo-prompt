@@ -24,8 +24,6 @@ explanation: この問題の解説。LLMが入力する
 "grade_id"は、"gra_002"としてください
 "difficulty_id"は、"diff_100"としてください
 
-"question_format"の説明
-期待する回答が数字の場合は、"NUMERIC_ANSWER",としてください。
 
 
 "status"は "PUBLISHED",としてください
@@ -259,7 +257,6 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
   "difficulty_id": "",
   "version": "1.0.0",
   "question_type": "FILL_IN_THE_BLANK",
-  "question_format": "",
   "status": "PUBLISHED",
   "generated_by_llm": false,
   "created_at": "2025-01-01 00:00:00",
@@ -395,9 +392,8 @@ question_data.input_format.question_components が、問題文をどのように
 3.1 question_components の構造
 各要素には type（text や blank など）、order（表示順）、content（テキストの場合の文字列）、field_id（blankの場合の入力箇所のID）が含まれます。
 type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
-入力フォームの種類（数値用・テキスト用など）は question_format で切り替えます。
 3.2 サンプルJSON
-以下は API から返却される例です。（"FILL_IN_THE_BLANK" かつ question_format = "300"（数値回答式）の場合）
+以下は API から返却される例です。（"FILL_IN_THE_BLANK" の場合）
 "question": {
   "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
   "question_text": "Please answer the numbers that fit in the blanks.",
@@ -449,8 +445,7 @@ type: "input_field" となっている要素の field_id と一致する fields 
     }
   },
   "version": "1.0.0",
-  "question_type": "51",
-  "question_format": "300"
+  "question_type": "51"
 }
 
 "question_components" の order 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。

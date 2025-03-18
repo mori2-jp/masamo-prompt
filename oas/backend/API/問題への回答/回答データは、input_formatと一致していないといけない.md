@@ -94,9 +94,6 @@ AnswerService  の、evaluateAnswer の answerDataJson には、{ユーザーが
 ーー言語定数
 ja, en
 
---input_format type 定数
-fixed: 固定。ユーザーは項目の増減はコントロール出来ず、input_format.fields の内容に固定
-custom: input_format.fields の内容はあくまでもデフォルト表記で、固定されず、ユーザー自由に回答の数を増減出来る。
 
 -- input_format.fields.type、evaluation_spec.response_format.fields.user_answer,metadata.input_format.fields.user_answer の定数
 number: 数値型
@@ -129,7 +126,6 @@ skills.name: 必須、文字列、skill_id と一致するSkills テーブルの
 
 
 metadata.input_format: 必須、オブジェクト（言語定数全て含んでいるか）
-metadata.input_format.type: 必須、input_format type 定数と値が一致しているか。
 metadata.input_format.fields: 必須、配列。ユーザが回答する入力フォームの仕様を定義
 metadata.input_format.fields.field_id: 必須、f_x のフォーマットになっているか。同じ fields 内に重複した値が存在しないか。 question_components内の type: "blank"の数と総数が合っているか。
 metadata.input_format.fields.attribute: 必須、（input_format.fields.type、evaluation_spec.response_format.fields.user_answer,evaluation_spec.response_format.fields.user_answer の定数に値が存在しているか）。ブランクのフォームの属性。例えば number であれば、<input type="number">になる

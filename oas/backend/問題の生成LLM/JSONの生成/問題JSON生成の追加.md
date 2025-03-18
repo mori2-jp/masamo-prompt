@@ -20,6 +20,7 @@ fill_in_the_blank.txt の {$questions_json} に置き換えてほしい。
 // 8) generate_question_prompt => そのまま
 // 9) generate_question_prompt_file_name => そのまま
 
+ちゃんと解説してね
 
 ---　QuestionJson 生成の仕様
 
@@ -1682,7 +1683,6 @@ metadata.background: 必須、オブジェクト（言語定数全て含んで�
 metadata.question ：必須、オブジェクト（言語定数全て含んでいるか）。問題文
 
 metadata.input_format: 必須、オブジェクト（言語定数全て含んでいるか）
-metadata.input_format.type: 必須、input_format type 定数と値が一致しているか。
 metadata.input_format.fields: 必須、配列。ユーザが回答する入力フォームの仕様を定義
 metadata.input_format.fields.field_id: 必須、f_x のフォーマットになっているか。同じ fields 内に重複した値が存在しないか。 question_components内の type: "blank"の数と総数が合っているか。
 metadata.input_format.fields.attribute: 必須、（input_format.fields.type、evaluation_spec.response_format.fields.user_answer,evaluation_spec.response_format.fields.collect_answer の定数に値が存在しているか）。ブランクのフォームの属性。例えば number であれば、<input type="number">になる

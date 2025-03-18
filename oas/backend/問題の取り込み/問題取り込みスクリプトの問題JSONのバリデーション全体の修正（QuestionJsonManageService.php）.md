@@ -113,7 +113,6 @@ UseCase などの実装は不用で、ImportQuestionsFromGithubに直接処理�
   },
   "metadata": {
     "question_type": "FILL_IN_THE_BLANK",
-    "question_format": "NUMERIC_ANSWER",
     "question_text": {
       "ja": "つぎの ▢ にあてはまる数を答えなさい。",
       "en": "Please answer the numbers that fit in the blanks."
