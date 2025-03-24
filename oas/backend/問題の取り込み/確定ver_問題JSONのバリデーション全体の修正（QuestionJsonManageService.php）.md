@@ -387,6 +387,8 @@ metadata.input_format.input_components.order: 必須、数値、重複する値�
 
 ちゃんと解説してね
 
+変更のブランチ名とコミットメッセージを一行で
+
 ビジネスロジックは Model へ、
 ビジネスロジックへのアクセスは service を介して行うこと。
 

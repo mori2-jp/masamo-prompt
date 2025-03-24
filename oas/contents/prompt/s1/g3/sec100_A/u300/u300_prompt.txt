@@ -5,37 +5,16 @@
 JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
 
 # 条件
-・No３８（2位数や3位数の乗法）についての問題を作成してください
-・４桁×１桁
+・37	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用		3位数や4位数の加法及び減法		・3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる。	・筆算の手順をしっかり確立させる。
+についての問題を作成してください。
+3桁 + 3桁は作成したので、4桁 - 3桁を作成してほしい
+加法は作ったので減法で作成して。
+筆算の練習なので引き算の分解は、桁数を意識して。（例：        "ja": "462 - 31 = (400 - 0) + (60 - 30) + (2 - 1) = ▢ + ▢ + ▢ = ▢",
+3桁は3桁と、2桁は2桁と、1桁は1桁と計算）
+小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
 
-・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
+・３桁の筆算なので、桁を分けて計算するなどの工夫をした問題構成にしてほしい
 
-・この問題の対象者は{#学習要件}を参考にしてください。解説は対象者に分かりやすい説明であること
-例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
-
-＃想定している問題の種類
-"・2桁×１桁
-・３桁×１桁
-・２桁×２桁
-・２桁×１桁＋１桁（混合算）例：45 × 3 + 2 = (40 × 3) + (5 × 3) + 2 =
-・（１桁×１桁）＋（１桁×１桁）例：３×４＋３×６＝３×１０＝３０
-・４桁×１桁
-・２桁×２桁
-・３桁×３桁
-・２桁×３桁
-・２桁×４桁
-・３桁×２桁
-・１桁×３桁
-・３桁×４桁
-・４桁×２桁
-・４桁×４桁
-・４桁×５桁
-"
-
-
-・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
-
-# 条件
 ・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
 
 ・この問題の対象者は{#学習要件}を参考にしてください。解説は対象者に分かりやすい説明であること
@@ -57,7 +36,6 @@ explanation: この問題の解説。LLMが入力する
 "level_id"は、"lev_003"としてください
 "grade_id"は、"gra_003"としてください
 "difficulty_id"は、"diff_100"としてください
-
 
 
 
@@ -101,71 +79,6 @@ learning_required_competencyには、「必要水準」をのそまま
 learning_backgroundには、「補足・背景」をのそまま
 
 created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入力してください
-
-## 1. **evaluation_spec** について
-
-**evaluation_spec** は、ユーザーが入力した回答を「正解かどうか」判定するための設定情報をまとめた部分です。
-
-- **evaluation_spec.evaluation_method**
-  - 今回は "CODE" が確定しています（他の方法は省略）。
-- **evaluation_spec.checker_method**
-  - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
-  - 例: `"CHECK_BY_EXACT_MATCH"`
-- **evaluation_spec.response_format**
-  - 回答判定の結果や、問題・解説の文言を指定する部分です。
-  - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
-  - **question_text / explanation / question**: 多言語オブジェクト（{ja, en} など）の形式を取り、問題文や解説文を埋め込みます。
-    - `evaluation_method="CODE"` では、この中身は実際の問題文と同じ内容を持ちます（metadata 内のものと一致）。
-  - **fields**:
-    - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
-    - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
-      - **field_id**: `"f_1"`, `"f_2"` など。
-      - **user_answer**: ユーザー入力値の型を表し、`"number"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
-      - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
-      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数値なら `{ja: 500, en: 500}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
-      - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
-
-### **fields と metadata.input_format.fields の関係**
-- **evaluation_spec.response_format.fields[].field_id** と **metadata.input_format.fields[].field_id** が同じ値を使うことで、
-  「この入力フォーム（metadata側）の回答欄に対する正解・解説（evaluation_spec側）」という対応付けが実現しています。
-- フロントエンドUIが問題画面を構築するとき、**metadata.input_format.fields** を見て入力欄を作り、**evaluation_spec.response_format.fields** の中から正解データや解説を取得して、正誤判定画面などに活用するイメージです。
-
----
-
-## 2. **metadata** について
-
-**metadata** は、問題を表示するためのUI情報や、問題文そのもののデータを定義する部分です。
-- **metadata.question_type**
-  - 問題の形式を表し、"FILL_IN_THE_BLANK" などが入ります。
-- **metadata.question_text**
-  - 問題文のタイトルや指示文。
-  - 例: 「▢にあてはまる数を答えなさい。」
-- **metadata.question**
-  - 実際の問題式や文章を多言語オブジェクトで定義。
-  - 例: 「315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢」
-- **metadata.explanation**
-  - 問題全体の解説を多言語オブジェクト形式で記入します。
-  - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
-- **metadata.background**
-  - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
-  - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
-- **metadata.input_format**
-  - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
-  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
-  - **fields**: ユーザーが回答を入力する欄の定義を配列でまとめます。
-    - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
-    - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
-    - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
-  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。
-    - **type**: `"text"`, `"newline"`, `"input_field"` など。
-    - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
-    - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
-    - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
-
-**ポイント**: fill_in_the_blank の問題では
-- 「**metadata.input_format** の fields → どこに回答欄があるか」
-- 「**evaluation_spec.response_format** の fields → その回答欄の正解は何か」
-を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
 
 No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	要件	Unit ID	必要水準	補足・背景
 1	小1	A 数と計算	数の概念	数の数え方		数を順番に数えられる		「1つずつ順番に数える」「どちらが大きいか比較する」などの基礎的操作が可能	数直線や具体物を用いて理解させる
@@ -800,14 +713,14 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 
 #回答フォーマット
 {
-  "order": 100,
-  "id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
+  "order": 500,
+  "id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_200",
   "level_id": "lev_003",
   "grade_id": "gra_003",
   "difficulty_id": "diff_100",
   "version": "1.0.0",
   "status": "PUBLISHED",
-  "generated_by_llm": false,
+  "generated_by_llm": true,
   "created_at": "2025-01-01 00:00:00",
   "updated_at": "2025-01-01 00:00:00",
   "skills": [
@@ -821,99 +734,91 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
       "learning_subject": "算数",
       "learning_no": 37,
       "learning_requirement": "計算の意味・方法 大きな数の概念と活用 3位数や4位数の加法及び減法",
-      "learning_required_competency": "3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる",
-      "learning_background": "筆算の手順をしっかり確立させる",
+      "learning_required_competency": "・3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる。",
+      "learning_background": "・筆算の手順をしっかり確立させる。",
       "learning_category": "A",
       "learning_grade_level": "小3"
     }
   ],
   "evaluation_spec": {
-    "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
+    "evaluation_method": "LLM",
+    "llm_prompt_number": 1,
     "response_format": {
       "is_correct": "boolean",
       "score": "number",
       "question_text": {
-        "ja": "▢にあてはまる数を答えなさい。",
+        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
         "en": "Please answer the numbers that fit in the blanks."
       },
       "explanation": {
-        "ja": "これは、3桁どうしの足し算を位ごとにわけて考える練習です。百の位、十の位、一の位をそれぞれ計算し、最後に合わせると簡単に正しい合計が求められます。",
-        "en": "This exercise practices adding two three-digit numbers by separating the hundreds, tens, and ones places. Calculate each place value separately, then combine them to get the correct total easily."
+        "ja": "3桁の数から2桁の数を引き算する問題です。各位（100のくらい、10のくらい、1のくらい）を分けて計算することで、くり下がりのしかたを理解しやすくしています。マイナスの数が出ないよう、上手に位をそろえて考えてみましょう。",
+        "en": "This problem involves subtracting a two-digit number from a three-digit number. By splitting each digit (hundreds, tens, ones), you can see how borrowing works more clearly. We've arranged it so you won't get negative intermediate results, so try carefully aligning place values to find the correct answer."
       },
       "question": {
-        "ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
-        "en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+        "ja": "462 - 31 = (400 - 0) + (60 - 30) + (2 - 1) = ▢ + ▢ + ▢ = ▢",
+        "en": "462 - 31 = (400 - 0) + (60 - 30) + (2 - 1) = ▢ + ▢ + ▢ = ▢"
       },
       "fields": [
         {
           "field_id": "f_1",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 500,
-            "en": 500
-          },
+          "collect_answer": 400,
           "field_explanation": {
-            "ja": "300 と 200 を足すと 500 になるからです。",
-            "en": "Because adding 300 and 200 results in 500."
+            "ja": "100のくらいの引き算で、400から0を引いても400のままです。",
+            "en": "For the hundreds place subtraction, subtracting 0 from 400 leaves 400."
           }
         },
         {
           "field_id": "f_2",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 80,
-            "en": 80
-          },
+          "collect_answer": 30,
           "field_explanation": {
-            "ja": "10 と 70 を足すと 80 になるからです。",
-            "en": "Because adding 10 and 70 gives 80."
+            "ja": "10のくらいは60から30を引き、30が残ります。",
+            "en": "For the tens place, subtracting 30 from 60 leaves 30."
           }
         },
         {
           "field_id": "f_3",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 11,
-            "en": 11
-          },
+          "collect_answer": 1,
           "field_explanation": {
-            "ja": "5 と 6 を足すと 11 になるからです。",
-            "en": "Because adding 5 and 6 results in 11."
+            "ja": "1のくらいは2から1を引いて1になります。",
+            "en": "For the ones place, subtracting 1 from 2 yields 1."
           }
         },
         {
           "field_id": "f_4",
           "user_answer": "number",
           "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 591,
-            "en": 591
-          },
+          "collect_answer": 431,
           "field_explanation": {
-            "ja": "500 + 80 + 11 をすべて足すと 591 になるからです。",
-            "en": "Because adding 500, 80, and 11 totals 591."
+            "ja": "400 + 30 + 1 を足し合わせて、合計すると431になります。",
+            "en": "Adding 400, 30, and 1 together results in 431."
           }
         }
       ]
     }
   },
   "metadata": {
-    "question_type": "FILL_IN_OPERATOR",
+    "question_type": "FILL_IN_THE_BLANK"
     "question_text": {
-      "ja": "▢にあてはまる数を答えなさい。",
+      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
       "en": "Please answer the numbers that fit in the blanks."
     },
     "explanation": {
-      "ja": "3桁の数の足し算では、位を分けて考えることで正確に計算ができるようになります。百の位でまとまりを作り、十の位と一の位は繰り上がりに注意しながら合計しましょう。",
-      "en": "When adding three-digit numbers, separating each digit place helps ensure accuracy. Group the hundreds place together and be mindful of any carrying over in the tens or ones places."
+      "ja": "3桁 - 2桁のひき算を、位を分けて計算する問題です。くり下がりを丁寧に確認しながら解いてみましょう。途中でマイナスの値が出ないように配慮してあるので、安心して位ごとの引き算をしてください。",
+      "en": "This subtraction exercise involves a three-digit number minus a two-digit number, separated by place values. Check the borrowing process carefully. We've arranged it so there are no negative intermediate results, so just subtract place by place."
     },
     "background": {
-      "ja": "この問題は、3桁の足し算に慣れることと、位ごとの計算手順を身につけるためのものです。すべての位を正しく合計すると、簡単に正解にたどりつけます。",
-      "en": "This problem is designed to help you become comfortable with three-digit addition and master the step-by-step process of adding each place value correctly."
+      "ja": "3桁から2桁の引き算でも、くり下がりを正確にできるようになることがねらいです。位を分けて考えることで、筆算をスムーズに理解し、正確な計算を目指します。",
+      "en": "The goal is to ensure accurate borrowing even when subtracting a two-digit number from a three-digit number. By splitting into place values, learners can better visualize column subtraction and improve accuracy."
+    },
+    "question": {
+      "ja": "462 - 31 = (400 - 0) + (60 - 30) + (2 - 1) = ▢ + ▢ + ▢ = ▢",
+      "en": "462 - 31 = (400 - 0) + (60 - 30) + (2 - 1) = ▢ + ▢ + ▢ = ▢"
     },
     "input_format": {
       "type": "fixed",
@@ -921,21 +826,25 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
         {
           "field_id": "f_1",
           "attribute": "number",
+          "collect_answer": "400",
           "user_answer": "number"
         },
         {
           "field_id": "f_2",
           "attribute": "number",
+          "collect_answer": "30",
           "user_answer": "number"
         },
         {
           "field_id": "f_3",
           "attribute": "number",
+          "collect_answer": "1",
           "user_answer": "number"
         },
         {
           "field_id": "f_4",
           "attribute": "number",
+          "collect_answer": "431",
           "user_answer": "number"
         }
       ],
@@ -943,38 +852,31 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
         {
           "type": "text",
           "content": {
-            "ja": "315 + 276 = ",
-            "en": "315 + 276 = "
+            "ja": "462 - 31 = ",
+            "en": "462 - 31 = "
           },
-          "order": 10,
-          "attribute": "text"
+          "order": 50
         },
         {
           "type": "newline",
-          "order": 15
+          "order": 100
         },
         {
           "type": "text",
           "content": {
-            "ja": "(300 + 200) + (10 + 70) + (5 + 6) = ",
-            "en": "(300 + 200) + (10 + 70) + (5 + 6) = "
+            "ja": "(400 - 0) + (60 - 30) + (2 - 1) = ",
+            "en": "(400 - 0) + (60 - 30) + (2 - 1) = "
           },
-          "order": 20,
-          "attribute": "text"
+          "order": 150
         },
         {
           "type": "newline",
-          "order": 25
+          "order": 200
         },
         {
           "type": "input_field",
           "field_id": "f_1",
-          "order": 30,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
+          "order": 250
         },
         {
           "type": "text",
@@ -982,18 +884,12 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
             "ja": " + ",
             "en": " + "
           },
-          "order": 40,
-          "attribute": "text"
+          "order": 300
         },
         {
           "type": "input_field",
           "field_id": "f_2",
-          "order": 50,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
+          "order": 350
         },
         {
           "type": "text",
@@ -1001,18 +897,12 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
             "ja": " + ",
             "en": " + "
           },
-          "order": 60,
-          "attribute": "text"
+          "order": 400
         },
         {
           "type": "input_field",
           "field_id": "f_3",
-          "order": 70,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
+          "order": 450
         },
         {
           "type": "text",
@@ -1020,18 +910,12 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
             "ja": " = ",
             "en": " = "
           },
-          "order": 80,
-          "attribute": "text"
+          "order": 500
         },
         {
           "type": "input_field",
           "field_id": "f_4",
-          "order": 90,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
+          "order": 550
         }
       ]
     }
@@ -1039,17 +923,16 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 }
 
 
-
 # フォーマット説明
-3. 穴埋め問題（FILL_IN_OPERATOR）の例
-QuestionType::FILL_IN_OPERATOR かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
+3. 穴埋め問題（FILL_IN_THE_BLANK）の例
+QuestionType::FILL_IN_THE_BLANK かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
 question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
 3.1 question_components の構造
 各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
 type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
 type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
 3.2 サンプルJSON
-以下は API から返却される例です。（"FILL_IN_OPERATOR" の場合）
+以下は API から返却される例です。（"FILL_IN_THE_BLANK" の場合）
 "question": {
   "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
   "question_text": "Please answer the numbers that fit in the blanks.",
