@@ -5,86 +5,18 @@
 JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
 
 # 条件
-・No35（分数と少数）についての問題を作成してください
-2 少数の意味の理解　についての問題を作成したい。 question は1問だけね。
-3.913 は 0.001 を ▢ こ集めた数です。という問題を作ってください。
+・FILL_IN_MULTIPART　問題です。
+・計算問題なので、input_components　に type: signed_number_pad を含めてください
+・作問済みの場合はいままで作問した問題と重複しないようにしてください
+・No37（あまりのあるわり算）についての問題を作成してください
+例題を参考に、2桁÷1桁のあまりのある計算問題を作問して
 
+例）19÷3= ▢
+例正当）19÷3= 6 あまり 1
 
 ・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
 
-# 問題例（少数）
-1
-次の数を整数と小数に分類しましょう
-15, 0.3, 7, 0, 4.9, 1.6, 0.8, 2
-
-2 少数の意味の理解
-2.5 は 0.1 を▢こ集めた数です
-
-3
-62.5 は 10を▢こ、1 を▢こ、0.1 を▢こ　合わせた数です。
-62.5 の少数第一位は▢です
-
-4
-1, 0.9, 0.1, 0, 1.1 を小さい順に並べましょう
-
-5
-不動号を書きましょう（FILL_IN_OPERATOR)
-0.7 ▢ 0.5
-
-6
-少数第一位の計算
-少数+少数 0.2 + 0.8
-少数+整数 0.1 + 2
-少数-少数 0.2 - 0.8
-整数-少数 2 - 0.1
-
-
-7
-整数も合わせた少数第一位の計算
-たしざん 2.3 + 3.8
-ひきざん 6.2 - 1.8
-
-8
-7.2=▢-0.8
-
-# 問題例（分数）
-1
-次の分数の分子と分母はそれぞれいくつですか
-1/6
-分子　▢
-分母　▢
-
-2
-2/4m と　1/4 m はどちらがどれだけ長いですか？
-
-3
-等号、不動号を入力してください
-5/10 ▢ 0.6
-11/10 ▢ 1
-
-4 分数の計算
-1/7 + 2/7
-5/6 - 5/6
-
-1 + 1/7
-1 - 2/4
-
-5
-4/6 は 1/6 の　▢こ分です。
-1/6 の 7こ分は　▢です
-
-6
-等号、不等号を入力してください
-4/10 ▢  0.4
-3/10 ▢ 3
-
-7
-4/5, 2/5, 3/5 を小さい順に並べましょう
-
-
-
-
-
+question_text,explanation,question には改行コードを入れないでください
 
 # 条件
 ・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
@@ -96,6 +28,59 @@ JSON構造を元にユーザー（回答者）が回答出来るように問題�
  解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
 
  ・すでに同様の問題を作っている場合は違う問題を作成してください
+
+
+
+
+# FILL_IN_MULTIPART（複数パート入力問題） とは
+1つの解答が 複数のパート（数値・文字列・記号など） に分かれており、
+それらを順番に入力する形式の問題です。
+**FILL_IN_MULTIPART（複数パート入力問題）** は、回答を**複数の要素（数値・記号・文字列など）**に分けて入力できる問題形式です。従来の「穴埋め（FILL_IN_THE_BLANK）」や「記号入力（FILL_IN_OPERATOR）」とは異なり、**必要に応じて入力パーツを追加**したり、あるいは追加しなかったりする柔軟さを持っています。
+
+---
+
+## 具体的な特徴とメリット
+
+1. **あまりがある／ないのヒントを与えない**
+  - 例：「18 ÷ 3 = ▢ あまり ▢」と最初から書いてしまうと、「あまりがあるんだな」とわかってしまい、ヒントを与えることになりかねません。
+  - **FILL_IN_MULTIPART** 形式では、「18 ÷ 3 = ▢」という形でスタートし、学習者が「もしあまりが必要だ」と判断すれば、入力パーツとして“あまり”を選んで追加して記入します。
+  - これにより、**あまりがあるかどうか自分で考えさせる**ことができ、学習者が自発的に「今回の問題はあまりが出るのだろうか？」と判断する練習になります。
+
+2. **一つの回答を複数パートに分けて表現できる**
+  - 割り算の「商」と「あまり」のほかにも、時刻の「○時○分」、長さの「○m○cm」、座標の「(x, y)」、帯分数の「整数部 と 分数部」など、**数値 + 記号・文字列 + 数値** のように複数要素を組み合わせる問題に対応しやすくなります。
+
+3. **既存のFILL_IN_〜形式との親和性**
+  - 「FILL_IN_MULTIPART」という名称により、**FILL_IN_THE_BLANK（穴埋め問題）** や **FILL_IN_OPERATOR（記号問題）** と同じ形式パターンで整理できます。
+  - 問題一覧などで並べたとき、どのような問題タイプか一目で分かりやすくなります。
+
+4. **インタラクティブな入力UIを作りやすい**
+  - 例：「あまり」「◯時」「◯分」「m」「cm」「分母」「分子」など、ボタンを押して要素を挿入し、そのあとに数字を入力するような仕組みが作りやすくなります。
+  - 学習者は必要なパーツだけを使うため、余計なヒントを与えずに問題を解くことができます。
+
+---
+
+### 例：18 ÷ 3 の場合
+
+1. **問題文**
+  - 「18 ÷ 3 を計算しなさい。」
+
+2. **解答欄の初期状態**
+  - 「18 ÷ 3 = ▢」（まずは商を入力する欄だけがある）
+
+3. **学習者の操作**
+  - 学習者が「もしあまりがあるかも？」と判断すれば、「あまり」ボタンを押し、  
+    `18 ÷ 3 = ▢ あまり ▢` のように解答欄を拡張。
+  - あまり不要と判断すれば、「6」で終わり。
+  - 結果的にあまりがゼロなら「6」で済みますし、別の例では「5 ÷ 2 = 2 あまり 1」のように自由に回答欄を組み立てられます。
+
+---
+
+このように **FILL_IN_MULTIPART（複数パート入力問題）** を導入することで、
+- ユーザーに余計なヒントを与えずに解答を導かせる
+- 複数要素を必要に応じて追加しながら答えさせる
+- 様々な学年・教科・単元の表記形式（あまり計算、時刻、単位、座標、化学式など）に対応できる
+
+といった柔軟でインタラクティブな学習体験を提供できます。
 
 
 
@@ -154,6 +139,8 @@ learning_backgroundには、「補足・背景」をのそまま
 
 created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入力してください
 
+
+
 ## 1. **evaluation_spec** について
 
 **evaluation_spec** は、ユーザーが入力した回答を「正解かどうか」判定するための設定情報をまとめた部分です。
@@ -162,7 +149,8 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
   - 今回は "CODE" が確定しています（他の方法は省略）。
 - **evaluation_spec.checker_method**
   - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
-  - 例: `"CHECK_BY_EXACT_MATCH"`
+  - 例: FILL_IN_MULTIPART の時は、 `"CHECK_BY_EXACT_MATCH"`
+  - 問題JSONの例の同様にしてください
 - **evaluation_spec.response_format**
   - 回答判定の結果や、問題・解説の文言を指定する部分です。
   - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
@@ -172,9 +160,9 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
     - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
     - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
       - **field_id**: `"f_1"`, `"f_2"` など。
-      - **user_answer**: ユーザー入力値の型を表し、`"number"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
+      - **user_answer**: ユーザー入力値の型を表し、`"sequence"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
       - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
-      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数値なら `{ja: 500, en: 500}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
+      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数列なら `{ "ja": "[14, 18, 20, 50]",　"en": "[14, 18, 20, 50]"}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
       - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
 
 ### **fields と metadata.input_format.fields の関係**
@@ -188,19 +176,25 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
 
 **metadata** は、問題を表示するためのUI情報や、問題文そのもののデータを定義する部分です。
 - **metadata.question_type**
-  - 問題の形式を表し、"FILL_IN_THE_BLANK" などが入ります。
+  - 問題の形式を表し、"CLASSIFY_THE_OPTIONS" などが入ります。
 - **metadata.question_text**
   - 問題文のタイトルや指示文。
-  - 例: 「▢にあてはまる数を答えなさい。」
+  - 例: 「つぎの数字を2, 3, 5, 7, 9で割り切れるように分けましょう」
 - **metadata.question**
   - 実際の問題式や文章を多言語オブジェクトで定義。
-  - 例: 「315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢」
+  - 例: 「14, 15, 18, 20, 21, 25, 27, 35, 45, 50」
+  - CLASSIFY_THE_OPTIONS の時は、例のような カンマ区切り の値の一覧となります。（数字だけでなく文字列の場合もあるがいずれにしてもカンマ区切りになっていること）
 - **metadata.explanation**
   - 問題全体の解説を多言語オブジェクト形式で記入します。
   - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
 - **metadata.background**
   - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
   - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
+- **metadata.input_components**
+  - フロントエンドでユーザーが回答を入力する際に使用する入力パッドに表示する値のリストです。signed_number_pad　は、3,4,5,6,7,8,9,0,- をパッドに表示するので計算問題であれば必須。例えば、あまりのある問題であれば、signed_number_pad　に加えて、「あまり」　が必要になります。
+  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
+  - **content**: ここに `{ja, en}` の多言語テキストを入れる。
+  - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示される。
 - **metadata.input_format**
   - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
   - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
@@ -208,14 +202,14 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
     - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
     - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
     - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
-  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。
+  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。問題が = で連結される場合（例題：48 × 7 = (40 × 7) + (8 × 7) = ▢ + ▢ = ▢） question_components では　= の後には question_components type: "newline" を追加して、= 区切りで改行してください。（例題：48 × 7 =[question_components type: "newline" で改行] (40 × 7) + (8 × 7) =[question_components type: "newline" で改行] ▢ + ▢ = ▢）。question や question_text では　改行は不用です。
     - **type**: `"text"`, `"newline"`, `"input_field"` など。
-    - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
+    - **field_id**: FILL_IN_MULTIPART（複数パート入力問題）　なので回答者が自分で追加するので不要です。
     - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
     - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
 
-**ポイント**: fill_in_the_blank の問題では
-- 「**metadata.input_format** の fields → どこに回答欄があるか」
+**ポイント**: FILL_IN_MULTIPART の問題では
+- 「**metadata.input_format** の fields → 回答者が自分でどこに回答欄があるかは示しません。」
 - 「**evaluation_spec.response_format** の fields → その回答欄の正解は何か」
 を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
 
@@ -854,9 +848,10 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 
 
 #回答フォーマット
+```json
 {
   "order": 100,
-  "id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
+  "id": "ques_s1_g3_sec300_u300_diff100_qt351_v100_100",
   "level_id": "lev_003",
   "grade_id": "gra_003",
   "difficulty_id": "diff_100",
@@ -875,9 +870,9 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
     {
       "learning_subject": "算数",
       "learning_no": 37,
-      "learning_requirement": "計算の意味・方法 大きな数の概念と活用 3位数や4位数の加法及び減法",
-      "learning_required_competency": "3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる",
-      "learning_background": "筆算の手順をしっかり確立させる",
+      "learning_requirement": "計算の意味・方法 割り算 あまりのある除法",
+      "learning_required_competency": "あまりのある除法を理解し、商とあまりを正しく表せる。",
+      "learning_background": "余りのある除法(13÷4=3あまり1等)を正しく行い、余りが除数未満であることを認識できる。",
       "learning_category": "A",
       "learning_grade_level": "小3"
     }
@@ -889,16 +884,16 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
       "is_correct": "boolean",
       "score": "number",
       "question_text": {
-        "ja": "▢にあてはまる数を答えなさい。",
+        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
         "en": "Please answer the numbers that fit in the blanks."
       },
       "explanation": {
-        "ja": "これは、3桁どうしの足し算を位ごとにわけて考える練習です。百の位、十の位、一の位をそれぞれ計算し、最後に合わせると簡単に正しい合計が求められます。",
-        "en": "This exercise practices adding two three-digit numbers by separating the hundreds, tens, and ones places. Calculate each place value separately, then combine them to get the correct total easily."
+        "ja": "",
+        "en": ""
       },
       "question": {
-        "ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
-        "en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+        "ja": "19 ÷ 3 = ▢",
+        "en": "19 ÷ 3 = ▢"
       },
       "fields": [
         {
@@ -906,25 +901,25 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
           "user_answer": "number",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 500,
-            "en": 500
+            "ja": 6,
+            "en": 6
           },
           "field_explanation": {
-            "ja": "300 と 200 を足すと 500 になるからです。",
-            "en": "Because adding 300 and 200 results in 500."
+            "ja": "",
+            "en": ""
           }
         },
         {
           "field_id": "f_2",
-          "user_answer": "number",
+          "user_answer": "text",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 80,
-            "en": 80
+            "ja": "あまり",
+            "en": "remainder"
           },
           "field_explanation": {
-            "ja": "10 と 70 を足すと 80 になるからです。",
-            "en": "Because adding 10 and 70 gives 80."
+            "ja": "",
+            "en": ""
           }
         },
         {
@@ -932,237 +927,121 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
           "user_answer": "number",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 11,
-            "en": 11
+            "ja": 1,
+            "en": 1
           },
           "field_explanation": {
-            "ja": "5 と 6 を足すと 11 になるからです。",
-            "en": "Because adding 5 and 6 results in 11."
-          }
-        },
-        {
-          "field_id": "f_4",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 591,
-            "en": 591
-          },
-          "field_explanation": {
-            "ja": "500 + 80 + 11 をすべて足すと 591 になるからです。",
-            "en": "Because adding 500, 80, and 11 totals 591."
+            "ja": "",
+            "en": ""
           }
         }
       ]
     }
   },
   "metadata": {
-    "question_type": "FILL_IN_THE_BLANK",
-    "question": {
-    "ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
-    "en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
-    },
+    "question_type": "FILL_IN_MULTIPART",
     "question_text": {
-      "ja": "▢にあてはまる数を答えなさい。",
+      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
       "en": "Please answer the numbers that fit in the blanks."
     },
     "explanation": {
-      "ja": "3桁の数の足し算では、位を分けて考えることで正確に計算ができるようになります。百の位でまとまりを作り、十の位と一の位は繰り上がりに注意しながら合計しましょう。",
-      "en": "When adding three-digit numbers, separating each digit place helps ensure accuracy. Group the hundreds place together and be mindful of any carrying over in the tens or ones places."
+      "ja": "",
+      "en": ""
+    },
+    "question": {
+      "ja": "19 ÷ 3 = ▢",
+      "en": "19 ÷ 3 = ▢"
     },
     "background": {
-      "ja": "この問題は、3桁の足し算に慣れることと、位ごとの計算手順を身につけるためのものです。すべての位を正しく合計すると、簡単に正解にたどりつけます。",
-      "en": "This problem is designed to help you become comfortable with three-digit addition and master the step-by-step process of adding each place value correctly."
+      "ja": "",
+      "en": ""
     },
     "input_format": {
-      "type": "fixed",
-      "fields": [
+      "input_components": [
         {
-          "field_id": "f_1",
-          "attribute": "number",
-          "user_answer": "number"
+          "type": "signed_number_pad",
+          "order": 50
         },
         {
-          "field_id": "f_2",
-          "attribute": "number",
-          "user_answer": "number"
-        },
-        {
-          "field_id": "f_3",
-          "attribute": "number",
-          "user_answer": "number"
-        },
-        {
-          "field_id": "f_4",
-          "attribute": "number",
-          "user_answer": "number"
+          "type": "text",
+          "content": {
+            "ja": "あまり",
+            "en": "remainder"
+          },
+          "order": 100
         }
       ],
       "question_components": [
         {
           "type": "text",
           "content": {
-            "ja": "315 + 276 = ",
-            "en": "315 + 276 = "
+            "ja": "19 ÷ 3 = ▢",
+            "en": "19 ÷ 3 = ▢"
           },
-          "order": 10,
-          "attribute": "text"
-        },
-        {
-          "type": "newline",
-          "order": 15
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": "(300 + 200) + (10 + 70) + (5 + 6) = ",
-            "en": "(300 + 200) + (10 + 70) + (5 + 6) = "
-          },
-          "order": 20,
-          "attribute": "text"
-        },
-        {
-          "type": "newline",
-          "order": 25
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_1",
-          "order": 30,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " + ",
-            "en": " + "
-          },
-          "order": 40,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_2",
-          "order": 50,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " + ",
-            "en": " + "
-          },
-          "order": 60,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_3",
-          "order": 70,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " = ",
-            "en": " = "
-          },
-          "order": 80,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_4",
-          "order": 90,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
+          "order": 50
         }
       ]
     }
   }
 }
 
+```
 
 
 # フォーマット説明
-3. 穴埋め問題（FILL_IN_OPERATOR）の例
-QuestionType::FILL_IN_OPERATOR かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
+3. 複数パート入力問題（FILL_IN_MULTIPART）の例
+QuestionType::FILL_IN_MULTIPART の場合、問題文中の空白部分（blank）があり、そこにユーザーが値を複数入力する形式になります。
 question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
 3.1 question_components の構造
 各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
 type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
 type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
 3.2 サンプルJSON
-以下は API から返却される例です。（"FILL_IN_OPERATOR" の場合）
+以下は API から返却される例です。（"FILL_IN_MULTIPART" の場合）
+```json
 "question": {
   "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
   "question_text": "Please answer the numbers that fit in the blanks.",
   "explanation": "",
   "question_data": {
+    "question_type": "CLASSIFY_THE_OPTIONS"
     "question": "8 × 4 = ▢ × 8 = ▢",
     "input_format": {
-      "type": "fixed",
-      "fields": [
-        {
-          "field_id": "f_1",
-          "attribute": "number",
-          "collect_answer": "4"
-        },
-        {
-          "field_id": "f_2",
-          "attribute": "number",
-          "collect_answer": "32"
+"input_components": [
+{
+"type": "signed_number_pad",
+"order": 50
+},
+{
+"type": "text",
+"content": {
+"ja": "あまり",
+"en": "remainder"
+},
+"order": 100
+}
+],
+"question_components": [
+{
+"type": "text",
+"content": {
+"ja": "19 ÷ 3 = ▢",
+"en": "19 ÷ 3 = ▢"
+},
+"order": 50
+}
+],
         }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "content": {
-            "ja": "8 × 4 = ",
-            "en": "8 × 4 = "
-          },
-          "order": 1
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_1",
-          "order": 2
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " × 8 = ",
-            "en": " × 8 = "
-          },
-          "order": 3
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_2",
-          "order": 4
-        }
-      ]
-    }
   },
   "version": "1.0.0",
-  "question_type": "51"
 }
+```
 
 "question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
-ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数値を入力します。（本例は NUMERIC_ANSWER のため数値入力UI）
+ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数列（[12, 18, 24, 30, 96]）を入力します。
 fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
+
+metadata.input_format.input_components: metadata.question_type が、FILL_IN_OPERATOR または、CLASSIFY_THE_OPTIONS, FILL_IN_MULTIPART　の時は必須。（回答の選択肢。入力キーパッドのボタン）CLASSIFY_THE_OPTIONS　の時は、question を カンマ区切りで分割した値が全て含まれていること。例：question が、14, 15, 18, 20, 21, 25, 27, 35, 45, 50 だった場合は、14〜50までのそれぞれの分割した input_components が 同じ数（ここでは10個）存在していること。
+metadata.input_format.input_components.type：必須、VALID_INPUT_COMPONENTS_TYPES 定数と値が合っているか
+metadata.input_format.input_components.content：必須、オブジェクト、言語定数と一致するキーが全て含まれているか。
+metadata.input_format.input_components.order: 必須、数値、重複する値が存在しないこと。入力キーパッドを構築するときの表示順番
