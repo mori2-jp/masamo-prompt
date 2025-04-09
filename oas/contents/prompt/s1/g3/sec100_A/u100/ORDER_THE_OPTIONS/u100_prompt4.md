@@ -1,58 +1,202 @@
-ありがとう。
-以下の対象のJSON（問題セット）は問題のUnit（単元）を学ぶ為の問題の塊を表しています。
-{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
+以下の{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
 
-｛対象のJSON｝の
-unit の en と、
-title と、descriptionの ja, en を,
-generate_question_promptの ja, en を,
-関連する問題や、学習指導要領に合うように適切な情報を埋めてください。
+{#条件}に従って問題を作成しJSONフォーマットで出力してください。
+出力したJSONフォーマットはAPIとして、フロントエンド（Vue.js）に提供され、
+JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
 
+# 問題構成条件
+・作問済みの場合はいままで作問した問題と重複しないようにしてください
 
-・No36（簡単な分数）についての問題を作成してください
-分数　の意味の理解　について、例題のように、分子と分母を回答させる問題を作成してください。 question は1問だけね。
-例題：4/6 は 1/6 の　▢こ分です。
-
-
-分数の表記は KateX を使ってください
-分数は問題文、問題、回答の説明など日本語、英語でも全て KateX で表記してください
+・33	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	万の単位、1億などの比べ方や表し方	u100	・1万，10万，100万，1億などの上位の位を正しく読み書きできる。	・さらに大きな数への理解を深め，数のスケールを体感できるようにする。			未作成						"シナリオ問題や、
+ORDER_THE_OPTIONSの例題を参考に、以下のような大きな数の大きさの正しく理解するための、数字だけ（漢数字、alphanumeric expression　ではない）の並び替え問題を作問して 。question は1問で。
+5　次の数を左から大きい順に並べなさい
+(1)　207000　　22700　　200777
 
 
-{関連する問題} を良く見て、｛オーダー｝に答えてください
+桁が文字と全部数字の混合の比較
+日本語は億、英語はhundred millionなど英語表記で。
+
+
+・日本語は、万、千、百、十ですが、英語は、100, 1000 , 10000 と単位の繰り上げが違うので出題と回答について気をつけてください
+・英語表記は、日本語表記に合わせて、万（ｍan)、千(sen)、百(hyaku) などは用いずにhundred millionなどの英語表記にして
+小学３年生向けなので　1億、1000万、100万、10万、1万（英語では、 100 million、10 million、1 million、100 thousand, 10 thousand）の単位の数にしてください
+
+
+# 問題例
+分母　▢
+同じページを角度を変えて撮影したもののようです。上部に「発展レベル ☆☆」と見えます）
+4　れいのように「＝」（等号），「＜」「＞」（不等号）を用いて，数の大小を表しなさい。
+（4点×4＝16点）
+
+（れい）　3 ＝ 3　　4 ＜ 5　　9 ＞ 5
+
+(1)　7271万　□　876万
+(2)　3　□　3
+(3)　4　□　5
+(4)　9　□　876万
+
+5　次の3つの数を左から大きい順に記号をならべ書きなさい。
+（5点×3＝15点）
+
+(1)　207000　　22700　　200777
+(2)　八百九十七万　　三十四百万　　五百八十万
+(3)　9億　　90000000　　1億
+
+4　次の2つの数は，どちらが大きいでしょうか？
+不等号を用いて表しなさい。（4点×6＝24点）
+
+(1)　3090万　□　3100万
+(2)　600100　□　601000
+(3)　1234567　□　12345607
+(4)　234567　□　1234567
+(5)　234567　□　123456
+(6)　98754　□　1134500
 
 
 
-# オーダー
-｛対象のJSON｝の
-unit の en と、
-title と、descriptionの ja, en を,
-generate_question_promptの ja, en を,
-関連する問題や、学習指導要領に合うように適切な情報を埋めてください。
-
-title と description は学習者へ表示するコンテンツです。
-学習者はこれを見て、これから出題される問題やこの問題に回答する意味を理解します
-title には、出題される問題について。
-descrption には出題される問題を通して学習者が何を学ぶのかその狙いを。
+・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
 
 
-説明内では、「問題セット」とは呼称せず「ドリル」などと呼んでください
+# 条件
+・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
 
-もし引き算の問題の場合は、
-小学生向けの問題なのでマイナスの値を取らないようにしてください。例えば、「9361 - 4872 = (9000 - 4000) + (300 - 800) + (60 - 70) + (1 - 2) = ▢ + ▢ + ▢ + ▢ = ▢」のような問題だと、1=2の計算でマイナスが発生しています。こういうことは絶対に避けてください
-このことを generate_question_prompt に必ず含んでください
+・この問題の対象者は{#学習要件}を参考にしてください。解説は対象者に分かりやすい説明であること
+例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
 
-小学３年生向けなので、もし使うことがあるならば
-掛け算、乗法 = かけ算
-割り算、除法 = わり算
-足し算、加算 = たし算
-引き算、除算 = ひき算
-のように分かりやすく表記して
+・evaluation_spec.response_format.explanation には、なぜその回答となるのか問題の解説文を{言語設定}の分を追加、埋めてください。
+解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
 
-# 項目説明
-title: この問題セットの名前（ユーザーに学習意図が分かりやすいもの）「〇〇ドリル」のような抽象的な名前ではなく、「３桁＋３桁の足し算」など問題の内容が具体的に分かりやすいものにしてくださいdescription:  この問題セットの出題意図の説明（ユーザーに学習意図が分かりやすいもの）。かつ他のQuestionSetのタイトルとノリを同じにして統一感を出したい。
-description: この問題セットの説明を完結に。こちらもtitleと同様に他のQuestionSetとノリを同じにして統一感を出したい
-background: この問題セットの出題意図の内部用の細かく具体的な説明。具体的な問題のイメージが出来ない、抽象的な説明は一切不用。近しい問題で、この問題には含まれない問題例もあると更にイメージしやすい。問題セットに紐づいている問題の問題の内容と学習指導要領などの情報を見て的確に出題意図を詳しく書いて（ユーザーに見せない。作問の趣旨）
-generate_question_prompt：この問題セットに紐づく問題を１問だけLLMに作ってもらう際に利用するプロンプトです。LLMで生成する際は、LLMは｛# 学習指導要領｝、{# 文部科学省、学習指導要領}については知らないので、それに関する情報はこのプロンプトには含めないで。｛# 学習指導要領｝、{# 文部科学省、学習指導要領}、をベースに｛関連する問題｝のような問題を精度高くLLMに生成させるプロンプトを入力する。
+・すでに同様の問題を作っている場合は違う問題を作成してください
+
+
+
+# 説明
+fields は、ブランクの箇所を一番最初から順番に表しています
+user_answer: ユーザー（学習者）の回答
+collect_answer: 正しい回答。LLMが入力する
+is_correct: ユーザーの回答が正答かどうが。正答なら true, 誤答なら false。LLMが入力する
+field_explanation：フィールドごとに、なぜその回答なのか解説する。LLMが入力する
+explanation: この問題の解説。LLMが入力する
+"level_id"は、"lev_003"としてください
+"grade_id"は、"gra_003"としてください
+"difficulty_id"は、"diff_100"としてください
+
+
+
+
+"status"は "PUBLISHED",としてください
+
+"generated_by_llm"は false としてください
+
+"question_text"には問題文を入力してください。
+{
+"ja": "つぎの ▢ にあてはまる数を答えなさい。",
+"en": "Please answer the numbers that fit in the blanks."
+},
+"explanation": {
+"ja": "",
+"en": ""
+},
+"skills": [
+{
+"skill_id": "sk_004",
+"name": "知識・技能"
+}
+],
+
+"background"にはこの問題の意図を入力してください。
+この問題は学習者に何を学んでほしいのか、なぜこのような出題形式にしたのかなど出題意図を記入すること
+
+作成した問題は、ユーザー（回答者）の回答をLLMに正誤判定してもらいます。
+evaluation_spec：はLLMが正誤判定する時の構造を示しています。
+
+metadataのquestion に具体的な問題を入れてください。
+input_formatは、ユーザー（回答者）に回答させるUIを構築する為の項目です。
+ユーザーから回答してほしい項目を記入する。filed_id は、f_x のようにする
+
+question_componentsは、UIで問題を表示する際に使う要素です。
+ここの配列とorder（50ずつ飛ばし）の順番（昇順）にならってフロントエンドで問題を生成します。
+
+learning_requirementsは、学習要件の項目です。
+作成する問題の元になった{# 学習指導要領}の情報をそのまま入力してください
+learning_requirementには、「カテゴリ+サブカテゴリー+要件」をそのまま
+learning_required_competencyには、「必要水準」をのそまま
+learning_backgroundには、「補足・背景」をのそまま
+
+created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入力してください
+
+## 1. **evaluation_spec** について
+
+**evaluation_spec** は、ユーザーが入力した回答を「正解かどうか」判定するための設定情報をまとめた部分です。
+
+- **evaluation_spec.evaluation_method**
+  - 今回は "CODE" が確定しています（他の方法は省略）。
+- **evaluation_spec.checker_method**
+  - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
+  - 例: ORDER_THE_OPTIONS の時は、 `"CHECK_BY_ARRAY_ELEMENTS_MATCH_IN_ORDER"`
+  - 問題JSONの例の同様にしてください
+- **evaluation_spec.response_format**
+  - 回答判定の結果や、問題・解説の文言を指定する部分です。
+  - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
+  - **question_text / explanation / question**: 多言語オブジェクト（{ja, en} など）の形式を取り、問題文や解説文を埋め込みます。
+    - `evaluation_method="CODE"` では、この中身は実際の問題文と同じ内容を持ちます（metadata 内のものと一致）。
+  - **fields**:
+    - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
+    - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
+      - **field_id**: `"f_1"`, `"f_2"` など。
+      - **user_answer**: ユーザー入力値の型を表し、`"sequence"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
+      - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
+      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数列なら `{ "ja": "[14, 18, 20, 50]",　"en": "[14, 18, 20, 50]"}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
+      - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
+
+### **fields と metadata.input_format.fields の関係**
+- **evaluation_spec.response_format.fields[].field_id** と **metadata.input_format.fields[].field_id** が同じ値を使うことで、
+  「この入力フォーム（metadata側）の回答欄に対する正解・解説（evaluation_spec側）」という対応付けが実現しています。
+- フロントエンドUIが問題画面を構築するとき、**metadata.input_format.fields** を見て入力欄を作り、**evaluation_spec.response_format.fields** の中から正解データや解説を取得して、正誤判定画面などに活用するイメージです。
+
+---
+
+## 2. **metadata** について
+
+**metadata** は、問題を表示するためのUI情報や、問題文そのもののデータを定義する部分です。
+- **metadata.question_type**
+  - 問題の形式を表し、"ORDER_THE_OPTIONS" などが入ります。
+- **metadata.question_text**
+  - 問題文のタイトルや指示文。
+  - 例: 「つぎの数字を2, 3, 5, 7, 9で割り切れるように分けましょう」
+- **metadata.question**
+  - 実際の問題式や文章を多言語オブジェクトで定義。
+  - 例: 「14, 15, 18, 20, 21, 25, 27, 35, 45, 50」
+  - ORDER_THE_OPTIONS の時は、例のような カンマ区切り の値の一覧となります。（数字だけでなく文字列の場合もあるがいずれにしてもカンマ区切りになっていること）
+- **metadata.explanation**
+  - 問題全体の解説を多言語オブジェクト形式で記入します。
+  - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
+- **metadata.background**
+  - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
+  - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
+- **metadata.input_components**
+  - フロントエンドでユーザーが回答を入力する際に使用する入力パッドに表示する値のリストです。
+  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
+  - **content**: ここに `{ja, en}` の多言語テキストを入れる。
+  - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示される。
+- **metadata.input_format**
+  - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
+  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
+  - **fields**: ユーザーが回答を入力する欄の定義を配列でまとめます。
+    - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
+    - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
+    - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
+  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。問題が = で連結される場合（例題：48 × 7 = (40 × 7) + (8 × 7) = ▢ + ▢ = ▢） question_components では　= の後には question_components type: "newline" を追加して、= 区切りで改行してください。（例題：48 × 7 =[question_components type: "newline" で改行] (40 × 7) + (8 × 7) =[question_components type: "newline" で改行] ▢ + ▢ = ▢）。question や question_text では　改行は不用です。
+    - **type**: `"text"`, `"newline"`, `"input_field"` など。
+    - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
+    - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
+    - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
+
+**ポイント**: ORDER_THE_OPTIONS の問題では
+- 「**metadata.input_format** の fields → どこに回答欄があるか」
+- 「**evaluation_spec.response_format** の fields → その回答欄の正解は何か」
+  を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
+
 
 # 学習指導要領
 No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	要件	Unit ID	必要水準	補足・背景
@@ -67,8 +211,8 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 6	小1	A 数と計算	式・関係	足し算・引き算		加法及び減法の場面の式読み		・具体的な状況（りんごが3個あって… など）を式に変換する初歩的スキルがある。	・数量と言葉，式を結び付ける力は文章題の理解に直結する。
 7	小1	A 数と計算	日常生活への活用	数の活用	sec_s1_g1_300	数の活用	u100	・身の回りの物や人数などを数えて，必要な数を報告できる。	・生活の中で数え方や比べ方を自然に使っていることに気付かせる。
 8	小1	A 数と計算	日常生活への活用	数の活用	sec_s1_g1_300	加法、減法の活用	u200	・「りんごが5個あって2個食べたら残りは何個か」など，日常的な場面でたし算・ひき算を使える。	・買い物ごっこや簡単なゲームなどを通じて計算を実践し，算数への親しみを深める。
-9	小1	A 数と計算	計算の意味・方法	規則性					
-10	小1	A 数と計算	計算の意味・方法	規則性					
+9	小1	A 数と計算	計算の意味・方法	規則性
+10	小1	A 数と計算	計算の意味・方法	規則性
 11	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	２位数の加法とその逆の減法	u100	1位数で習得した加減法を基に、2位数の繰り上がり・繰り下がりを正しく理解し筆算できる	・十進位取り記数法を具体物や図で再確認し、筆算の形式が成立する理由を体感的に理解させる。
 12	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	簡単な場合の３位数などの加法，減法	u200	・百単位などに注目して、3位数の加法・減法（繰り上がりや繰り下がりが簡単な場合）を2位数の計算を拡張して処理できる。	・2位数計算の延長として3位数に取り組み、位ごとのまとまりを捉える力を養う。
 13	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	加法や減法に関して成り立つ性質	u300	・加法および減法について、交換法則(a + b = b + a)や結合法則((a + b) + c = a + (b + c))が成り立つことを具体的に理解できる。	・具体例や操作活動で、順序・まとまりを変えても結果が変わらないことを確認し、高学年の式操作へつなぐ素地を作る。
@@ -89,41 +233,39 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 28	小2	A 数と計算	日常生活への活用	掛け算	sec_s1_l2_600	乗法の活用	u500	・同じ数を繰り返し足すよりかけ算の方が便利だと実感でき、2桁×1桁程度の乗法を生活の簡単な計算に使える。	・計算力を生活で役立てる体験をし，学ぶ意義を感じさせる。
 29	小2	A 数と計算	計算の意味・方法	規則性	sec_s1_g2_1200	 繰り返しパターンを見つけ，次にくる要素を推測する	u100	○→△→□→○→△→□…のような簡単な周期がある並びを理解し，周回の周期がわかれば次の要素を正しく求められる	身近な繰り返し（曜日のサイクルやリズムパターンなど）を例に挙げると理解しやすい。図形や色カードなど具体物を用いて，周回の概念や指折りによる確認を体験的に学ばせる
 30	小2	A 数と計算	計算の意味・方法	規則性	sec_s1_g2_1200	一定の差で増減する並びをとらえ，指定された番目や合計を求める	u200	足し算・引き算の繰り返しとして扱い，感覚的に「差を加えていく」ことを経験させる。文章題や図を用いて，「1段目から何段目までの合計」を求める練習などにも応用しやすい	階段を上がる段数の増加や，何個ずつ増やす/減らすなど日常の場面に結びつけ，「同じ差で進む」イメージを育む。のちのかけ算や一次関数的な考え方の土台になるので，簡単な数例で繰り返し慣れさせる
-31	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u100		
-32	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u200		
+31	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u100
+32	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u200
 33	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	万の単位、1億などの比べ方や表し方	u100	・1万，10万，100万，1億などの上位の位を正しく読み書きできる。	・さらに大きな数への理解を深め，数のスケールを体感できるようにする。
 34	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	大きな数の相対的大きさ	u200	 	・単なる記号操作ではなく，日常との結び付きで「いくつ分違うか」を考えさせる。
-35	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	小数	u100	・少数の意味を理解できる	・少数、整数の分類や比較などの問題を通して意味や概念を理解する
-36	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	簡単な分数	u200	・分数の意味を理解できる	・整数、分数の分類や比較などの問題を通して意味や概念を理解する
-37	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	小数や簡単な分数の大きさの比較	u300	・少数と少数、分数と分数の比較。0.5や0.3など小数第1位を分数(1/2, 3/10など)と対応づけられる。	・小数と分数が互いに表し合えることを具体的に示す（長さや重さなど）。
-38	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	わり算の意味	u400	・わり算には「等分除」と「包含除」があることを理解し，簡単な問題を式にできる。	・同じ数ずつ分けるか，何回分になるかを区別し，ミスを防ぐ。
-39	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	あまりのあるわり算	u300	・あまりのある除法を理解し、商とあまりを正しく表せる。	・余りのある除法(13÷4=3あまり1等)を正しく行い、余りが除数未満であることを認識できる。
-40	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用	sec_s1_g3_100	3位数や4位数の加法及び減法	u300	・3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる。	・筆算の手順をしっかり確立させる。
-41	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用	sec_s1_g3_100	2位数や3位数の乗法	u400	・2桁×2桁や3桁×1桁など，大きめのかけ算を正確に行える。	・計算量が増えるため，桁のそろえ方や筆算手順を重点的に練習する。
-42	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	1位数などのわり算	u100	・1桁わり算(27÷3等)を九九を用いてスムーズに解ける。	・2桁以上の除法に進む基礎固め。逆算としてかけ算との結び付きも確認。
-43	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	わり算とかけ算や引き算との関係	u200	・わり算が乗法/減法と逆演算の関係にあることを理解し，検算に利用できる。	・問題解決で「かけ算で確かめる」などの活用を経験させる。
-44	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	小数（10の位）の加法及び減法	u400	・0.5 + 0.3など，小数第1位までの加減計算を筆算または暗算で行える。	・小数点の位置合わせの重要性を強調し，整数との違いを意識させる。
-45	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	簡単な分数の加法及び減法	u500	・分母が同じな場合（1/2+1/2等）の計算を誤りなく行える。	・分割のイメージを図で示し，抽象化に慣れさせる初歩段階。
-46	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	交換法則、結合法則、分配法則	u100	・a×(b + c)=ab+acなど，乗法・加法におけるこれらの法則を式で表せる。	・高学年での式操作に備え，体系的に理解させる。
-47	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	加法、減法及び乗法の結果の見積もり	u200	・計算前におおよその値を把握し，答えの妥当性を判断できる。	・日常での買い物や分量計算など，誤差の確認に役立つ習慣化が狙い。
-48	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	計算の工夫や確かめ	u300	・逆算や暗算，そろばんなどを状況に応じて使い分け，結果を検証できる。	・複数の手段で自己点検することで，計算力と自信を高める。
-49	小3	A 数と計算	計算の意味・方法	規則性		"・図形や記号，数字などが繰り返すパターンを見いだし，次にくる要素や途中の要素を推測できる。
+35	小3	A 数と計算	数の概念	分数と少数		小数（10の位）や簡単な分数の大きさの比較・計算		・0.5や0.3など小数第1位を分数(1/2, 3/10など)と対応づけられる。	・小数と分数が互いに表し合えることを具体的に示す（長さや重さなど）。
+36	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	除法の意味	u400	・わり算には「等分除」と「包含除」があることを理解し，簡単な問題を式にできる。	・同じ数ずつ分けるか，何回分になるかを区別し，ミスを防ぐ。
+37	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	あまりのある除法	u300	・あまりのある除法を理解し、商とあまりを正しく表せる。	・余りのある除法(13÷4=3あまり1等)を正しく行い、余りが除数未満であることを認識できる。
+38	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用	sec_s1_g3_100	3位数や4位数の加法及び減法	u300	・3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる。	・筆算の手順をしっかり確立させる。
+39	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用	sec_s1_g3_100	2位数や3位数の乗法	u400	・2桁×2桁や3桁×1桁など，大きめのかけ算を正確に行える。	・計算量が増えるため，桁のそろえ方や筆算手順を重点的に練習する。
+40	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	1位数などの除法	u100	・1桁わり算(27÷3等)を九九を用いてスムーズに解ける。	・2桁以上の除法に進む基礎固め。逆算としてかけ算との結び付きも確認。
+41	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	除法と乗法や減法との関係	u200	・わり算が乗法/減法と逆演算の関係にあることを理解し，検算に利用できる。	・問題解決で「かけ算で確かめる」などの活用を経験させる。
+42	小3	A 数と計算	計算の意味・方法	分数と少数		小数（10の位）の加法及び減法		・0.5 + 0.3など，小数第1位までの加減計算を筆算または暗算で行える。	・小数点の位置合わせの重要性を強調し，整数との違いを意識させる。
+43	小3	A 数と計算	計算の意味・方法	分数と少数		簡単な分数の加法及び減法		・分母が同じな場合（1/2+1/2等）の計算を誤りなく行える。	・分割のイメージを図で示し，抽象化に慣れさせる初歩段階。
+44	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	交換法則、結合法則、分配法則	u100	・a×(b + c)=ab+acなど，乗法・加法におけるこれらの法則を式で表せる。	・高学年での式操作に備え，体系的に理解させる。
+45	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	加法、減法及び乗法の結果の見積もり	u200	・計算前におおよその値を把握し，答えの妥当性を判断できる。	・日常での買い物や分量計算など，誤差の確認に役立つ習慣化が狙い。
+46	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	計算の工夫や確かめ	u300	・逆算や暗算，そろばんなどを状況に応じて使い分け，結果を検証できる。	・複数の手段で自己点検することで，計算力と自信を高める。
+47	小3	A 数と計算	計算の意味・方法	規則性		"・図形や記号，数字などが繰り返すパターンを見いだし，次にくる要素や途中の要素を推測できる。
 "		"・簡単なくり返しパターン（例：○→△→□→○→△→□…）を見つけ，周期を言葉や式で表すことができる。
 "	階段を上がる段数や毎日同じ枚数のシールを貼るなど，実生活で一定ずつ増えていく事象を取り上げるとイメージしやすい。
-50	小3	A 数と計算	計算の意味・方法	規則性		・周期を把握して，「何番目には何がくるか」を判断できる。		・位置と要素の対応（n番目→要素）を整理する基礎力を養う。	文字式を導入しなくても，図や表を使って視覚化しながら「n番目＝…」と示すプロセスを経験させると定着しやすい。
-51	小3	A 数と計算	計算の意味・方法	規則性		"・一定の差で増減する数列（等差数列）を見いだし，次にくる数や特定の番目の値を求める。
+48	小3	A 数と計算	計算の意味・方法	規則性		・周期を把握して，「何番目には何がくるか」を判断できる。		・位置と要素の対応（n番目→要素）を整理する基礎力を養う。	文字式を導入しなくても，図や表を使って視覚化しながら「n番目＝…」と示すプロセスを経験させると定着しやすい。
+49	小3	A 数と計算	計算の意味・方法	規則性		"・一定の差で増減する数列（等差数列）を見いだし，次にくる数や特定の番目の値を求める。
 "		"・隣り合う数の差が一定であることを把握し，それを繰り返し足す・引く考え方ができる。
 "	買い物でのお金の残高や，カウントダウンなど，減少していく場面との関連付けで学習すると理解が深まり，実生活とのつながりを感じやすい。
-52	小3	A 数と計算	計算の意味・方法	規則性		・変化のきまりを理解し，式や表に整理できる。		・はじめの数と差から，いくつ目の数を求める簡単な式（○＋(n−1)×差 等）を導入部として扱う。	中学以降の一次関数に向けた前段階として，「1増えるごとに一定を足す」という考え方をしっかり身に付ける。
-53	小3	A 数と計算	計算の意味・方法	そろばん		そろばんによる計算		・そろばんの基本操作を身につけ，簡単な加減乗除ができる。	・アナログの数操作を通じて数概念を可視化し，計算の理解を深める。
-54	小3	A 数と計算	式・関係	割り算	sec_s1_g3_300	わり算の場面の式表現・式読み	u600	・「12個のあめを3人に等しく分ける」→12÷3といった式を立てられる。	・わり算を使う文脈を増やして，式の読み書きをスムーズに行う。
-55	小3	A 数と計算	式・関係	式の表現		図及び式による表現・関連付け		・テープ図などを描いて数量を整理し，式に落とし込むスキルを身に付ける。	・段階的に思考を可視化し，文章題への対応力を養う。
-56	小3	A 数と計算	式・関係	式の表現		□を用いた式		・□+4=10のように，□を未知数として扱い答えを導ける。	・中学での文字式に進む前段階として重要な経験。
-57	小3	A 数と計算	日常生活への活用	大きな数の概念と活用	sec_s1_g3_100	大きな数の活用	u500	・買い物や距離の測定等で，大きな数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-58	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	小数の活用	u600	・買い物や距離の測定等で，小数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-59	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	分数の活用	u700	・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-60	小3	A 数と計算	日常生活への活用	割り算	sec_s1_g3_300	わり算の活用	u700	・人数で分ける，単価を求めるなど，わり算が不可欠な場面を処理できる。	・クラブ費やお菓子の分け方等，日常事例を取り入れ理解を深める。
-61	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	2桁のわり算	u500	あまりあり、あまりなしの2桁以上の除法(2桁÷1桁、2桁÷2桁など)を正しく計算できる。繰り上がりや0の処理を含めた筆算・暗算に対応し、答えを正確に求められる	筆算や暗算を組み合わせ、大きな数の除法へ移行する基礎を育成する
+50	小3	A 数と計算	計算の意味・方法	規則性		・変化のきまりを理解し，式や表に整理できる。		・はじめの数と差から，いくつ目の数を求める簡単な式（○＋(n−1)×差 等）を導入部として扱う。	中学以降の一次関数に向けた前段階として，「1増えるごとに一定を足す」という考え方をしっかり身に付ける。
+51	小3	A 数と計算	計算の意味・方法	そろばん		そろばんによる計算		・そろばんの基本操作を身につけ，簡単な加減乗除ができる。	・アナログの数操作を通じて数概念を可視化し，計算の理解を深める。
+52	小3	A 数と計算	式・関係	割り算	sec_s1_g3_300	除法の場面の式表現・式読み	u600	・「12個のあめを3人に等しく分ける」→12÷3といった式を立てられる。	・わり算を使う文脈を増やして，式の読み書きをスムーズに行う。
+53	小3	A 数と計算	式・関係	式の表現		図及び式による表現・関連付け		・テープ図などを描いて数量を整理し，式に落とし込むスキルを身に付ける。	・段階的に思考を可視化し，文章題への対応力を養う。
+54	小3	A 数と計算	式・関係	式の表現		□を用いた式		・□+4=10のように，□を未知数として扱い答えを導ける。	・中学での文字式に進む前段階として重要な経験。
+55	小3	A 数と計算	日常生活への活用	大きな数の概念と活用	sec_s1_g3_100	大きな数の活用	u500	・買い物や距離の測定等で，大きな数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+56	小3	A 数と計算	日常生活への活用	分数と少数		小数の活用		・買い物や距離の測定等で，小数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+57	小3	A 数と計算	日常生活への活用	分数と少数		分数の活用		・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+58	小3	A 数と計算	日常生活への活用	割り算	sec_s1_g3_300	除法の活用	u700	・人数で分ける，単価を求めるなど，わり算が不可欠な場面を処理できる。	・クラブ費やお菓子の分け方等，日常事例を取り入れ理解を深める。
+59	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	2桁の除法	u500	あまりあり、あまりなしの2桁以上の除法(2桁÷1桁、2桁÷2桁など)を正しく計算できる。繰り上がりや0の処理を含めた筆算・暗算に対応し、答えを正確に求められる	筆算や暗算を組み合わせ、大きな数の除法へ移行する基礎を育成する
 
 
 # 文部科学省、学習指導要領
@@ -685,90 +827,23 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 
 そろばんは，どの桁の珠も同じ大きさの形でできている。この仕組みは，同じ記号で異なる数を表すという位取り記数法に沿ったものであることから，そろばんで数を表したり，計算をしたりすることは，位取り記数法の理解を確かにすることにつながる。指導に当たっては，こうしたそろばんの仕組みと数の仕組みを対比させながら，計算の仕方を考えさせることを大切にしたい。
 
--- その他の問題セットJSONの例
+
+
+
+
+#回答フォーマット
 ```json
 {
-  "json_id": "qset_s1_g2_sec600_u200_v100_100",
-  "unit_id": "unit_s1_g2_sec600_200",
-  "unit": {
-    "ja": "2位数や簡単な3位数の乗法",
-    "en": "Multiplying two-digit or simple three-digit numbers"
-  },
-  "title": {
-    "ja": "2桁と簡単な3桁のかけ算を学ぼう",
-    "en": "Let's Learn Multiplying Two-Digit and Simple Three-Digit Numbers"
-  },
-  "description": {
-    "ja": "この単元では、2桁×1桁や簡単な3桁×1桁の筆算に慣れることを目指します。九九を活用しながら繰り上がりにも注意して、正確かつ素早い計算力を身に付けましょう。",
-    "en": "In this unit, we aim to become familiar with multiplying two-digit and simple three-digit numbers by one-digit numbers. By making good use of the multiplication tables and carefully handling carries, you will develop faster and more accurate calculation skills."
-  },
-  "generate_question_prompt": {
-    "ja": "",
-    "en": ""
-  },
   "order": 100,
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "questions": [
-    "ques_s1_g2_sec600_u200_diff100_qt51_v100_100",
-    "ques_s1_g2_sec600_u200_diff100_qt51_v100_200"
-  ]
-}
-
-```
-ーー対象のJSON
-```json
-{
-  "json_id": "qset_s1_g3_sec700_u200_v100_200",
-  "order": 200,
-  "unit_id": "unit_s1_g3_sec700_200",
-  "unit": {
-    "ja": "簡単な分数",
-    "en": "Simple fractions"
-  },
-  "title": {
-    "ja": "",
-    "en": ""
-  },
-  "description": {
-    "ja": "",
-    "en": ""
-  },
-  "background": {
-    "ja": "",
-    "en": ""
-  },
-  "generate_question_prompt": {
-    "ja": "",
-    "en": ""
-  },
-  "generate_question_prompt_file_name": "fill_in_the_blank",
-  "llm_generation_status": "DISABLED",
-  "memo": "分数がいくつあるか答えさせる",
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "validation_check": true,
-  "questions": [
-    "ques_s1_g3_sec700_u200_diff100_qt51_v100_300",
-    "ques_s1_g3_sec700_u200_diff100_qt51_v100_400"
-  ]
-}
-
-```
-
-ーーこの問題セットで出題する問題
-```json
-{
-  "order": 300,
-  "id": "ques_s1_g3_sec700_u200_diff100_qt51_v100_300",
+  "id": "ques_s1_g3_sec700_u200_diff100_qt301_v100_100",
   "level_id": "lev_003",
   "grade_id": "gra_003",
   "difficulty_id": "diff_100",
   "version": "1.0.0",
   "status": "PUBLISHED",
   "generated_by_llm": false,
-  "created_at": "2025-04-01 13:00:00",
-  "updated_at": "2025-04-01 13:00:00",
+  "created_at": "2025-03-26 13:00:00",
+  "updated_at": "2025-03-26 13:00:00",
   "skills": [
     {
       "skill_id": "sk_004",
@@ -778,234 +853,382 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
   "learning_requirements": [
     {
       "learning_subject": "算数",
-      "learning_no": 36,
-      "learning_requirement": "数の概念 分数と少数 簡単な分数",
-      "learning_required_competency": "・分数の意味を理解できる",
-      "learning_background": "・整数、分数の分類や比較などの問題を通して意味や概念を理解する",
+      "learning_no": 35,
+      "learning_requirement": "数の概念 分数と少数",
+      "learning_required_competency": "小数や簡単な分数",
+      "learning_background": "・少数や分数の意味を理解できる",
       "learning_category": "A",
       "learning_grade_level": "小3"
     }
   ],
   "evaluation_spec": {
     "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
+    "checker_method": "CHECK_BY_ARRAY_ELEMENTS_MATCH_IN_ORDER",
     "response_format": {
       "is_correct": "boolean",
       "score": "number",
       "question_text": {
-        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-        "en": "Please answer the numbers that fit in the blanks."
+        "ja": "次の数を小さい順に並べましょう",
+        "en": ""
       },
       "explanation": {
-        "ja": "「\\(\\frac{5}{6}\\) は \\(\\frac{1}{6}\\) の何個分にあたるか」を考えます。\\(\\frac{1}{6}\\)を5回足すと\\(\\frac{5}{6}\\)になるため、答えは5です。",
-        "en": "We consider how many times \\(\\frac{1}{6}\\) fits into \\(\\frac{5}{6}\\). If you add \\(\\frac{1}{6}\\) five times, you get \\(\\frac{5}{6}\\), so the answer is 5."
+        "ja": "",
+        "en": ""
       },
       "question": {
-        "ja": "\\(\\frac{5}{6}\\) は \\(\\frac{1}{6}\\) の ▢ こ分です。",
-        "en": "\\(\\frac{5}{6}\\) is how many times \\(\\frac{1}{6}\\)?"
+        "ja": "2.4, 3, 11.2, 1, 5.7, 12, 0.2",
+        "en": "2.4, 3, 11.2, 1, 5.7, 12, 0.2"
       },
       "fields": [
         {
           "field_id": "f_1",
-          "user_answer": "number",
+          "user_answer": "sequence",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 5,
-            "en": 5
+            "ja": "[0.2, 1, 2.4, 3, 5.7, 11.2, 12]",
+            "en": "[0.2, 1, 2.4, 3, 5.7, 11.2, 12]"
           },
           "field_explanation": {
-            "ja": "\\(\\frac{5}{6}\\) を \\(\\frac{1}{6}\\) のたし算として考えると 5回分なので、答えは 5 です。",
-            "en": "If \\(\\frac{5}{6}\\) is viewed as repeated addition of \\(\\frac{1}{6}\\), it occurs 5 times, thus 5."
+            "ja": "",
+            "en": ""
           }
         }
       ]
     }
   },
   "metadata": {
-    "question_type": "FILL_IN_THE_BLANK",
+    "question_type": "ORDER_THE_OPTIONS",
+    "question": {
+      "ja": "2.4, 3, 11.2, 1, 5.7, 12, 0.2",
+      "en": "2.4, 3, 11.2, 1, 5.7, 12, 0.2"
+    },
     "question_text": {
-      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-      "en": "Please answer the numbers that fit in the blanks."
+      "ja": "次の数を小さい順に並べましょう",
+      "en": ""
     },
     "explanation": {
-      "ja": "分数 \\(\\frac{5}{6}\\) は \\(\\frac{1}{6}\\)を5回集めた数です。つまり、\\(\\frac{1}{6}\\)の5こ分です。",
-      "en": "The fraction \\(\\frac{5}{6}\\) is formed by adding \\(\\frac{1}{6}\\) five times, meaning it is 5 times \\(\\frac{1}{6}\\)."
+      "ja": "",
+      "en": ""
     },
     "background": {
-      "ja": "この問題では、分数を『単位分数（\\(\\frac{1}{6}\\)）がいくつ分集まっているか』という見方で考えてもらいます。こうすることで、分数同士の大小比較や計算がしやすくなります。",
-      "en": "This problem encourages thinking of a fraction in terms of how many times a unit fraction (\\(\\frac{1}{6}\\)) is taken. This approach makes it easier to compare fractions and handle related calculations."
+      "ja": "",
+      "en": ""
     },
     "input_format": {
-      "type": "fixed",
-      "fields": [
+      "input_components": [
         {
-          "field_id": "f_1",
-          "attribute": "number",
-          "user_answer": "number"
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "order": 50,
-          "attribute": "text",
+          "type": "number",
           "content": {
-            "ja": "\\(\\frac{5}{6}\\) は \\(\\frac{1}{6}\\) の ",
-            "en": "\\(\\frac{5}{6}\\) is how many times \\(\\frac{1}{6}\\)? "
-          }
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_1",
-          "order": 100,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "order": 150,
-          "attribute": "text",
-          "content": {
-            "ja": " こ分です。",
-            "en": " times."
-          }
-        }
-      ]
-    },
-    "question": {
-      "ja": "\\(\\frac{5}{6}\\) は \\(\\frac{1}{6}\\) の ▢ こ分です。",
-      "en": "\\(\\frac{5}{6}\\) is how many times \\(\\frac{1}{6}\\)?"
-    }
-  }
-}
-
-```
-```json
-{
-  "order": 400,
-  "id": "ques_s1_g3_sec700_u200_diff100_qt51_v100_400",
-  "level_id": "lev_003",
-  "grade_id": "gra_003",
-  "difficulty_id": "diff_100",
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "generated_by_llm": false,
-  "created_at": "2025-01-01 00:00:00",
-  "updated_at": "2025-01-01 00:00:00",
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 36,
-      "learning_requirement": "数の概念 分数と少数 簡単な分数",
-      "learning_required_competency": "・分数の意味を理解できる",
-      "learning_background": "・整数、分数の分類や比較などの問題を通して意味や概念を理解する",
-      "learning_category": "A",
-      "learning_grade_level": "小3"
-    }
-  ],
-  "evaluation_spec": {
-    "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
-    "response_format": {
-      "is_correct": "boolean",
-      "score": "number",
-      "question_text": {
-        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-        "en": "Please answer the numbers that fit in the blanks."
-      },
-      "explanation": {
-        "ja": "この問題では、\\(\\frac{3}{6}\\) が \\(\\frac{1}{6}\\) 何こ分になるかを考えます。\\(\\frac{1}{6}\\)を3回足すと\\(\\frac{3}{6}\\)になるため、答えは3です。",
-        "en": "We consider how many times \\(\\frac{1}{6}\\) fits into \\(\\frac{3}{6}\\). If you add \\(\\frac{1}{6}\\) three times, you get \\(\\frac{3}{6}\\). Therefore, the answer is 3."
-      },
-      "question": {
-        "ja": "\\(\\frac{3}{6}\\) は \\(\\frac{1}{6}\\) の ▢ こ分です。",
-        "en": "\\(\\frac{3}{6}\\) is how many times \\(\\frac{1}{6}\\)?"
-      },
-      "fields": [
-        {
-          "field_id": "f_1",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 3,
-            "en": 3
+            "ja": "2.4",
+            "en": "2.4"
           },
-          "field_explanation": {
-            "ja": "\\(\\frac{3}{6}\\) は \\(\\frac{1}{6}\\) を 3 回分足した大きさなので、答えは 3 です。",
-            "en": "Because \\(\\frac{3}{6}\\) is formed by adding \\(\\frac{1}{6}\\) three times, the answer is 3."
-          }
+          "order": 50
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "3",
+            "en": "3"
+          },
+          "order": 100
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "11.2",
+            "en": "11.2"
+          },
+          "order": 150
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "1",
+            "en": "1"
+          },
+          "order": 200
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "5.7",
+            "en": "5.7"
+          },
+          "order": 250
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "12",
+            "en": "12"
+          },
+          "order": 300
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "0.2",
+            "en": "0.2"
+          },
+          "order": 350
         }
-      ]
-    }
-  },
-  "metadata": {
-    "question_type": "FILL_IN_THE_BLANK",
-    "question_text": {
-      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-      "en": "Please answer the numbers that fit in the blanks."
-    },
-    "explanation": {
-      "ja": "分数を「\\(\\frac{1}{6}\\) を何回分足したものか」という視点で考えられるようにする問題です。\\(\\frac{3}{6}\\) のように分母が同じ分数では、1/6 がいくつ分集まっているかを考えると理解しやすくなります。",
-      "en": "This problem encourages thinking of a fraction in terms of how many times the unit fraction \\(\\frac{1}{6}\\) is added. For a fraction like \\(\\frac{3}{6}\\) that shares the same denominator, counting how many times \\(\\frac{1}{6}\\) fits in helps understanding."
-    },
-    "background": {
-      "ja": "この問題は、単位分数（\\(\\frac{1}{6}\\)）がいくつ集まっているかを見ることで、分数の意味を直感的に理解することをねらいとしています。単位分数を基準に考えると、分数の大小比較や計算がしやすくなります。",
-      "en": "This problem aims to help learners intuitively grasp the concept of fractions by seeing how many unit fractions (\\(\\frac{1}{6}\\)) fit into a given fraction. Using unit fractions as a reference makes comparing and calculating fractions simpler."
-    },
-    "input_format": {
-      "type": "fixed",
+      ],
       "fields": [
         {
           "field_id": "f_1",
-          "attribute": "number",
-          "user_answer": "number"
+          "attribute": "array",
+          "user_answer": "sequence"
+        },
+        {
+          "field_id": "f_2",
+          "attribute": "array",
+          "user_answer": "sequence"
         }
       ],
       "question_components": [
         {
-          "type": "text",
-          "order": 50,
-          "attribute": "text",
-          "content": {
-            "ja": "\\(\\frac{3}{6}\\) は \\(\\frac{1}{6}\\) の ",
-            "en": "\\(\\frac{3}{6}\\) is how many times \\(\\frac{1}{6}\\)? "
-          }
-        },
-        {
           "type": "input_field",
           "field_id": "f_1",
-          "order": 100,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "order": 150,
-          "attribute": "text",
-          "content": {
-            "ja": " こ分です。",
-            "en": " times."
-          }
+          "order": 100
         }
       ]
-    },
-    "question": {
-      "ja": "\\(\\frac{3}{6}\\) は \\(\\frac{1}{6}\\) の ▢ こ分です。",
-      "en": "\\(\\frac{3}{6}\\) is how many times \\(\\frac{1}{6}\\)?"
     }
   }
 }
 
 ```
+
+
+# フォーマット説明
+3. 分類問題（ORDER_THE_OPTIONS）の例
+   QuestionType::ORDER_THE_OPTIONS の場合、問題文中の空白部分（blank）があり、そこにユーザーが値を複数入力する形式になります。
+   question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
+   3.1 question_components の構造
+   各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
+   type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
+   type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
+   3.2 サンプルJSON
+   以下は API から返却される例です。（"ORDER_THE_OPTIONS" の場合）
+   "question": {
+   "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
+   "question_text": "Please answer the numbers that fit in the blanks.",
+   "explanation": "",
+   "question_data": {
+   "question_type": "ORDER_THE_OPTIONS"
+   "question": "8 × 4 = ▢ × 8 = ▢",
+   "input_format": {
+   "input_components": [
+   {
+   "type": "number",
+   "content": {
+   "ja": "40",
+   "en": "40"
+   },
+   "order": 50
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "48",
+   "en": "48"
+   },
+   "order": 100
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "56",
+   "en": "56"
+   },
+   "order": 150
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "60",
+   "en": "60"
+   },
+   "order": 200
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "64",
+   "en": "64"
+   },
+   "order": 250
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "70",
+   "en": "70"
+   },
+   "order": 300
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "80",
+   "en": "80"
+   },
+   "order": 350
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "84",
+   "en": "84"
+   },
+   "order": 400
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "88",
+   "en": "88"
+   },
+   "order": 450
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "90",
+   "en": "90"
+   },
+   "order": 500
+   }
+   ],
+   "fields": [
+   {
+   "field_id": "f_1",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_2",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_3",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_4",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_5",
+   "attribute": "array",
+   "user_answer": "sequence"
+   }
+   ],
+   "question_components": [
+   {
+   "type": "text",
+   "content": {
+   "ja": "2で割り切れる数",
+   "en": "Divisible by 2"
+   },
+   "order": 50,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_1",
+   "order": 100
+   },
+   {
+   "type": "newline",
+   "order": 150
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "4で割り切れる数",
+   "en": "Divisible by 4"
+   },
+   "order": 250,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_2",
+   "order": 300
+   },
+   {
+   "type": "newline",
+   "order": 350
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "5で割り切れる数",
+   "en": "Divisible by 5"
+   },
+   "order": 450,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_3",
+   "order": 500
+   },
+   {
+   "type": "newline",
+   "order": 550
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "7で割り切れる数",
+   "en": "Divisible by 7"
+   },
+   "order": 650,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_4",
+   "order": 700
+   },
+   {
+   "type": "newline",
+   "order": 750
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "8で割り切れる数",
+   "en": "Divisible by 8"
+   },
+   "order": 850,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_5",
+   "order": 900
+   },
+   {
+   "type": "newline",
+   "order": 950
+   }
+   ]
+   }
+   },
+   "version": "1.0.0",
+   }
+
+"question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
+ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数列（[12, 18, 24, 30, 96]）を入力します。
+問題が = で連結される場合（例題：48 × 7 = (40 × 7) + (8 × 7) = ▢ + ▢ = ▢） question_components では　= の後には question_components type: "newline" を追加して、= 区切りで改行してください。（例題：48 × 7 =[question_components type: "newline" で改行] (40 × 7) + (8 × 7) =[question_components type: "newline" で改行] ▢ + ▢ = ▢）。question や question_text では　改行は不用です。
+fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
+
+metadata.input_format.input_components: metadata.question_type が、FILL_IN_OPERATOR または、ORDER_THE_OPTIONS　の時は必須。（回答の選択肢。入力キーパッドのボタン）ORDER_THE_OPTIONS　の時は、question を カンマ区切りで分割した値が全て含まれていること。例：question が、14, 15, 18, 20, 21, 25, 27, 35, 45, 50 だった場合は、14〜50までのそれぞれの分割した input_components が 同じ数（ここでは10個）存在していること。
+metadata.input_format.input_components.type：必須、VALID_INPUT_COMPONENTS_TYPES 定数と値が合っているか
+metadata.input_format.input_components.content：必須、オブジェクト、言語定数と一致するキーが全て含まれているか。FillInOperator に存在する値になっているか。（ > < など）
+metadata.input_format.input_components.order: 必須、数値、重複する値が存在しないこと。入力キーパッドを構築するときの表示順番

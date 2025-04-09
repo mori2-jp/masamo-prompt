@@ -1,38 +1,67 @@
 以下の{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
 
-{#条件}に従って問題を作成しJSONフォーマットで出力してください。
+{#対象の問題}の metadata.explanation が ja, en ともに空欄になっています。
+{#条件}に従って作問された問題です。
+metadata.explanation を作成しJSONフォーマットで出力してください。
+metadata.explanation は問題画面で回答者に表示するこの問題の説明ですので、回答を含まないこと、具体的な問題の内容に言及することはしないでください。
+
+JSONは多言語化されており、日本語話者には、ja、英語話者には en を表示します。
+
 出力したJSONフォーマットはAPIとして、フロントエンド（Vue.js）に提供され、
 JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
 
-# 条件
-・No３８（2位数や3位数の乗法）についての問題を作成してください
-・２桁×３桁
+# 問題構成条件
+・作問済みの場合はいままで作問した問題と重複しないようにしてください
 
-・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
+・33	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	万の単位、1億などの比べ方や表し方	u100	・1万，10万，100万，1億などの上位の位を正しく読み書きできる。	・さらに大きな数への理解を深め，数のスケールを体感できるようにする。			未作成						"シナリオ問題や、
+ORDER_THE_OPTIONSの例題を参考に、以下のような大きな数の大きさの正しく理解するための、文字数字だけ（日本語では　漢数字、英語では　alphanumeric expression）の並び替え問題を作問して 。question は1問で。
+5　次の数を左から大きい順に並べなさい
+八百九十七万　　三十四百万　　五百八十万
 
-・この問題の対象者は{#学習要件}を参考にしてください。解説は対象者に分かりやすい説明であること
-例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
 
-＃想定している問題の種類
-"・2桁×１桁
-・３桁×１桁
-・２桁×２桁
-・２桁×１桁＋１桁（混合算）例：45 × 3 + 2 = (40 × 3) + (5 × 3) + 2 =
-・（１桁×１桁）＋（１桁×１桁）例：３×４＋３×６＝３×１０＝３０
-・４桁×１桁
-・３桁×３桁
-・２桁×３桁
-・２桁×４桁
-・３桁×２桁
-・１桁×３桁
-・３桁×４桁
-・４桁×２桁
-・４桁×４桁
-・４桁×５桁
-"
+桁が文字と全部数字の混合の比較
+日本語は億、英語はhundred millionなど英語表記で。
+
+
+・日本語は、万、千、百、十ですが、英語は、100, 1000 , 10000 と単位の繰り上げが違うので出題と回答について気をつけてください
+・英語表記は、日本語表記に合わせて、万（ｍan)、千(sen)、百(hyaku) などは用いずにhundred millionなどの英語表記にして
+小学３年生向けなので　1億、1000万、100万、10万、1万（英語では、 100 million、10 million、1 million、100 thousand, 10 thousand）の単位の数にしてください
+
+
+# 問題例
+分母　▢
+同じページを角度を変えて撮影したもののようです。上部に「発展レベル ☆☆」と見えます）
+4　れいのように「＝」（等号），「＜」「＞」（不等号）を用いて，数の大小を表しなさい。
+（4点×4＝16点）
+
+（れい）　3 ＝ 3　　4 ＜ 5　　9 ＞ 5
+
+(1)　7271万　□　876万
+(2)　3　□　3
+(3)　4　□　5
+(4)　9　□　876万
+
+5　次の3つの数を左から大きい順に記号をならべ書きなさい。
+（5点×3＝15点）
+
+(1)　207000　　22700　　200777
+(2)　八百九十七万　　三十四百万　　五百八十万
+(3)　9億　　90000000　　1億
+
+4　次の2つの数は，どちらが大きいでしょうか？
+不等号を用いて表しなさい。（4点×6＝24点）
+
+(1)　3090万　□　3100万
+(2)　600100　□　601000
+(3)　1234567　□　12345607
+(4)　234567　□　1234567
+(5)　234567　□　123456
+(6)　98754　□　1134500
+
 
 
 ・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
+
 
 # 条件
 ・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
@@ -41,9 +70,10 @@ JSON構造を元にユーザー（回答者）が回答出来るように問題�
 例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
 
 ・evaluation_spec.response_format.explanation には、なぜその回答となるのか問題の解説文を{言語設定}の分を追加、埋めてください。
- 解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
+解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
 
- ・すでに同様の問題を作っている場合は違う問題を作成してください
+・すでに同様の問題を作っている場合は違う問題を作成してください
+
 
 
 # 説明
@@ -66,19 +96,19 @@ explanation: この問題の解説。LLMが入力する
 
 "question_text"には問題文を入力してください。
 {
-    "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-    "en": "Please answer the numbers that fit in the blanks."
-  },
-  "explanation": {
-    "ja": "",
-    "en": ""
-  },
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
+"ja": "つぎの ▢ にあてはまる数を答えなさい。",
+"en": "Please answer the numbers that fit in the blanks."
+},
+"explanation": {
+"ja": "",
+"en": ""
+},
+"skills": [
+{
+"skill_id": "sk_004",
+"name": "知識・技能"
+}
+],
 
 "background"にはこの問題の意図を入力してください。
 この問題は学習者に何を学んでほしいのか、なぜこのような出題形式にしたのかなど出題意図を記入すること
@@ -109,7 +139,8 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
   - 今回は "CODE" が確定しています（他の方法は省略）。
 - **evaluation_spec.checker_method**
   - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
-  - 例: `"CHECK_BY_EXACT_MATCH"`
+  - 例: ORDER_THE_OPTIONS の時は、 `"CHECK_BY_ARRAY_ELEMENTS_MATCH_IN_ORDER"`
+  - 問題JSONの例の同様にしてください
 - **evaluation_spec.response_format**
   - 回答判定の結果や、問題・解説の文言を指定する部分です。
   - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
@@ -119,9 +150,9 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
     - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
     - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
       - **field_id**: `"f_1"`, `"f_2"` など。
-      - **user_answer**: ユーザー入力値の型を表し、`"number"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
+      - **user_answer**: ユーザー入力値の型を表し、`"sequence"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
       - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
-      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数値なら `{ja: 500, en: 500}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
+      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数列なら `{ "ja": "[14, 18, 20, 50]",　"en": "[14, 18, 20, 50]"}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
       - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
 
 ### **fields と metadata.input_format.fields の関係**
@@ -135,19 +166,25 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
 
 **metadata** は、問題を表示するためのUI情報や、問題文そのもののデータを定義する部分です。
 - **metadata.question_type**
-  - 問題の形式を表し、"FILL_IN_THE_BLANK" などが入ります。
+  - 問題の形式を表し、"ORDER_THE_OPTIONS" などが入ります。
 - **metadata.question_text**
   - 問題文のタイトルや指示文。
-  - 例: 「▢にあてはまる数を答えなさい。」
+  - 例: 「つぎの数字を2, 3, 5, 7, 9で割り切れるように分けましょう」
 - **metadata.question**
   - 実際の問題式や文章を多言語オブジェクトで定義。
-  - 例: 「315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢」
+  - 例: 「14, 15, 18, 20, 21, 25, 27, 35, 45, 50」
+  - ORDER_THE_OPTIONS の時は、例のような カンマ区切り の値の一覧となります。（数字だけでなく文字列の場合もあるがいずれにしてもカンマ区切りになっていること）
 - **metadata.explanation**
   - 問題全体の解説を多言語オブジェクト形式で記入します。
   - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
 - **metadata.background**
   - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
   - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
+- **metadata.input_components**
+  - フロントエンドでユーザーが回答を入力する際に使用する入力パッドに表示する値のリストです。
+  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
+  - **content**: ここに `{ja, en}` の多言語テキストを入れる。
+  - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示される。
 - **metadata.input_format**
   - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
   - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
@@ -155,16 +192,16 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
     - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
     - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
     - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
-  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。
+  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。問題が = で連結される場合（例題：48 × 7 = (40 × 7) + (8 × 7) = ▢ + ▢ = ▢） question_components では　= の後には question_components type: "newline" を追加して、= 区切りで改行してください。（例題：48 × 7 =[question_components type: "newline" で改行] (40 × 7) + (8 × 7) =[question_components type: "newline" で改行] ▢ + ▢ = ▢）。question や question_text では　改行は不用です。
     - **type**: `"text"`, `"newline"`, `"input_field"` など。
     - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
     - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
     - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
 
-**ポイント**: fill_in_the_blank の問題では
+**ポイント**: ORDER_THE_OPTIONS の問題では
 - 「**metadata.input_format** の fields → どこに回答欄があるか」
 - 「**evaluation_spec.response_format** の fields → その回答欄の正解は何か」
-を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
+  を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
 
 
 # 学習指導要領
@@ -206,7 +243,7 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 32	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u200
 33	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	万の単位、1億などの比べ方や表し方	u100	・1万，10万，100万，1億などの上位の位を正しく読み書きできる。	・さらに大きな数への理解を深め，数のスケールを体感できるようにする。
 34	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	大きな数の相対的大きさ	u200	 	・単なる記号操作ではなく，日常との結び付きで「いくつ分違うか」を考えさせる。
-35	小3	A 数と計算	数の概念	分数と少数		小数（10の位）や簡単な分数の大きさの比較可能性・計算可能性		・0.5や0.3など小数第1位を分数(1/2, 3/10など)と対応づけられる。	・小数と分数が互いに表し合えることを具体的に示す（長さや重さなど）。
+35	小3	A 数と計算	数の概念	分数と少数		小数（10の位）や簡単な分数の大きさの比較・計算		・0.5や0.3など小数第1位を分数(1/2, 3/10など)と対応づけられる。	・小数と分数が互いに表し合えることを具体的に示す（長さや重さなど）。
 36	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	除法の意味	u400	・わり算には「等分除」と「包含除」があることを理解し，簡単な問題を式にできる。	・同じ数ずつ分けるか，何回分になるかを区別し，ミスを防ぐ。
 37	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	あまりのある除法	u300	・あまりのある除法を理解し、商とあまりを正しく表せる。	・余りのある除法(13÷4=3あまり1等)を正しく行い、余りが除数未満であることを認識できる。
 38	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用	sec_s1_g3_100	3位数や4位数の加法及び減法	u300	・3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる。	・筆算の手順をしっかり確立させる。
@@ -235,6 +272,7 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 57	小3	A 数と計算	日常生活への活用	分数と少数		分数の活用		・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
 58	小3	A 数と計算	日常生活への活用	割り算	sec_s1_g3_300	除法の活用	u700	・人数で分ける，単価を求めるなど，わり算が不可欠な場面を処理できる。	・クラブ費やお菓子の分け方等，日常事例を取り入れ理解を深める。
 59	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	2桁の除法	u500	あまりあり、あまりなしの2桁以上の除法(2桁÷1桁、2桁÷2桁など)を正しく計算できる。繰り上がりや0の処理を含めた筆算・暗算に対応し、答えを正確に求められる	筆算や暗算を組み合わせ、大きな数の除法へ移行する基礎を育成する
+
 
 # 文部科学省、学習指導要領
 ## 第３学年の内容
@@ -800,17 +838,18 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 
 
 #回答フォーマット
+```json
 {
   "order": 100,
-  "id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
+  "id": "ques_s1_g3_sec700_u200_diff100_qt301_v100_100",
   "level_id": "lev_003",
   "grade_id": "gra_003",
   "difficulty_id": "diff_100",
   "version": "1.0.0",
   "status": "PUBLISHED",
   "generated_by_llm": false,
-  "created_at": "2025-01-01 00:00:00",
-  "updated_at": "2025-01-01 00:00:00",
+  "created_at": "2025-03-26 13:00:00",
+  "updated_at": "2025-03-26 13:00:00",
   "skills": [
     {
       "skill_id": "sk_004",
@@ -820,295 +859,526 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
   "learning_requirements": [
     {
       "learning_subject": "算数",
-      "learning_no": 37,
-      "learning_requirement": "計算の意味・方法 大きな数の概念と活用 3位数や4位数の加法及び減法",
-      "learning_required_competency": "3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる",
-      "learning_background": "筆算の手順をしっかり確立させる",
+      "learning_no": 35,
+      "learning_requirement": "数の概念 分数と少数",
+      "learning_required_competency": "小数や簡単な分数",
+      "learning_background": "・少数や分数の意味を理解できる",
       "learning_category": "A",
       "learning_grade_level": "小3"
     }
   ],
   "evaluation_spec": {
     "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
+    "checker_method": "CHECK_BY_ARRAY_ELEMENTS_MATCH_IN_ORDER",
     "response_format": {
       "is_correct": "boolean",
       "score": "number",
       "question_text": {
-        "ja": "▢にあてはまる数を答えなさい。",
-        "en": "Please answer the numbers that fit in the blanks."
+        "ja": "次の数を小さい順に並べましょう",
+        "en": ""
       },
       "explanation": {
-        "ja": "これは、3桁どうしの足し算を位ごとにわけて考える練習です。百の位、十の位、一の位をそれぞれ計算し、最後に合わせると簡単に正しい合計が求められます。",
-        "en": "This exercise practices adding two three-digit numbers by separating the hundreds, tens, and ones places. Calculate each place value separately, then combine them to get the correct total easily."
+        "ja": "",
+        "en": ""
       },
       "question": {
-        "ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
-        "en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+        "ja": "2.4, 3, 11.2, 1, 5.7, 12, 0.2",
+        "en": "2.4, 3, 11.2, 1, 5.7, 12, 0.2"
       },
       "fields": [
         {
           "field_id": "f_1",
-          "user_answer": "number",
+          "user_answer": "sequence",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 500,
-            "en": 500
+            "ja": "[0.2, 1, 2.4, 3, 5.7, 11.2, 12]",
+            "en": "[0.2, 1, 2.4, 3, 5.7, 11.2, 12]"
           },
           "field_explanation": {
-            "ja": "300 と 200 を足すと 500 になるからです。",
-            "en": "Because adding 300 and 200 results in 500."
-          }
-        },
-        {
-          "field_id": "f_2",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 80,
-            "en": 80
-          },
-          "field_explanation": {
-            "ja": "10 と 70 を足すと 80 になるからです。",
-            "en": "Because adding 10 and 70 gives 80."
-          }
-        },
-        {
-          "field_id": "f_3",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 11,
-            "en": 11
-          },
-          "field_explanation": {
-            "ja": "5 と 6 を足すと 11 になるからです。",
-            "en": "Because adding 5 and 6 results in 11."
-          }
-        },
-        {
-          "field_id": "f_4",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 591,
-            "en": 591
-          },
-          "field_explanation": {
-            "ja": "500 + 80 + 11 をすべて足すと 591 になるからです。",
-            "en": "Because adding 500, 80, and 11 totals 591."
+            "ja": "",
+            "en": ""
           }
         }
       ]
     }
   },
   "metadata": {
-    "question_type": "FILL_IN_THE_BLANK",
+    "question_type": "ORDER_THE_OPTIONS",
     "question": {
-    "ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
-    "en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+      "ja": "2.4, 3, 11.2, 1, 5.7, 12, 0.2",
+      "en": "2.4, 3, 11.2, 1, 5.7, 12, 0.2"
     },
     "question_text": {
-      "ja": "▢にあてはまる数を答えなさい。",
-      "en": "Please answer the numbers that fit in the blanks."
+      "ja": "次の数を小さい順に並べましょう",
+      "en": ""
     },
     "explanation": {
-      "ja": "3桁の数の足し算では、位を分けて考えることで正確に計算ができるようになります。百の位でまとまりを作り、十の位と一の位は繰り上がりに注意しながら合計しましょう。",
-      "en": "When adding three-digit numbers, separating each digit place helps ensure accuracy. Group the hundreds place together and be mindful of any carrying over in the tens or ones places."
+      "ja": "",
+      "en": ""
     },
     "background": {
-      "ja": "この問題は、3桁の足し算に慣れることと、位ごとの計算手順を身につけるためのものです。すべての位を正しく合計すると、簡単に正解にたどりつけます。",
-      "en": "This problem is designed to help you become comfortable with three-digit addition and master the step-by-step process of adding each place value correctly."
+      "ja": "",
+      "en": ""
     },
     "input_format": {
-      "type": "fixed",
+      "input_components": [
+        {
+          "type": "number",
+          "content": {
+            "ja": "2.4",
+            "en": "2.4"
+          },
+          "order": 50
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "3",
+            "en": "3"
+          },
+          "order": 100
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "11.2",
+            "en": "11.2"
+          },
+          "order": 150
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "1",
+            "en": "1"
+          },
+          "order": 200
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "5.7",
+            "en": "5.7"
+          },
+          "order": 250
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "12",
+            "en": "12"
+          },
+          "order": 300
+        },
+        {
+          "type": "number",
+          "content": {
+            "ja": "0.2",
+            "en": "0.2"
+          },
+          "order": 350
+        }
+      ],
       "fields": [
         {
           "field_id": "f_1",
-          "attribute": "number",
-          "user_answer": "number"
+          "attribute": "array",
+          "user_answer": "sequence"
         },
         {
           "field_id": "f_2",
-          "attribute": "number",
-          "user_answer": "number"
-        },
-        {
-          "field_id": "f_3",
-          "attribute": "number",
-          "user_answer": "number"
-        },
-        {
-          "field_id": "f_4",
-          "attribute": "number",
-          "user_answer": "number"
+          "attribute": "array",
+          "user_answer": "sequence"
         }
       ],
       "question_components": [
         {
-          "type": "text",
-          "content": {
-            "ja": "315 + 276 = ",
-            "en": "315 + 276 = "
-          },
-          "order": 10,
-          "attribute": "text"
-        },
-        {
-          "type": "newline",
-          "order": 15
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": "(300 + 200) + (10 + 70) + (5 + 6) = ",
-            "en": "(300 + 200) + (10 + 70) + (5 + 6) = "
-          },
-          "order": 20,
-          "attribute": "text"
-        },
-        {
-          "type": "newline",
-          "order": 25
-        },
-        {
           "type": "input_field",
           "field_id": "f_1",
-          "order": 30,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " + ",
-            "en": " + "
-          },
-          "order": 40,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_2",
-          "order": 50,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " + ",
-            "en": " + "
-          },
-          "order": 60,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_3",
-          "order": 70,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " = ",
-            "en": " = "
-          },
-          "order": 80,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_4",
-          "order": 90,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
+          "order": 100
         }
       ]
     }
   }
 }
 
+```
 
 
 # フォーマット説明
-3. 穴埋め問題（FILL_IN_OPERATOR）の例
-QuestionType::FILL_IN_OPERATOR かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
-question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
-3.1 question_components の構造
-各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
-type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
-type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
-3.2 サンプルJSON
-以下は API から返却される例です。（"FILL_IN_OPERATOR" の場合）
-"question": {
-  "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
-  "question_text": "Please answer the numbers that fit in the blanks.",
-  "explanation": "",
-  "question_data": {
-    "question": "8 × 4 = ▢ × 8 = ▢",
-    "input_format": {
-      "type": "fixed",
+3. 分類問題（ORDER_THE_OPTIONS）の例
+   QuestionType::ORDER_THE_OPTIONS の場合、問題文中の空白部分（blank）があり、そこにユーザーが値を複数入力する形式になります。
+   question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
+   3.1 question_components の構造
+   各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
+   type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
+   type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
+   3.2 サンプルJSON
+   以下は API から返却される例です。（"ORDER_THE_OPTIONS" の場合）
+   "question": {
+   "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
+   "question_text": "Please answer the numbers that fit in the blanks.",
+   "explanation": "",
+   "question_data": {
+   "question_type": "ORDER_THE_OPTIONS"
+   "question": "8 × 4 = ▢ × 8 = ▢",
+   "input_format": {
+   "input_components": [
+   {
+   "type": "number",
+   "content": {
+   "ja": "40",
+   "en": "40"
+   },
+   "order": 50
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "48",
+   "en": "48"
+   },
+   "order": 100
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "56",
+   "en": "56"
+   },
+   "order": 150
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "60",
+   "en": "60"
+   },
+   "order": 200
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "64",
+   "en": "64"
+   },
+   "order": 250
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "70",
+   "en": "70"
+   },
+   "order": 300
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "80",
+   "en": "80"
+   },
+   "order": 350
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "84",
+   "en": "84"
+   },
+   "order": 400
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "88",
+   "en": "88"
+   },
+   "order": 450
+   },
+   {
+   "type": "number",
+   "content": {
+   "ja": "90",
+   "en": "90"
+   },
+   "order": 500
+   }
+   ],
+   "fields": [
+   {
+   "field_id": "f_1",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_2",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_3",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_4",
+   "attribute": "array",
+   "user_answer": "sequence"
+   },
+   {
+   "field_id": "f_5",
+   "attribute": "array",
+   "user_answer": "sequence"
+   }
+   ],
+   "question_components": [
+   {
+   "type": "text",
+   "content": {
+   "ja": "2で割り切れる数",
+   "en": "Divisible by 2"
+   },
+   "order": 50,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_1",
+   "order": 100
+   },
+   {
+   "type": "newline",
+   "order": 150
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "4で割り切れる数",
+   "en": "Divisible by 4"
+   },
+   "order": 250,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_2",
+   "order": 300
+   },
+   {
+   "type": "newline",
+   "order": 350
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "5で割り切れる数",
+   "en": "Divisible by 5"
+   },
+   "order": 450,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_3",
+   "order": 500
+   },
+   {
+   "type": "newline",
+   "order": 550
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "7で割り切れる数",
+   "en": "Divisible by 7"
+   },
+   "order": 650,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_4",
+   "order": 700
+   },
+   {
+   "type": "newline",
+   "order": 750
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": "8で割り切れる数",
+   "en": "Divisible by 8"
+   },
+   "order": 850,
+   "attribute": "text"
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_5",
+   "order": 900
+   },
+   {
+   "type": "newline",
+   "order": 950
+   }
+   ]
+   }
+   },
+   "version": "1.0.0",
+   }
+
+"question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
+ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数列（[12, 18, 24, 30, 96]）を入力します。
+問題が = で連結される場合（例題：48 × 7 = (40 × 7) + (8 × 7) = ▢ + ▢ = ▢） question_components では　= の後には question_components type: "newline" を追加して、= 区切りで改行してください。（例題：48 × 7 =[question_components type: "newline" で改行] (40 × 7) + (8 × 7) =[question_components type: "newline" で改行] ▢ + ▢ = ▢）。question や question_text では　改行は不用です。
+fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
+
+metadata.input_format.input_components: metadata.question_type が、FILL_IN_OPERATOR または、ORDER_THE_OPTIONS　の時は必須。（回答の選択肢。入力キーパッドのボタン）ORDER_THE_OPTIONS　の時は、question を カンマ区切りで分割した値が全て含まれていること。例：question が、14, 15, 18, 20, 21, 25, 27, 35, 45, 50 だった場合は、14〜50までのそれぞれの分割した input_components が 同じ数（ここでは10個）存在していること。
+metadata.input_format.input_components.type：必須、VALID_INPUT_COMPONENTS_TYPES 定数と値が合っているか
+metadata.input_format.input_components.content：必須、オブジェクト、言語定数と一致するキーが全て含まれているか。FillInOperator に存在する値になっているか。（ > < など）
+metadata.input_format.input_components.order: 必須、数値、重複する値が存在しないこと。入力キーパッドを構築するときの表示順番
+
+
+# 対象の問題
+```json
+{
+  "order": 800,
+  "id": "ques_s1_g3_sec100_u100_diff100_qt301_v100_800",
+  "level_id": "lev_003",
+  "grade_id": "gra_003",
+  "difficulty_id": "diff_100",
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "generated_by_llm": false,
+  "created_at": "2025-04-09 10:00:00",
+  "updated_at": "2025-04-09 10:00:00",
+  "skills": [
+    {
+      "skill_id": "sk_004",
+      "name": "知識・技能"
+    }
+  ],
+  "learning_requirements": [
+    {
+      "learning_subject": "算数",
+      "learning_no": 33,
+      "learning_requirement": "A 数と計算 > 数の概念 > 大きな数の概念と活用",
+      "learning_required_competency": "・1万，10万，100万，1億などの上位の位を正しく読み書きできる。",
+      "learning_background": "・さらに大きな数への理解を深め，数のスケールを体感できるようにする。",
+      "learning_category": "A",
+      "learning_grade_level": "小3"
+    }
+  ],
+  "evaluation_spec": {
+    "evaluation_method": "CODE",
+    "checker_method": "CHECK_BY_ARRAY_ELEMENTS_MATCH_IN_ORDER",
+    "response_format": {
+      "is_correct": "boolean",
+      "score": "number",
+      "question_text": {
+        "ja": "次の数を左から大きい順に並べなさい",
+        "en": "Arrange the following numbers from left (largest) to right (smallest)."
+      },
+      "explanation": {
+        "ja": "三十四百万は3,400万（34,000,000）、八百九十七万は897万（8,970,000）、五百八十万は580万（5,800,000）です。よって34,000,000 > 8,970,000 > 5,800,000の順になります。",
+        "en": "Thirty-four million is 34,000,000, eight million nine hundred seventy thousand is 8,970,000, and five million eight hundred thousand is 5,800,000. Therefore, 34,000,000 > 8,970,000 > 5,800,000."
+      },
+      "question": {
+        "ja": "八百九十七万, 三十四百万, 五百八十万",
+        "en": "eight million nine hundred seventy thousand, thirty-four million, five million eight hundred thousand"
+      },
       "fields": [
         {
           "field_id": "f_1",
-          "attribute": "number",
-          "collect_answer": "4"
+          "user_answer": "sequence",
+          "is_correct": "boolean",
+          "collect_answer": {
+            "ja": "[三十四百万, 八百九十七万, 五百八十万]",
+            "en": "[thirty-four million, eight million nine hundred seventy thousand, five million eight hundred thousand]"
+          },
+          "field_explanation": {
+            "ja": "三十四百万（34,000,000）が最も大きく、次に八百九十七万（8,970,000）、最後に五百八十万（5,800,000）となるためです。",
+            "en": "Thirty-four million (34,000,000) is the largest, followed by eight million nine hundred seventy thousand (8,970,000), then five million eight hundred thousand (5,800,000)."
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "question_type": "ORDER_THE_OPTIONS",
+    "question": {
+      "ja": "八百九十七万, 三十四百万, 五百八十万",
+      "en": "eight million nine hundred seventy thousand, thirty-four million, five million eight hundred thousand"
+    },
+    "question_text": {
+      "ja": "次の数を左から大きい順に並べなさい",
+      "en": "Arrange the following numbers from left (largest) to right (smallest)."
+    },
+    "explanation": {
+      "ja": "",
+      "en": ""
+    },
+    "background": {
+      "ja": "この問題は、小学3年生が1万・10万・100万・1億など大きな位を正しく読み書きし、数の大きさを比較できるようにするために出題しています。日本語表記と英語表記を比較して、大きな数の感覚を身に付けてください。",
+      "en": "This question is designed for third graders to practice reading, writing, and comparing large numbers such as 10,000 (man), 100,000, 1,000,000, and 100,000,000 in both Japanese and English. It helps learners develop a sense of scale for large numbers."
+    },
+    "input_format": {
+      "type": "custom",
+      "fields": [
+        {
+          "field_id": "f_1",
+          "attribute": "array",
+          "user_answer": "sequence"
+        }
+      ],
+      "input_components": [
+        {
+          "type": "text",
+          "content": {
+            "ja": "八百九十七万",
+            "en": "eight million nine hundred seventy thousand"
+          },
+          "order": 50
         },
         {
-          "field_id": "f_2",
-          "attribute": "number",
-          "collect_answer": "32"
+          "type": "text",
+          "content": {
+            "ja": "三十四百万",
+            "en": "thirty-four million"
+          },
+          "order": 100
+        },
+        {
+          "type": "text",
+          "content": {
+            "ja": "五百八十万",
+            "en": "five million eight hundred thousand"
+          },
+          "order": 150
         }
       ],
       "question_components": [
         {
           "type": "text",
           "content": {
-            "ja": "8 × 4 = ",
-            "en": "8 × 4 = "
+            "ja": "次の数を左から大きい順に並べなさい",
+            "en": "Arrange the following numbers from left (largest) to right (smallest)."
           },
-          "order": 1
+          "order": 50
+        },
+        {
+          "type": "newline",
+          "order": 100
         },
         {
           "type": "input_field",
           "field_id": "f_1",
-          "order": 2
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " × 8 = ",
-            "en": " × 8 = "
-          },
-          "order": 3
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_2",
-          "order": 4
+          "order": 150
         }
       ]
     }
-  },
-  "version": "1.0.0",
-  "question_type": "51"
+  }
 }
 
-"question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
-ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数値を入力します。（本例は NUMERIC_ANSWER のため数値入力UI）
-fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
+```

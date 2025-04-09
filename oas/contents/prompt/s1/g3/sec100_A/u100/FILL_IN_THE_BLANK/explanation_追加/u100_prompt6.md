@@ -1,39 +1,87 @@
 以下の{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
 
-{#条件}に従って問題を作成しJSONフォーマットで出力してください。
+{#対象の問題}の metadata.explanation が ja, en ともに空欄になっています。
+{#条件}に従って作問された問題です。
+metadata.explanation を作成しJSONフォーマットで出力してください。
+metadata.explanation は問題画面で回答者に表示するこの問題の説明ですので、回答を含まないこと、具体的な問題の内容に言及することはしないでください。
 出力したJSONフォーマットはAPIとして、フロントエンド（Vue.js）に提供され、
 JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
 
 # 条件
-・No３８（2位数や3位数の乗法）についての問題を作成してください
-・４桁×１桁
+・No33についての問題を作成してください
+大きな数の概念と活用 万の単位、1億などの比べ方や表し方について、
+例題のような大きな数の概念理解を問う問題を作成してください。 question は1問だけね。
+例題：
+千万を8こと、百万を５こと、十万を６こと、一万を７こ合わせた数はいくつ？
 
-・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
 
-・この問題の対象者は{#学習要件}を参考にしてください。解説は対象者に分かりやすい説明であること
-例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
+小学３年生向けなので、回答がマイナスにならないようにしてください
+・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
+・作問済みの場合はいままで作問した問題と重複しないようにしてください
+・日本語は、万、千、百、十ですが、英語は、100, 1000 , 10000 と単位の繰り上げが違うので出題と回答について気をつけてください
+・英語表記は、日本語表記に合わせて、万（ｍan)、千(sen)、百(hyaku) などは用いずにhundred millionなどの英語表記にして
+小学３年生向けなので　1億、1000万、100万、10万、1万（英語では、 100 million、10 million、1 million、100 thousand, 10 thousand）の単位の数にしてください
 
-＃想定している問題の種類
-"・2桁×１桁
-・３桁×１桁
-・２桁×２桁
-・２桁×１桁＋１桁（混合算）例：45 × 3 + 2 = (40 × 3) + (5 × 3) + 2 =
-・（１桁×１桁）＋（１桁×１桁）例：３×４＋３×６＝３×１０＝３０
-・４桁×１桁
-・２桁×２桁
-・３桁×３桁
-・２桁×３桁
-・２桁×４桁
-・３桁×２桁
-・１桁×３桁
-・３桁×４桁
-・４桁×２桁
-・４桁×４桁
-・４桁×５桁
-"
+# 問題例
+同じページを角度を変えて撮影したもののようです。上部に「発展レベル ☆☆」と見えます）
+4　れいのように「＝」（等号），「＜」「＞」（不等号）を用いて，数の大小を表しなさい。
+（4点×4＝16点）
 
+（れい）　3 ＝ 3　　4 ＜ 5　　9 ＞ 5
+
+(1)　7271万　□　876万
+(2)　3　□　3
+(3)　4　□　5
+(4)　9　□　876万
+
+5　次の3つの数を左から大きい順に記号をならべ書きなさい。
+（5点×3＝15点）
+
+(1)　207000　　22700　　200777
+(2)　八百九十七万　　三十四百万　　五百八十万
+(3)　9億　　90000000　　1億
+
+4　次の2つの数は，どちらが大きいでしょうか？
+不等号を用いて表しなさい。（4点×6＝24点）
+
+(1)　3090万　□　3100万
+(2)　600100　□　601000
+(3)　1234567　□　12345607
+(4)　234567　□　1234567
+(5)　234567　□　123456
+(6)　98754　□　1134500
+
+3
+桁の概念理解
+1000 を 49 個あつめた数はいくつですか？
+74000　は、10 をいくつ集めた数ですか？
+
+4
+9763852
+6 は何のくらいですか？
+
+5
+千万を8こと、百万を５こと、十万を６こと、一万を７こ合わせた数はいくつ？
+
+6
+2000万より小さくて、一番近い数はいくつ？
+
+7
+2000万より大きくて、一番近い数はいくつ？
+
+8
+40を10倍した数はいくつ？（100倍、1000倍も）
+
+9
+50 を 10で割った数はいくつ？（100、1000 で割った数も）
 
 ・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
+以下の{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
+
+{#条件}に従って問題を作成しJSONフォーマットで出力してください。
+出力したJSONフォーマットはAPIとして、フロントエンド（Vue.js）に提供され、
+JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
+
 
 # 条件
 ・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
@@ -42,9 +90,10 @@ JSON構造を元にユーザー（回答者）が回答出来るように問題�
 例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
 
 ・evaluation_spec.response_format.explanation には、なぜその回答となるのか問題の解説文を{言語設定}の分を追加、埋めてください。
- 解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
+解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
 
- ・すでに同様の問題を作っている場合は違う問題を作成してください
+・すでに同様の問題を作っている場合は違う問題を作成してください
+
 
 
 # 説明
@@ -67,19 +116,19 @@ explanation: この問題の解説。LLMが入力する
 
 "question_text"には問題文を入力してください。
 {
-    "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-    "en": "Please answer the numbers that fit in the blanks."
-  },
-  "explanation": {
-    "ja": "",
-    "en": ""
-  },
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
+"ja": "つぎの ▢ にあてはまる数を答えなさい。",
+"en": "Please answer the numbers that fit in the blanks."
+},
+"explanation": {
+"ja": "",
+"en": ""
+},
+"skills": [
+{
+"skill_id": "sk_004",
+"name": "知識・技能"
+}
+],
 
 "background"にはこの問題の意図を入力してください。
 この問題は学習者に何を学んでほしいのか、なぜこのような出題形式にしたのかなど出題意図を記入すること
@@ -165,7 +214,7 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
 **ポイント**: fill_in_the_blank の問題では
 - 「**metadata.input_format** の fields → どこに回答欄があるか」
 - 「**evaluation_spec.response_format** の fields → その回答欄の正解は何か」
-を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
+  を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
 
 
 # 学習指導要領
@@ -181,8 +230,6 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 6	小1	A 数と計算	式・関係	足し算・引き算		加法及び減法の場面の式読み		・具体的な状況（りんごが3個あって… など）を式に変換する初歩的スキルがある。	・数量と言葉，式を結び付ける力は文章題の理解に直結する。
 7	小1	A 数と計算	日常生活への活用	数の活用	sec_s1_g1_300	数の活用	u100	・身の回りの物や人数などを数えて，必要な数を報告できる。	・生活の中で数え方や比べ方を自然に使っていることに気付かせる。
 8	小1	A 数と計算	日常生活への活用	数の活用	sec_s1_g1_300	加法、減法の活用	u200	・「りんごが5個あって2個食べたら残りは何個か」など，日常的な場面でたし算・ひき算を使える。	・買い物ごっこや簡単なゲームなどを通じて計算を実践し，算数への親しみを深める。
-9	小1	A 数と計算	計算の意味・方法	規則性
-10	小1	A 数と計算	計算の意味・方法	規則性
 11	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	２位数の加法とその逆の減法	u100	1位数で習得した加減法を基に、2位数の繰り上がり・繰り下がりを正しく理解し筆算できる	・十進位取り記数法を具体物や図で再確認し、筆算の形式が成立する理由を体感的に理解させる。
 12	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	簡単な場合の３位数などの加法，減法	u200	・百単位などに注目して、3位数の加法・減法（繰り上がりや繰り下がりが簡単な場合）を2位数の計算を拡張して処理できる。	・2位数計算の延長として3位数に取り組み、位ごとのまとまりを捉える力を養う。
 13	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	加法や減法に関して成り立つ性質	u300	・加法および減法について、交換法則(a + b = b + a)や結合法則((a + b) + c = a + (b + c))が成り立つことを具体的に理解できる。	・具体例や操作活動で、順序・まとまりを変えても結果が変わらないことを確認し、高学年の式操作へつなぐ素地を作る。
@@ -201,39 +248,21 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 26	小2	A 数と計算	式・関係	計算の決まり	sec_s1_g2_800	( )や□を用いた式	u400	・(3 + 2) × 4 など( )付きの式を正しく読み，下線(□)を未知の数として扱う問題に慣れる。	・中学での文字式への入り口として，未知数を記号化する感覚を育む。
 27	小2	A 数と計算	日常生活への活用	大きな数	sec_s1_g2_200	大きな数の活用	u300	・1万程度までの数を，生活や社会の中で扱える（人口，お金など）。	・「学年全体の人数」「地域の人口」など具体的な例で親しみを高める。
 28	小2	A 数と計算	日常生活への活用	掛け算	sec_s1_l2_600	乗法の活用	u500	・同じ数を繰り返し足すよりかけ算の方が便利だと実感でき、2桁×1桁程度の乗法を生活の簡単な計算に使える。	・計算力を生活で役立てる体験をし，学ぶ意義を感じさせる。
-29	小2	A 数と計算	計算の意味・方法	規則性	sec_s1_g2_1200	 繰り返しパターンを見つけ，次にくる要素を推測する	u100	○→△→□→○→△→□…のような簡単な周期がある並びを理解し，周回の周期がわかれば次の要素を正しく求められる	身近な繰り返し（曜日のサイクルやリズムパターンなど）を例に挙げると理解しやすい。図形や色カードなど具体物を用いて，周回の概念や指折りによる確認を体験的に学ばせる
-30	小2	A 数と計算	計算の意味・方法	規則性	sec_s1_g2_1200	一定の差で増減する並びをとらえ，指定された番目や合計を求める	u200	足し算・引き算の繰り返しとして扱い，感覚的に「差を加えていく」ことを経験させる。文章題や図を用いて，「1段目から何段目までの合計」を求める練習などにも応用しやすい	階段を上がる段数の増加や，何個ずつ増やす/減らすなど日常の場面に結びつけ，「同じ差で進む」イメージを育む。のちのかけ算や一次関数的な考え方の土台になるので，簡単な数例で繰り返し慣れさせる
 31	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u100
 32	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u200
-33	小3	A 数と計算	数の概念	大きな数の概念と活用		万の単位、1億などの比べ方や表し方		・1万，10万，100万，1億などの上位の位を正しく読み書きできる。	・さらに大きな数への理解を深め，数のスケールを体感できるようにする。
-34	小3	A 数と計算	数の概念	大きな数の概念と活用		大きな数の相対的大きさ		・1万と1億の差を人口やお金の桁などの具体例で説明できる。	・単なる記号操作ではなく，日常との結び付きで「いくつ分違うか」を考えさせる。
-35	小3	A 数と計算	数の概念	分数と少数		小数（10の位）や簡単な分数の大きさの比較可能性・計算可能性		・0.5や0.3など小数第1位を分数(1/2, 3/10など)と対応づけられる。	・小数と分数が互いに表し合えることを具体的に示す（長さや重さなど）。
-36	小3	A 数と計算	計算の意味・方法	割り算		除法の意味		・わり算には「等分除」と「包含除」があることを理解し，簡単な問題を式にできる。	・同じ数ずつ分けるか，何回分になるかを区別し，ミスを防ぐ。
-37	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用		3位数や4位数の加法及び減法		・3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる。	・筆算の手順をしっかり確立させる。
-38	小3	A 数と計算	計算の意味・方法	大きな数の概念と活用		2位数や3位数の乗法		・2桁×2桁や3桁×1桁など，大きめのかけ算を正確に行える。	・計算量が増えるため，桁のそろえ方や筆算手順を重点的に練習する。
-39	小3	A 数と計算	計算の意味・方法	割り算		1位数などの除法		・1桁わり算(27÷3等)を九九を用いてスムーズに解ける。	・2桁以上の除法に進む基礎固め。逆算としてかけ算との結び付きも確認。
-40	小3	A 数と計算	計算の意味・方法	割り算		除法と乗法や減法との関係		・わり算が乗法/減法と逆演算の関係にあることを理解し，検算に利用できる。	・問題解決で「かけ算で確かめる」などの活用を経験させる。
-41	小3	A 数と計算	計算の意味・方法	分数と少数		小数（10の位）の加法及び減法		・0.5 + 0.3など，小数第1位までの加減計算を筆算または暗算で行える。	・小数点の位置合わせの重要性を強調し，整数との違いを意識させる。
-42	小3	A 数と計算	計算の意味・方法	分数と少数		簡単な分数の加法及び減法		・分母が同じな場合（1/2+1/2等）の計算を誤りなく行える。	・分割のイメージを図で示し，抽象化に慣れさせる初歩段階。
-43	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	交換法則、結合法則、分配法則	u100	・a×(b + c)=ab+acなど，乗法・加法におけるこれらの法則を式で表せる。	・高学年での式操作に備え，体系的に理解させる。
-44	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	加法、減法及び乗法の結果の見積もり	u200	・計算前におおよその値を把握し，答えの妥当性を判断できる。	・日常での買い物や分量計算など，誤差の確認に役立つ習慣化が狙い。
-45	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	計算の工夫や確かめ	u300	・逆算や暗算，そろばんなどを状況に応じて使い分け，結果を検証できる。	・複数の手段で自己点検することで，計算力と自信を高める。
-46	小3	A 数と計算	計算の意味・方法	規則性		"・図形や記号，数字などが繰り返すパターンを見いだし，次にくる要素や途中の要素を推測できる。
-"		"・簡単なくり返しパターン（例：○→△→□→○→△→□…）を見つけ，周期を言葉や式で表すことができる。
-"	階段を上がる段数や毎日同じ枚数のシールを貼るなど，実生活で一定ずつ増えていく事象を取り上げるとイメージしやすい。
-47	小3	A 数と計算	計算の意味・方法	規則性		・周期を把握して，「何番目には何がくるか」を判断できる。		・位置と要素の対応（n番目→要素）を整理する基礎力を養う。	文字式を導入しなくても，図や表を使って視覚化しながら「n番目＝…」と示すプロセスを経験させると定着しやすい。
-48	小3	A 数と計算	計算の意味・方法	規則性		"・一定の差で増減する数列（等差数列）を見いだし，次にくる数や特定の番目の値を求める。
-"		"・隣り合う数の差が一定であることを把握し，それを繰り返し足す・引く考え方ができる。
-"	買い物でのお金の残高や，カウントダウンなど，減少していく場面との関連付けで学習すると理解が深まり，実生活とのつながりを感じやすい。
-49	小3	A 数と計算	計算の意味・方法	規則性		・変化のきまりを理解し，式や表に整理できる。		・はじめの数と差から，いくつ目の数を求める簡単な式（○＋(n−1)×差 等）を導入部として扱う。	中学以降の一次関数に向けた前段階として，「1増えるごとに一定を足す」という考え方をしっかり身に付ける。
-50	小3	A 数と計算	計算の意味・方法	そろばん		そろばんによる計算		・そろばんの基本操作を身につけ，簡単な加減乗除ができる。	・アナログの数操作を通じて数概念を可視化し，計算の理解を深める。
-51	小3	A 数と計算	式・関係	割り算		除法の場面の式表現・式読み		・「12個のあめを3人に等しく分ける」→12÷3といった式を立てられる。	・わり算を使う文脈を増やして，式の読み書きをスムーズに行う。
-52	小3	A 数と計算	式・関係	式の表現		図及び式による表現・関連付け		・テープ図などを描いて数量を整理し，式に落とし込むスキルを身に付ける。	・段階的に思考を可視化し，文章題への対応力を養う。
-53	小3	A 数と計算	式・関係	式の表現		□を用いた式		・□+4=10のように，□を未知数として扱い答えを導ける。	・中学での文字式に進む前段階として重要な経験。
-54	小3	A 数と計算	日常生活への活用	大きな数の概念と活用		大きな数の活用		・買い物や距離の測定等で，大きな数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-55	小3	A 数と計算	日常生活への活用	分数と少数		小数の活用		・買い物や距離の測定等で，小数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-56	小3	A 数と計算	日常生活への活用	分数と少数		分数の活用		・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-57	小3	A 数と計算	日常生活への活用	割り算		除法の活用		・人数で分ける，単価を求めるなど，わり算が不可欠な場面を処理できる。	・クラブ費やお菓子の分け方等，日常事例を取り入れ理解を深める。
+35	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	小数	u100	・少数の意味を理解できる	・少数、整数の分類や比較などの問題を通して意味や概念を理解する
+36	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	簡単な分数	u200	・分数の意味を理解できる	・整数、分数の分類や比較などの問題を通して意味や概念を理解する
+37	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	小数や簡単な分数の大きさの比較	u300	・少数と少数、分数と分数の比較。0.5や0.3など小数第1位を分数(1/2, 3/10など)と対応づけられる。	・小数と分数が互いに表し合えることを具体的に示す（長さや重さなど）。
+44	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	小数（10の位）の加法及び減法	u400	・0.5 + 0.3など，小数第1位までの加減計算を筆算または暗算で行える。	・小数点の位置合わせの重要性を強調し，整数との違いを意識させる。
+45	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	簡単な分数の加法及び減法		・分母が同じな場合（1/2+1/2等）の計算を誤りなく行える。	・分割のイメージを図で示し，抽象化に慣れさせる初歩段階。
+58	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	小数の活用		・買い物や距離の測定等で，小数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+59	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	分数の活用		・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+64	小4	A 数と計算	数の概念	分数と少数	sec_s1_g4_400	小数の相対的大きさ	u100	・0.03と0.3のどちらが大きいかを位取りの考え方で正しく説明できる。	・整数から小数へ，位を横へ広げる段階の学習。
+65	小4	A 数と計算	数の概念	分数と少数	sec_s1_g4_400	分数（真分数、仮分数、帯分数）とその大きさの相違	u400	・3/2=1 1/2(帯分数)など，分数表示の変換と大小関係を正しく理解する。	・分数を統合的に捉えられるよう，図や具体物と結びつけて学ぶ。
+66	小4	A 数と計算	計算の意味・方法	分数と少数 	sec_s1_g4_400	小数を用いた n 倍の意味	u200	・1.2倍や2.5倍など，小数倍を具体的な例と式で示せる。	・拡大・縮小や単位量あたりの考え方とも関連づける。
+68	小4	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g4_400	小数（100の位など）の加法及び減法	u300	・0.23+0.7など，小数第2～第3位程度の加減算を正確に行える。	・小数点の位置合わせに慣れさせ，整数部分と小数部分を区別する。
+69	小4	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g4_400	小数の乗法及び除法（小数×小数、小数÷小数）	u600	・0.5×0.2や1.2÷0.4など，小数点の位置を正しく処理できる。	・「小数点の移動量」を把握し，反復練習で確実性を高める。
+70	小4	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g4_400	同分母分数の加法及び減法	u500	・分母が同じなら分子を足し引きすればよいことを理解し，計算できる。	・帯分数への変換などを図で示し，概念を定着させる。
 
 # 文部科学省、学習指導要領
 ## 第３学年の内容
@@ -800,8 +829,323 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 
 #回答フォーマット
 {
-  "order": 100,
-  "id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
+"order": 100,
+"id": "ques_s1_g3_sec100_u300_diff100_qt51_v100_100",
+"level_id": "lev_003",
+"grade_id": "gra_003",
+"difficulty_id": "diff_100",
+"version": "1.0.0",
+"status": "PUBLISHED",
+"generated_by_llm": false,
+"created_at": "2025-01-01 00:00:00",
+"updated_at": "2025-01-01 00:00:00",
+"skills": [
+{
+"skill_id": "sk_004",
+"name": "知識・技能"
+}
+],
+"learning_requirements": [
+{
+"learning_subject": "算数",
+"learning_no": 37,
+"learning_requirement": "計算の意味・方法 大きな数の概念と活用 3位数や4位数の加法及び減法",
+"learning_required_competency": "3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる",
+"learning_background": "筆算の手順をしっかり確立させる",
+"learning_category": "A",
+"learning_grade_level": "小3"
+}
+],
+"evaluation_spec": {
+"evaluation_method": "CODE",
+"checker_method": "CHECK_BY_EXACT_MATCH",
+"response_format": {
+"is_correct": "boolean",
+"score": "number",
+"question_text": {
+"ja": "▢にあてはまる数を答えなさい。",
+"en": "Please answer the numbers that fit in the blanks."
+},
+"explanation": {
+"ja": "これは、3桁どうしの足し算を位ごとにわけて考える練習です。百の位、十の位、一の位をそれぞれ計算し、最後に合わせると簡単に正しい合計が求められます。",
+"en": "This exercise practices adding two three-digit numbers by separating the hundreds, tens, and ones places. Calculate each place value separately, then combine them to get the correct total easily."
+},
+"question": {
+"ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
+"en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+},
+"fields": [
+{
+"field_id": "f_1",
+"user_answer": "number",
+"is_correct": "boolean",
+"collect_answer": {
+"ja": 500,
+"en": 500
+},
+"field_explanation": {
+"ja": "300 と 200 を足すと 500 になるからです。",
+"en": "Because adding 300 and 200 results in 500."
+}
+},
+{
+"field_id": "f_2",
+"user_answer": "number",
+"is_correct": "boolean",
+"collect_answer": {
+"ja": 80,
+"en": 80
+},
+"field_explanation": {
+"ja": "10 と 70 を足すと 80 になるからです。",
+"en": "Because adding 10 and 70 gives 80."
+}
+},
+{
+"field_id": "f_3",
+"user_answer": "number",
+"is_correct": "boolean",
+"collect_answer": {
+"ja": 11,
+"en": 11
+},
+"field_explanation": {
+"ja": "5 と 6 を足すと 11 になるからです。",
+"en": "Because adding 5 and 6 results in 11."
+}
+},
+{
+"field_id": "f_4",
+"user_answer": "number",
+"is_correct": "boolean",
+"collect_answer": {
+"ja": 591,
+"en": 591
+},
+"field_explanation": {
+"ja": "500 + 80 + 11 をすべて足すと 591 になるからです。",
+"en": "Because adding 500, 80, and 11 totals 591."
+}
+}
+]
+}
+},
+"metadata": {
+"question_type": "FILL_IN_THE_BLANK",
+"question": {
+"ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
+"en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+},
+"question_text": {
+"ja": "▢にあてはまる数を答えなさい。",
+"en": "Please answer the numbers that fit in the blanks."
+},
+"explanation": {
+"ja": "3桁の数の足し算では、位を分けて考えることで正確に計算ができるようになります。百の位でまとまりを作り、十の位と一の位は繰り上がりに注意しながら合計しましょう。",
+"en": "When adding three-digit numbers, separating each digit place helps ensure accuracy. Group the hundreds place together and be mindful of any carrying over in the tens or ones places."
+},
+"background": {
+"ja": "この問題は、3桁の足し算に慣れることと、位ごとの計算手順を身につけるためのものです。すべての位を正しく合計すると、簡単に正解にたどりつけます。",
+"en": "This problem is designed to help you become comfortable with three-digit addition and master the step-by-step process of adding each place value correctly."
+},
+"input_format": {
+"type": "fixed",
+"fields": [
+{
+"field_id": "f_1",
+"attribute": "number",
+"user_answer": "number"
+},
+{
+"field_id": "f_2",
+"attribute": "number",
+"user_answer": "number"
+},
+{
+"field_id": "f_3",
+"attribute": "number",
+"user_answer": "number"
+},
+{
+"field_id": "f_4",
+"attribute": "number",
+"user_answer": "number"
+}
+],
+"question_components": [
+{
+"type": "text",
+"content": {
+"ja": "315 + 276 = ",
+"en": "315 + 276 = "
+},
+"order": 10,
+"attribute": "text"
+},
+{
+"type": "newline",
+"order": 15
+},
+{
+"type": "text",
+"content": {
+"ja": "(300 + 200) + (10 + 70) + (5 + 6) = ",
+"en": "(300 + 200) + (10 + 70) + (5 + 6) = "
+},
+"order": 20,
+"attribute": "text"
+},
+{
+"type": "newline",
+"order": 25
+},
+{
+"type": "input_field",
+"field_id": "f_1",
+"order": 30,
+"attribute": "blank",
+"content": {
+"ja": "",
+"en": ""
+}
+},
+{
+"type": "text",
+"content": {
+"ja": " + ",
+"en": " + "
+},
+"order": 40,
+"attribute": "text"
+},
+{
+"type": "input_field",
+"field_id": "f_2",
+"order": 50,
+"attribute": "blank",
+"content": {
+"ja": "",
+"en": ""
+}
+},
+{
+"type": "text",
+"content": {
+"ja": " + ",
+"en": " + "
+},
+"order": 60,
+"attribute": "text"
+},
+{
+"type": "input_field",
+"field_id": "f_3",
+"order": 70,
+"attribute": "blank",
+"content": {
+"ja": "",
+"en": ""
+}
+},
+{
+"type": "text",
+"content": {
+"ja": " = ",
+"en": " = "
+},
+"order": 80,
+"attribute": "text"
+},
+{
+"type": "input_field",
+"field_id": "f_4",
+"order": 90,
+"attribute": "blank",
+"content": {
+"ja": "",
+"en": ""
+}
+}
+]
+}
+}
+}
+
+
+
+# フォーマット説明
+3. 穴埋め問題（FILL_IN_OPERATOR）の例
+   QuestionType::FILL_IN_OPERATOR かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
+   question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
+   3.1 question_components の構造
+   各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
+   type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
+   type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
+   3.2 サンプルJSON
+   以下は API から返却される例です。（"FILL_IN_OPERATOR" の場合）
+   "question": {
+   "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
+   "question_text": "Please answer the numbers that fit in the blanks.",
+   "explanation": "",
+   "question_data": {
+   "question": "8 × 4 = ▢ × 8 = ▢",
+   "input_format": {
+   "type": "fixed",
+   "fields": [
+   {
+   "field_id": "f_1",
+   "attribute": "number",
+   "collect_answer": "4"
+   },
+   {
+   "field_id": "f_2",
+   "attribute": "number",
+   "collect_answer": "32"
+   }
+   ],
+   "question_components": [
+   {
+   "type": "text",
+   "content": {
+   "ja": "8 × 4 = ",
+   "en": "8 × 4 = "
+   },
+   "order": 1
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_1",
+   "order": 2
+   },
+   {
+   "type": "text",
+   "content": {
+   "ja": " × 8 = ",
+   "en": " × 8 = "
+   },
+   "order": 3
+   },
+   {
+   "type": "input_field",
+   "field_id": "f_2",
+   "order": 4
+   }
+   ]
+   }
+   },
+   "version": "1.0.0",
+   "question_type": "51"
+   }
+
+"question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
+ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数値を入力します。（本例は NUMERIC_ANSWER のため数値入力UI）
+fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
+
+# 対象の問題
+```json
+{
+  "order": 900,
+  "id": "ques_s1_g3_sec100_u100_diff100_qt51_v100_900",
   "level_id": "lev_003",
   "grade_id": "gra_003",
   "difficulty_id": "diff_100",
@@ -819,10 +1163,10 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
   "learning_requirements": [
     {
       "learning_subject": "算数",
-      "learning_no": 37,
-      "learning_requirement": "計算の意味・方法 大きな数の概念と活用 3位数や4位数の加法及び減法",
-      "learning_required_competency": "3～4桁どうしの足し算・引き算を繰り上がり・繰り下がり含め正確に計算できる",
-      "learning_background": "筆算の手順をしっかり確立させる",
+      "learning_no": 33,
+      "learning_requirement": "A 数と計算 大きな数の概念と活用 万の単位、1億などの比べ方や表し方",
+      "learning_required_competency": "万の単位や億の単位を使って大きな数を正しく読み書きし、合計や比較などの計算に活用できる",
+      "learning_background": "日常生活で大きな数を扱う場面（人口やお金など）に対応しやすくするための基礎力として重要",
       "learning_category": "A",
       "learning_grade_level": "小3"
     }
@@ -834,16 +1178,16 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
       "is_correct": "boolean",
       "score": "number",
       "question_text": {
-        "ja": "▢にあてはまる数を答えなさい。",
+        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
         "en": "Please answer the numbers that fit in the blanks."
       },
       "explanation": {
-        "ja": "これは、3桁どうしの足し算を位ごとにわけて考える練習です。百の位、十の位、一の位をそれぞれ計算し、最後に合わせると簡単に正しい合計が求められます。",
-        "en": "This exercise practices adding two three-digit numbers by separating the hundreds, tens, and ones places. Calculate each place value separately, then combine them to get the correct total easily."
+        "ja": "1億を3つ、千万を2つ、百万を5つ、十万を4つ、一万を6つ合わせた数を合計します。各単位の大きさに気をつけて足してみましょう。",
+        "en": "We combine 3 sets of 100 million, 2 sets of 10 million, 5 sets of 1 million, 4 sets of 100 thousand, and 6 sets of 10 thousand. Be mindful of each place value and sum them correctly."
       },
       "question": {
-        "ja": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢",
-        "en": "315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢"
+        "ja": "1億を3つ、千万を2つ、百万を5つ、十万を4つ、一万を6つ合わせた数はいくつですか？",
+        "en": "How many in total if you combine 3 sets of 100 million, 2 sets of 10 million, 5 sets of 1 million, 4 sets of 100 thousand, and 6 sets of 10 thousand?"
       },
       "fields": [
         {
@@ -851,69 +1195,34 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
           "user_answer": "number",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 500,
-            "en": 500
+            "ja": 325460000,
+            "en": 325460000
           },
           "field_explanation": {
-            "ja": "300 と 200 を足すと 500 になるからです。",
-            "en": "Because adding 300 and 200 results in 500."
-          }
-        },
-        {
-          "field_id": "f_2",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 80,
-            "en": 80
-          },
-          "field_explanation": {
-            "ja": "10 と 70 を足すと 80 になるからです。",
-            "en": "Because adding 10 and 70 gives 80."
-          }
-        },
-        {
-          "field_id": "f_3",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 11,
-            "en": 11
-          },
-          "field_explanation": {
-            "ja": "5 と 6 を足すと 11 になるからです。",
-            "en": "Because adding 5 and 6 results in 11."
-          }
-        },
-        {
-          "field_id": "f_4",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 591,
-            "en": 591
-          },
-          "field_explanation": {
-            "ja": "500 + 80 + 11 をすべて足すと 591 になるからです。",
-            "en": "Because adding 500, 80, and 11 totals 591."
+            "ja": "1億×3 + 1000万×2 + 100万×5 + 10万×4 + 1万×6 をすべて合計すると325460000になります。",
+            "en": "Adding 3×100,000,000 + 2×10,000,000 + 5×1,000,000 + 4×100,000 + 6×10,000 equals 325,460,000."
           }
         }
       ]
     }
   },
   "metadata": {
-    "question_type": "FILL_IN_OPERATOR",
+    "question_type": "FILL_IN_THE_BLANK",
     "question_text": {
-      "ja": "▢にあてはまる数を答えなさい。",
+      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
       "en": "Please answer the numbers that fit in the blanks."
     },
     "explanation": {
-      "ja": "3桁の数の足し算では、位を分けて考えることで正確に計算ができるようになります。百の位でまとまりを作り、十の位と一の位は繰り上がりに注意しながら合計しましょう。",
-      "en": "When adding three-digit numbers, separating each digit place helps ensure accuracy. Group the hundreds place together and be mindful of any carrying over in the tens or ones places."
+      "ja": "",
+      "en": ""
+    },
+    "question": {
+      "ja": "1億を3つ、千万を2つ、百万を5つ、十万を4つ、一万を6つ合わせた数はいくつですか？",
+      "en": "How many in total if you combine 3 sets of 100 million, 2 sets of 10 million, 5 sets of 1 million, 4 sets of 100 thousand, and 6 sets of 10 thousand?"
     },
     "background": {
-      "ja": "この問題は、3桁の足し算に慣れることと、位ごとの計算手順を身につけるためのものです。すべての位を正しく合計すると、簡単に正解にたどりつけます。",
-      "en": "This problem is designed to help you become comfortable with three-digit addition and master the step-by-step process of adding each place value correctly."
+      "ja": "この問題では、億や万の単位を活用して大きな数を正しく読み書きし、合計を計算する力をつけることがねらいです。",
+      "en": "The purpose of this problem is to practice using large units like 'hundred million' and 'ten million' correctly, and to strengthen the ability to sum large numbers accurately."
     },
     "input_format": {
       "type": "fixed",
@@ -922,111 +1231,25 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
           "field_id": "f_1",
           "attribute": "number",
           "user_answer": "number"
-        },
-        {
-          "field_id": "f_2",
-          "attribute": "number",
-          "user_answer": "number"
-        },
-        {
-          "field_id": "f_3",
-          "attribute": "number",
-          "user_answer": "number"
-        },
-        {
-          "field_id": "f_4",
-          "attribute": "number",
-          "user_answer": "number"
         }
       ],
       "question_components": [
         {
           "type": "text",
           "content": {
-            "ja": "315 + 276 = ",
-            "en": "315 + 276 = "
+            "ja": "1億を3つ、千万を2つ、百万を5つ、十万を4つ、一万を6つ合わせた数はいくつですか？",
+            "en": "How many in total if you combine 3 sets of 100 million, 2 sets of 10 million, 5 sets of 1 million, 4 sets of 100 thousand, and 6 sets of 10 thousand?"
           },
-          "order": 10,
-          "attribute": "text"
+          "order": 50
         },
         {
           "type": "newline",
-          "order": 15
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": "(300 + 200) + (10 + 70) + (5 + 6) = ",
-            "en": "(300 + 200) + (10 + 70) + (5 + 6) = "
-          },
-          "order": 20,
-          "attribute": "text"
-        },
-        {
-          "type": "newline",
-          "order": 25
+          "order": 100
         },
         {
           "type": "input_field",
           "field_id": "f_1",
-          "order": 30,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " + ",
-            "en": " + "
-          },
-          "order": 40,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_2",
-          "order": 50,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " + ",
-            "en": " + "
-          },
-          "order": 60,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_3",
-          "order": 70,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " = ",
-            "en": " = "
-          },
-          "order": 80,
-          "attribute": "text"
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_4",
-          "order": 90,
+          "order": 150,
           "attribute": "blank",
           "content": {
             "ja": "",
@@ -1038,72 +1261,4 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
   }
 }
 
-
-
-# フォーマット説明
-3. 穴埋め問題（FILL_IN_OPERATOR）の例
-QuestionType::FILL_IN_OPERATOR かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
-question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
-3.1 question_components の構造
-各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
-type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
-type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
-3.2 サンプルJSON
-以下は API から返却される例です。（"FILL_IN_OPERATOR" の場合）
-"question": {
-  "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
-  "question_text": "Please answer the numbers that fit in the blanks.",
-  "explanation": "",
-  "question_data": {
-    "question": "8 × 4 = ▢ × 8 = ▢",
-    "input_format": {
-      "type": "fixed",
-      "fields": [
-        {
-          "field_id": "f_1",
-          "attribute": "number",
-          "collect_answer": "4"
-        },
-        {
-          "field_id": "f_2",
-          "attribute": "number",
-          "collect_answer": "32"
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "content": {
-            "ja": "8 × 4 = ",
-            "en": "8 × 4 = "
-          },
-          "order": 1
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_1",
-          "order": 2
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": " × 8 = ",
-            "en": " × 8 = "
-          },
-          "order": 3
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_2",
-          "order": 4
-        }
-      ]
-    }
-  },
-  "version": "1.0.0",
-  "question_type": "51"
-}
-
-"question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
-ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数値を入力します。（本例は NUMERIC_ANSWER のため数値入力UI）
-fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
+```
