@@ -1,19 +1,22 @@
 以下、QuestionJsonManageService　の　validateQuestionJson　に
-FILL_IN_MULTIPART　の場合のバリデーションルールを追加してほしい
+FILL_IN_FORMULA　の場合のバリデーションルールを追加してほしい
 修正箇所を知らせてください。
 
-必ず、既存の、FILL_IN_OPERATOR、FILL_IN_THE_BLANK、CLASSIFY_THE_OPTIONS　のバリデーションルールはそのままにしてください。
+必ず、既存の、FILL_IN_OPERATOR、FILL_IN_THE_BLANK、CLASSIFY_THE_OPTIONS、FILL_IN_MULTIPART　のバリデーションルールはそのままにしてください。
 
-基本のルールは、FILL_IN_THE_BLANK　と同じ。
+基本のルールは、FILL_IN_MULTIPART　と同じ。
 
 # 追加するルール
-metadata.question_type が、FILL_IN_MULTIPART　の時のルールを追加
-- metadata.input_format.input_components: metadata.question_type が、FILL_IN_MULTIPART　の時は必須。（回答の選択肢。入力キーパッドのボタン）FILL_IN_MULTIPART　の時は、signed_number_pad と、その他に入力させたい値（この例では、「あまり」）。
+metadata.question_type が、FILL_IN_FORMULA　の時のルールを追加
+- metadata.input_format.input_components: metadata.question_type が、FILL_IN_FORMULA　の時は必須。
+- FILL_IN_FORMULA　の時は、signed_number_pad_with_operator を入力
 
-metadata.question_type が、FILL_IN_MULTIPART　の時の、metadata.input_format.fields のルールを追加
+metadata.question_type が、FILL_IN_FORMULA　の時の、evaluation_spec.response_format.fields.user_answer のルールを追加
+必須、FieldType::ARRAY　と値が一致すること
+
+metadata.question_type が、FILL_IN_FORMULA　の時の、metadata.input_format.fields のルールを追加
 不要。ユーザーが自由に入力するため、こちらでフィールドを定義して限定する必要がない。
-'metadata.input_format.fields'      => ['required_unless:metadata.question_type,FILL_IN_MULTIPART','array'],
-それ以外のquestion_type は全て以下のルールでチャックする
+それ以外の　question_type が、FILL_IN_OPERATOR、FILL_IN_THE_BLANK、CLASSIFY_THE_OPTIONS　時は全て以下のルールでチェックする
 1. **field_id が空ではない**
     - さらに、`field_id` が `f_数字` という形式（例: `f_1`, `f_2`）であることを正規表現でチェックしている。
 2. **field_id の重複チェック**
@@ -31,11 +34,11 @@ metadata.question_type が、FILL_IN_MULTIPART　の時の、metadata.input_form
     - `metadata.input_format.fields` には `collect_answer` を入れてはならないため、もし存在したらエラーにしている。
 
 
-metadata.question_type が、FILL_IN_MULTIPART　の時の、evaluation_spec.evaluation_method のルールを追加
-CODEが選択されていて　evaluation_spec.evaluation_method　が必要となれる場合は、　FILL_IN_MULTIPART　の時は、CHECK_BY_EXACT_MATCH　に限定
+metadata.question_type が、FILL_IN_FORMULA　の時の、evaluation_spec.evaluation_method のルールを追加
+CODEが選択されていて　evaluation_spec.evaluation_method　が必要となれる場合は、　FILL_IN_FORMULA　の時は、CHECK_BY_UNORDERED_FORMULA_WITH_CALCULATION　に限定
 
-metadata.question_type が、FILL_IN_MULTIPART　の時の、 metadata.input_format.input_components　のルールを追加
-metadata.question_type が、FILL_IN_OPERATOR または、FILL_IN_MULTIPART　の時は　metadata.input_format.input_components　必須。
+metadata.question_type が、FILL_IN_FORMULA　の時の、 metadata.input_format.input_components　のルールを追加
+metadata.question_type が、FILL_IN_OPERATOR または、FILL_IN_FORMULA　の時は　metadata.input_format.input_components　必須。
 回答の選択肢。入力キーパッドのボタン(signed_number_pad)。
 FILL_IN_MULTIPART　の時は、
 １）signed_number_pad　が含まれていること、
@@ -80,8 +83,8 @@ FILL_IN_MULTIPART　の時は、
 ```
 このように、metadata.input_format.input_components　の type: text  として content に一致する値が存在していなければいけない。
 
-# signed_number_pad の仕様
-[0,1,2,3,4,5,6,7,8,9,-,.] の10個の値が入力可能なパッド。
+# signed_number_pad_with_operator の仕様
+[0,1,2,3,4,5,6,7,8,9,.,÷,×,+,-,=] の数字と記号の16個の値が入力可能なパッド。
 
 ※注意点
 ・現在は question_type FILL_IN_THE_BLANK や、CLASSIFY_THE_OPTIONS　などなどの仕様だけですが、将来的に複数の種類が追加されて行く予定です。１００個以上になるかも
@@ -138,7 +141,7 @@ evaluation_spec.response_format.question：必須、オブジェクト（言語�
 
 evaluation_spec.response_format.fields：evaluation_methodが”LLM”の時は必須、配列。CODEのときは正答判定、LLMの時はLLMにユーザーの回答の形を知らせる為にフォーマットを定義。
 evaluation_spec.response_format.fields.field_id：必須、配列。ユーザーの回答の型。
-evaluation_spec.response_format.fields.user_answer：必須、FieldType の定数に値があるか。ユーザーの回答。
+evaluation_spec.response_format.fields.user_answer：必須、FieldType の定数に値があるか。ユーザーの回答。FILL_IN_MULTIPART　の時は、sequence　と値が一致すること。
 evaluation_spec.response_format.fields.is_correct：必須、テキスト型("boolean"のみ）。ユーザーの回答が正しいか
 evaluation_spec.response_format.fields.collect_answer：必須、オブジェクト（言語定数全て含んでいるか）。metadata.question_type が、FILL_IN_THE_BLANK の時は,オブジェクトの中の値が、evaluation_spec.response_format.fields.user_answerで指定されている型と一致しているか。例えば、"number" の場合は、32 などの数値となっているか。問題の正解（ユーザーには隠す）metadata.question_type が、FILL_IN_OPERATOR の時は,FillInOperator に存在する値になっているか。（ > < など）
 evaluation_spec.response_format.fields.field_explanation: 必須、オブジェクト、言語ごとにそれぞれ オブジェクトの中の値は "{$言語設定例えば"ja"など}": "文字列"が含まれていること。空文字禁止
@@ -330,280 +333,6 @@ questions: 問題
 question_set_questions：question_sets と questions を紐づけるPivotテーブル。questions は複数のquestion_sets に紐づく事があり多対多の関係なのでこのような設計になっている。
 user_question_sets: ユーザーが学習した questions_sets。学習開始時に question_sets_id と紐づいて status （UserQuestionSetsStatus::NOT_START) が未開始の状態で生成され、進捗ステータスはスコアなどが管理される
 user_questions: ユーザーが学習した questions。学習開始時に、学習を開始した question_sets に紐づく questions が全て、 user_question_sets_id と question_id（questions）を紐づけて status （UserQuestionStatus::NOT_START) が未開始の状態で全てのquestionsの数の分、生成され、進捗ステータスはスコアなどが管理される
-
---- バリデーションエラーになるJSON（input_components に collect_answer に存在している「あまり」がない）
-```json
-{
-  "order": 200,
-  "id": "ques_s1_g3_sec300_u300_diff100_qt351_v100_200",
-  "level_id": "lev_003",
-  "grade_id": "gra_003",
-  "difficulty_id": "diff_100",
-  "version": "1.0.0",
-  "status": "TEST_PUBLISHED",
-  "validation_check": true,
-  "generated_by_llm": false,
-  "created_at": "2025-03-27 13:00:00",
-  "updated_at": "2025-03-27 13:00:00",
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 37,
-      "learning_requirement": "計算の意味・方法 割り算 あまりのある除法",
-      "learning_required_competency": "あまりのある除法を理解し、商とあまりを正しく表せる。",
-      "learning_background": "余りのある除法(13÷4=3あまり1等)を正しく行い、余りが除数未満であることを認識できる。",
-      "learning_category": "A",
-      "learning_grade_level": "小3"
-    }
-  ],
-  "evaluation_spec": {
-    "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
-    "response_format": {
-      "is_correct": "boolean",
-      "score": "number",
-      "question_text": {
-        "ja": "次の ▢ にあてはまる数を答えなさい。",
-        "en": "Please answer the numbers that fit in the blanks."
-      },
-      "explanation": {
-        "ja": "25を4で割ると、4×6=24で1つ余るので「6 あまり 1」となります。",
-        "en": "When dividing 25 by 4, 4×6=24, leaving 1 as the remainder, so the answer is “6 remainder 1.”"
-      },
-      "question": {
-        "ja": "25 ÷ 4 = ▢",
-        "en": "25 ÷ 4 = ▢"
-      },
-      "fields": [
-        {
-          "field_id": "f_1",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 6,
-            "en": 6
-          },
-          "field_explanation": {
-            "ja": "25を4で割ったとき、ちょうど4が6回分（24）になるので商は6です。",
-            "en": "When dividing 25 by 4, 4 fits exactly 6 times (24), so the quotient is 6."
-          }
-        },
-        {
-          "field_id": "f_2",
-          "user_answer": "text",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": "あまり",
-            "en": "remainder"
-          },
-          "field_explanation": {
-            "ja": "余りがあるときにつける言葉です。",
-            "en": "This word indicates there is a remainder in the division."
-          }
-        },
-        {
-          "field_id": "f_3",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 1,
-            "en": 1
-          },
-          "field_explanation": {
-            "ja": "25から4×6=24を引いた残りが1なので、余りは1です。",
-            "en": "Subtracting 24 (4×6) from 25 leaves 1, so the remainder is 1."
-          }
-        }
-      ]
-    }
-  },
-  "metadata": {
-    "question_type": "FILL_IN_MULTIPART",
-    "question_text": {
-      "ja": "次の ▢ にあてはまる数を答えなさい。",
-      "en": "Please answer the numbers that fit in the blanks."
-    },
-    "explanation": {
-      "ja": "25を4で割ると、4×6=24で1つ余るので「6 あまり 1」となります。",
-      "en": "When dividing 25 by 4, 4×6=24, leaving 1 as the remainder, so the answer is “6 remainder 1.”"
-    },
-    "question": {
-      "ja": "25 ÷ 4 = ▢",
-      "en": "25 ÷ 4 = ▢"
-    },
-    "background": {
-      "ja": "この問題では、あまりのある除法を正しく理解し、商とあまりをきちんと求める力を身につけることを目的としています。小学校3年生でも、余りが出る割り算の計算に慣れ、答えを『○ あまり ○』の形できちんと表せるようにしましょう。",
-      "en": "This problem aims to help learners understand division with remainders and accurately determine both the quotient and the remainder. Even for third-grade students, practicing divisions that result in remainders helps them express the answer correctly in the form 'quotient remainder remainder_value.'"
-    },
-    "input_format": {
-      "input_components": [
-        {
-          "type": "signed_number_pad",
-          "order": 50
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "content": {
-            "ja": "25 ÷ 4 = ▢",
-            "en": "25 ÷ 4 = ▢"
-          },
-          "order": 50
-        }
-      ]
-    }
-  }
-}
-
-```
-
---- バリデーションをパスするJSON
-```json
-{
-  "order": 100,
-  "id": "ques_s1_g3_sec300_u300_diff100_qt351_v100_100",
-  "level_id": "lev_003",
-  "grade_id": "gra_003",
-  "difficulty_id": "diff_100",
-  "version": "1.0.0",
-  "status": "TEST_PUBLISHED",
-  "validation_check": true,
-  "generated_by_llm": false,
-  "created_at": "2025-03-27 13:00:00",
-  "updated_at": "2025-03-27 13:00:00",
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 37,
-      "learning_requirement": "計算の意味・方法 割り算 あまりのある除法",
-      "learning_required_competency": "あまりのある除法を理解し、商とあまりを正しく表せる。",
-      "learning_background": "余りのある除法(13÷4=3あまり1等)を正しく行い、余りが除数未満であることを認識できる。",
-      "learning_category": "A",
-      "learning_grade_level": "小3"
-    }
-  ],
-  "evaluation_spec": {
-    "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
-    "response_format": {
-      "is_correct": "boolean",
-      "score": "number",
-      "question_text": {
-        "ja": "次の ▢ にあてはまる数を答えなさい。",
-        "en": "Please answer the numbers that fit in the blanks."
-      },
-      "explanation": {
-        "ja": "25を4で割ると、4×6=24で1つ余るので「6 あまり 1」となります。",
-        "en": "When dividing 25 by 4, 4×6=24, leaving 1 as the remainder, so the answer is “6 remainder 1.”"
-      },
-      "question": {
-        "ja": "25 ÷ 4 = ▢",
-        "en": "25 ÷ 4 = ▢"
-      },
-      "fields": [
-        {
-          "field_id": "f_1",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 6,
-            "en": 6
-          },
-          "field_explanation": {
-            "ja": "25を4で割ったとき、ちょうど4が6回分（24）になるので商は6です。",
-            "en": "When dividing 25 by 4, 4 fits exactly 6 times (24), so the quotient is 6."
-          }
-        },
-        {
-          "field_id": "f_2",
-          "user_answer": "text",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": "あまり",
-            "en": "remainder"
-          },
-          "field_explanation": {
-            "ja": "余りがあるときにつける言葉です。",
-            "en": "This word indicates there is a remainder in the division."
-          }
-        },
-        {
-          "field_id": "f_3",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 1,
-            "en": 1
-          },
-          "field_explanation": {
-            "ja": "25から4×6=24を引いた残りが1なので、余りは1です。",
-            "en": "Subtracting 24 (4×6) from 25 leaves 1, so the remainder is 1."
-          }
-        }
-      ]
-    }
-  },
-  "metadata": {
-    "question_type": "FILL_IN_MULTIPART",
-    "question_text": {
-      "ja": "次の ▢ にあてはまる数を答えなさい。",
-      "en": "Please answer the numbers that fit in the blanks."
-    },
-    "explanation": {
-      "ja": "25を4で割ると、4×6=24で1つ余るので「6 あまり 1」となります。",
-      "en": "When dividing 25 by 4, 4×6=24, leaving 1 as the remainder, so the answer is “6 remainder 1.”"
-    },
-    "question": {
-      "ja": "25 ÷ 4 = ▢",
-      "en": "25 ÷ 4 = ▢"
-    },
-    "background": {
-      "ja": "この問題では、あまりのある除法を正しく理解し、商とあまりをきちんと求める力を身につけることを目的としています。小学校3年生でも、余りが出る割り算の計算に慣れ、答えを『○ あまり ○』の形できちんと表せるようにしましょう。",
-      "en": "This problem aims to help learners understand division with remainders and accurately determine both the quotient and the remainder. Even for third-grade students, practicing divisions that result in remainders helps them express the answer correctly in the form 'quotient remainder remainder_value.'"
-    },
-    "input_format": {
-      "input_components": [
-        {
-          "type": "signed_number_pad",
-          "order": 50
-        },
-        {
-          "type": "text",
-          "content": {
-            "ja": "あまり",
-            "en": "remainder"
-          },
-          "order": 100
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "content": {
-            "ja": "25 ÷ 4 = ▢",
-            "en": "25 ÷ 4 = ▢"
-          },
-          "order": 50
-        }
-      ]
-    }
-  }
-}
-
-```
 
 
 --- DB構造
