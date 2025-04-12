@@ -35,7 +35,7 @@ metadata.question_type が、FILL_IN_FORMULA　の時の、metadata.input_format
 
 
 metadata.question_type が、FILL_IN_FORMULA　の時の、evaluation_spec.evaluation_method のルールを追加
-CODEが選択されていて　evaluation_spec.evaluation_method　が必要となれる場合は、　FILL_IN_FORMULA　の時は、CHECK_BY_UNORDERED_FORMULA_WITH_CALCULATION　に限定
+CODEが選択されていて　evaluation_spec.evaluation_method　が必要となれる場合は、　FILL_IN_FORMULA　の時は、CHECK_BY_SINGLE_FORMULA_MATCH　に限定
 
 metadata.question_type が、FILL_IN_FORMULA　の時の、 metadata.input_format.input_components　のルールを追加
 metadata.question_type が、FILL_IN_OPERATOR または、FILL_IN_FORMULA　の時は　metadata.input_format.input_components　必須。

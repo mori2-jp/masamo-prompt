@@ -2227,7 +2227,16 @@ class QuestionJsonManageService
 
             // input_format
             'metadata.input_format'             => ['required','array'],
-            'metadata.input_format.fields'      => ['required','array'],
+
+            /**
+             * 【修正】FILL_IN_MULTIPARTの時だけ fields は不要
+             * それ以外のとき(FILL_IN_THE_BLANK 等)は必須となるように修正
+             */
+            'metadata.input_format.fields'      => [
+                'required_unless:metadata.question_type,FILL_IN_MULTIPART',
+                'array'
+            ],
+
             'metadata.input_format.question_components' => ['required','array'],
         ];
     }
@@ -2402,6 +2411,20 @@ class QuestionJsonManageService
                 }
             }
             // [ADD for ORDER_THE_OPTIONS end]
+
+            /**
+             * 【修正】FILL_IN_MULTIPART の場合、evaluation_method=CODE なら
+             * checker_method は CHECK_BY_EXACT_MATCH のみ許可する
+             */
+            if ($questionTypeValue === QuestionType::FILL_IN_MULTIPART->value) {
+                $actualChecker = $eval['checker_method'] ?? null;
+                if ($actualChecker !== EvaluationCheckerMethod::CHECK_BY_EXACT_MATCH->label()) {
+                    $validator->errors()->add(
+                        'evaluation_spec.checker_method',
+                        "FILL_IN_MULTIPART の場合、evaluation_method=CODE では checker_method='".EvaluationCheckerMethod::CHECK_BY_EXACT_MATCH->label()."' のみ有効です。"
+                    );
+                }
+            }
         }
         // LLM
         else {
@@ -2530,8 +2553,8 @@ class QuestionJsonManageService
                                 );
                             }
                         }
-                        // ORDER_THE_OPTIONS や CLASSIFY_THE_OPTIONS の場合は、ここでは特に型指定なし
-                        //（実際の正解値は配列などの形式を想定しうるが、ここでは多言語オブジェクトで文字列保存）
+                        // ORDER_THE_OPTIONS, CLASSIFY_THE_OPTIONS は特に型チェックなし
+                        // FILL_IN_MULTIPART の場合も特定の型制限はなし（ユーザー入力を想定）
                     }
                 }
             }
@@ -2913,6 +2936,82 @@ class QuestionJsonManageService
             }
         }
         // [ADD for ORDER_THE_OPTIONS end]
+
+        /**
+         * 【修正追加】
+         * FILL_IN_MULTIPART の場合のバリデーションを追加。
+         * - input_components が必須
+         * - signed_number_pad が含まれているか
+         * - evaluation_spec.fields の中で user_answer='text' な collect_answer 各言語が
+         *   input_components の type='text' の content に含まれているか
+         */
+        if ($questionTypeValue === QuestionType::FILL_IN_MULTIPART->value) {
+            $icKey = 'metadata.input_format.input_components';
+            if (!isset($meta['input_format']['input_components']) || !is_array($meta['input_format']['input_components'])) {
+                $validator->errors()->add($icKey,
+                    "FILL_IN_MULTIPART のため input_components (配列) が必須です。"
+                );
+            } else {
+                $inputComps = $meta['input_format']['input_components'];
+                // 1) signed_number_pad が含まれているか
+                $hasSignedNumberPad = false;
+                $icOrders = [];
+                foreach ($inputComps as $idx => $ic) {
+                    $typeVal = $ic['type'] ?? null;
+                    if ($typeVal === 'signed_number_pad') {
+                        $hasSignedNumberPad = true;
+                    }
+                    // order の重複チェック
+                    if (isset($ic['order'])) {
+                        if (in_array($ic['order'], $icOrders, true)) {
+                            $validator->errors()->add("{$icKey}.{$idx}.order",
+                                "order='{$ic['order']}' が重複しています。"
+                            );
+                        } else {
+                            $icOrders[] = $ic['order'];
+                        }
+                    }
+                }
+                if (!$hasSignedNumberPad) {
+                    $validator->errors()->add($icKey,
+                        "FILL_IN_MULTIPART の場合は signed_number_pad が含まれている必要があります。"
+                    );
+                }
+
+                // 2) evaluation_spec.fields の user_answer='text' => collect_answer が input_components の type='text' に含まれているか
+                $evalSpecFields = $json['evaluation_spec']['response_format']['fields'] ?? [];
+                if (is_array($evalSpecFields)) {
+                    foreach ($evalSpecFields as $fIdx => $fItem) {
+                        $ua = $fItem['user_answer'] ?? '';
+                        if ($ua === FieldType::STRING->value) {
+                            // 各言語でチェック
+                            foreach (self::LANGUAGES as $lang) {
+                                $collectVal = $fItem['collect_answer'][$lang] ?? null;
+                                if (!is_null($collectVal)) {
+                                    // input_components を見て、type='text' & content.{$lang} が collectVal と一致するか
+                                    $found = false;
+                                    foreach ($inputComps as $ic) {
+                                        if (($ic['type'] ?? '') === 'text') {
+                                            $cnt = $ic['content'][$lang] ?? null;
+                                            if ($cnt === $collectVal) {
+                                                $found = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (!$found) {
+                                        $validator->errors()->add(
+                                            "evaluation_spec.response_format.fields.{$fIdx}.collect_answer.{$lang}",
+                                            "FILL_IN_MULTIPART: '{$collectVal}' が input_components (type='text') に含まれていません。"
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -3256,5 +3355,6 @@ class QuestionJsonManageService
         return $mapped;
     }
 }
+
 
 ```
