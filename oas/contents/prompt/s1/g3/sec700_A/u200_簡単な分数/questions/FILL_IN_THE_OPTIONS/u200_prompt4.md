@@ -1,61 +1,192 @@
-ありがとう。
-以下の対象のJSON（問題セット）は問題のUnit（単元）を学ぶ為の問題の塊を表しています。
-{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
+以下の{# 学習指導要領}は、{#文部科学省、学習指導要領}に従って学習水準をリスト化したものです。
 
-｛対象のJSON｝の
-unit の en と、
-title と、descriptionの ja, en を,
-generate_question_promptの ja, en を,
-関連する問題や、学習指導要領に合うように適切な情報を埋めてください。
+{#条件}に従って問題を作成しJSONフォーマットで出力してください。
+出力したJSONフォーマットはAPIとして、フロントエンド（Vue.js）に提供され、
+JSON構造を元にユーザー（回答者）が回答出来るように問題画面のUIを生成します。
 
-
+# 条件
 ・No36（簡単な分数）についての問題を作成してください
-分数　の意味の理解　について、例題のように、分子と分母を回答させる問題を作成してください。 question は1問だけね。
-例題： 1/2 は、少数で表すと　▢です。
-
-小学３年生向けなので分数は分母が1のくらいまで、少数は少数第二位までで割り切れる数にしてください
+分数　の意味の理解　について、例題のように、分数が複数あるいくつになるのか回答させる問題を作成してください。 
+ただし、小学３年生向けなので回答が帯分数にならない数にしてください。、question は1問だけね。
+例題： 1/6 の 5こ分は　▢です
 
 分数の表記は KateX を使ってください
-分数は必ずインライン数式で記述してください。$$\frac{3}{4}$$ は ディスプレイ数式 (display math) と呼ばれる書き方。(\frac{1}{4}) は インライン数式 (inline math) と呼ばれる書き方。これは必ず　generate_question_prompt　に詳しく記述してください。
-
-分数は問題文、問題、回答の説明など日本語、英語でも全て KateX で表記してください
-
-
-{関連する問題} を良く見て、｛オーダー｝に答えてください
+分数は必ずインライン数式で記述してください。$$\frac{3}{4}$$ は ディスプレイ数式 (display math) と呼ばれる書き方。(\frac{1}{4}) は インライン数式 (inline math) と呼ばれる書き方。
+回答が分数になる場合は、collect_answer には KateX は使わずに 1/5 のようにスラッシュで区切っただけの単なる文字列で表記してください。
+・小学校３年生は  -5 などの、マイナスの概念は學んでいないので、回答にマイナスの値が発生しない問題にすること
 
 
-
-# オーダー
-｛対象のJSON｝の
-unit の en と、
-title と、descriptionの ja, en を,
-generate_question_promptの ja, en を,
-関連する問題や、学習指導要領に合うように適切な情報を埋めてください。
-
-title と description は学習者へ表示するコンテンツです。
-学習者はこれを見て、これから出題される問題やこの問題に回答する意味を理解します
-title には、出題される問題について。
-descrption には出題される問題を通して学習者が何を学ぶのかその狙いを。
+# 問題例（分数）
+分類問題
+3/4 は 小数で表すと ▢ です。 Done
+1 は 1/5 の ▢こ分です。 Done
+4/6 は 1/6 の □ こ分です。Done
+1/6の分数の分子と分母はそれぞれいくつですか　Done
+1/6 の 7こ分は　▢です
 
 
-説明内では、「問題セット」とは呼称せず「ドリル」などと呼んでください
+7 ORDER_THE_OPTIONS
+4/5, 2/5, 3/5 を小さい順に並べましょう
 
-もし引き算の問題の場合は、
-小学生向けの問題なのでマイナスの値を取らないようにしてください。例えば、「9361 - 4872 = (9000 - 4000) + (300 - 800) + (60 - 70) + (1 - 2) = ▢ + ▢ + ▢ + ▢ = ▢」のような問題だと、1=2の計算でマイナスが発生しています。こういうことは絶対に避けてください
-このことを generate_question_prompt に必ず含んでください
+--- 候補
+ーーFILL_IN_THE_BLANK
+・□m は 1/8m の5こ分の長さです。
+・1/10 L は、□ こ分のかさは 1L です。
+・1/8 の 10こ分は □ です。
+・1m を 10等分した 5 こ分の長さは？
+・1L を 3等分した 1 こ分のかさは？
+・6/8 は 4/8 よりどれだけ大きいですか？
+・2/3 は 1 を □ で割った □ つ分という意味です。
+・1 を同じ大きさに8こに分けました。その1こ分の大きさを分数で書くと □ です。
+・1/5 の 4倍は □ です。
+・1/7 の □倍は 5/7 です。
+・□ の6倍は 6/13 です。
+・□ の8倍は 1 です。
 
-小学３年生向けなので、もし使うことがあるならば
-掛け算、乗法 = かけ算
-割り算、除法 = わり算
-足し算、加算 = たし算
-引き算、除算 = ひき算
-のように分かりやすく表記して
 
-# 項目説明
-title: この問題セットの名前（ユーザーに学習意図が分かりやすいもの）「〇〇ドリル」のような抽象的な名前ではなく、「３桁＋３桁の足し算」など問題の内容が具体的に分かりやすいものにしてくださいdescription:  この問題セットの出題意図の説明（ユーザーに学習意図が分かりやすいもの）。かつ他のQuestionSetのタイトルとノリを同じにして統一感を出したい。
-description: この問題セットの説明を完結に。こちらもtitleと同様に他のQuestionSetとノリを同じにして統一感を出したい
-background: この問題セットの出題意図の内部用の細かく具体的な説明。具体的な問題のイメージが出来ない、抽象的な説明は一切不用。近しい問題で、この問題には含まれない問題例もあると更にイメージしやすい。問題セットに紐づいている問題の問題の内容と学習指導要領などの情報を見て的確に出題意図を詳しく書いて（ユーザーに見せない。作問の趣旨）
-generate_question_prompt：この問題セットに紐づく問題を１問だけLLMに作ってもらう際に利用するプロンプトです。LLMで生成する際は、LLMは｛# 学習指導要領｝、{# 文部科学省、学習指導要領}については知らないので、それに関する情報はこのプロンプトには含めないで。｛# 学習指導要領｝、{# 文部科学省、学習指導要領}、をベースに｛関連する問題｝のような問題を精度高くLLMに生成させるプロンプトを入力する。
+ーーCLASSFY_THE_OPTHION
+次の分数のうち、
+真分数は（）
+仮分数は（）
+7/5, 3/4, 3/3, 4/9, 14/11
+
+ーーORDER_THE_OPTHION
+4/5, 2/5, 3/5 を小さい順に並べましょう
+
+
+# 条件
+・回答は、{#回答フォーマット}と同一としプレーンなJSONで返却すること。
+
+・この問題の対象者は{#学習要件}を参考にしてください。解説は対象者に分かりやすい説明であること
+例えば、learning_grade_levelが小２であれば小学生２年生にも分かりやすい解説や言葉遣いを意識してください
+
+・evaluation_spec.response_format.explanation には、なぜその回答となるのか問題の解説文を{言語設定}の分を追加、埋めてください。
+ 解説は、回答者（ユーザー）へこの問題の意図を理解してもらうことが目的です。
+
+ ・すでに同様の問題を作っている場合は違う問題を作成してください
+
+
+
+# 説明
+fields は、ブランクの箇所を一番最初から順番に表しています
+user_answer: ユーザー（学習者）の回答
+collect_answer: 正しい回答。LLMが入力する
+is_correct: ユーザーの回答が正答かどうが。正答なら true, 誤答なら false。LLMが入力する
+field_explanation：フィールドごとに、なぜその回答なのか解説する。LLMが入力する
+explanation: この問題の解説。LLMが入力する
+"level_id"は、"lev_003"としてください
+"grade_id"は、"gra_003"としてください
+"difficulty_id"は、"diff_100"としてください
+
+
+
+
+"status"は "PUBLISHED",としてください
+
+"generated_by_llm"は false としてください
+
+"question_text"には問題文を入力してください。
+{
+    "ja": "つぎの ▢ にあてはまる数を答えなさい。",
+    "en": "Please answer the numbers that fit in the blanks."
+  },
+  "explanation": {
+    "ja": "",
+    "en": ""
+  },
+  "skills": [
+    {
+      "skill_id": "sk_004",
+      "name": "知識・技能"
+    }
+  ],
+
+"background"にはこの問題の意図を入力してください。
+この問題は学習者に何を学んでほしいのか、なぜこのような出題形式にしたのかなど出題意図を記入すること
+
+作成した問題は、ユーザー（回答者）の回答をLLMに正誤判定してもらいます。
+evaluation_spec：はLLMが正誤判定する時の構造を示しています。
+
+metadataのquestion に具体的な問題を入れてください。
+input_formatは、ユーザー（回答者）に回答させるUIを構築する為の項目です。
+ユーザーから回答してほしい項目を記入する。filed_id は、f_x のようにする
+
+question_componentsは、UIで問題を表示する際に使う要素です。
+ここの配列とorder（50ずつ飛ばし）の順番（昇順）にならってフロントエンドで問題を生成します。
+
+learning_requirementsは、学習要件の項目です。
+作成する問題の元になった{# 学習指導要領}の情報をそのまま入力してください
+learning_requirementには、「カテゴリ+サブカテゴリー+要件」をそのまま
+learning_required_competencyには、「必要水準」をのそまま
+learning_backgroundには、「補足・背景」をのそまま
+
+created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入力してください
+
+## 1. **evaluation_spec** について
+
+**evaluation_spec** は、ユーザーが入力した回答を「正解かどうか」判定するための設定情報をまとめた部分です。
+
+- **evaluation_spec.evaluation_method**
+  - 今回は "CODE" が確定しています（他の方法は省略）。
+- **evaluation_spec.checker_method**
+  - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
+  - 例: `"CHECK_BY_EXACT_MATCH"`
+- **evaluation_spec.response_format**
+  - 回答判定の結果や、問題・解説の文言を指定する部分です。
+  - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
+  - **question_text / explanation / question**: 多言語オブジェクト（{ja, en} など）の形式を取り、問題文や解説文を埋め込みます。
+    - `evaluation_method="CODE"` では、この中身は実際の問題文と同じ内容を持ちます（metadata 内のものと一致）。
+  - **fields**:
+    - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
+    - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
+      - **field_id**: `"f_1"`, `"f_2"` など。
+      - **user_answer**: ユーザー入力値の型を表し、`"number"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
+      - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
+      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数値なら `{ja: 500, en: 500}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
+      - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
+
+### **fields と metadata.input_format.fields の関係**
+- **evaluation_spec.response_format.fields[].field_id** と **metadata.input_format.fields[].field_id** が同じ値を使うことで、
+  「この入力フォーム（metadata側）の回答欄に対する正解・解説（evaluation_spec側）」という対応付けが実現しています。
+- フロントエンドUIが問題画面を構築するとき、**metadata.input_format.fields** を見て入力欄を作り、**evaluation_spec.response_format.fields** の中から正解データや解説を取得して、正誤判定画面などに活用するイメージです。
+
+---
+
+## 2. **metadata** について
+
+**metadata** は、問題を表示するためのUI情報や、問題文そのもののデータを定義する部分です。
+- **metadata.question_type**
+  - 問題の形式を表し、"FILL_IN_THE_BLANK" などが入ります。
+- **metadata.question_text**
+  - 問題文のタイトルや指示文。
+  - 例: 「▢にあてはまる数を答えなさい。」
+- **metadata.question**
+  - 実際の問題式や文章を多言語オブジェクトで定義。
+  - 例: 「315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢」
+- **metadata.explanation**
+  - 問題全体の解説を多言語オブジェクト形式で記入します。
+  - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
+- **metadata.background**
+  - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
+  - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
+- **metadata.input_format**
+  - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
+  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
+  - **fields**: ユーザーが回答を入力する欄の定義を配列でまとめます。
+    - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
+    - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
+    - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
+  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。
+    - **type**: `"text"`, `"newline"`, `"input_field"` など。
+    - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
+    - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
+    - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
+
+**ポイント**: fill_in_the_blank の問題では
+- 「**metadata.input_format** の fields → どこに回答欄があるか」
+- 「**evaluation_spec.response_format** の fields → その回答欄の正解は何か」
+を組み合わせることで、**ユーザー入力欄** と **正解データ** がマッピングされます。
+
 
 # 学習指導要領
 No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	要件	Unit ID	必要水準	補足・背景
@@ -70,8 +201,8 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 6	小1	A 数と計算	式・関係	足し算・引き算		加法及び減法の場面の式読み		・具体的な状況（りんごが3個あって… など）を式に変換する初歩的スキルがある。	・数量と言葉，式を結び付ける力は文章題の理解に直結する。
 7	小1	A 数と計算	日常生活への活用	数の活用	sec_s1_g1_300	数の活用	u100	・身の回りの物や人数などを数えて，必要な数を報告できる。	・生活の中で数え方や比べ方を自然に使っていることに気付かせる。
 8	小1	A 数と計算	日常生活への活用	数の活用	sec_s1_g1_300	加法、減法の活用	u200	・「りんごが5個あって2個食べたら残りは何個か」など，日常的な場面でたし算・ひき算を使える。	・買い物ごっこや簡単なゲームなどを通じて計算を実践し，算数への親しみを深める。
-9	小1	A 数と計算	計算の意味・方法	規則性					
-10	小1	A 数と計算	計算の意味・方法	規則性					
+9	小1	A 数と計算	計算の意味・方法	規則性
+10	小1	A 数と計算	計算の意味・方法	規則性
 11	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	２位数の加法とその逆の減法	u100	1位数で習得した加減法を基に、2位数の繰り上がり・繰り下がりを正しく理解し筆算できる	・十進位取り記数法を具体物や図で再確認し、筆算の形式が成立する理由を体感的に理解させる。
 12	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	簡単な場合の３位数などの加法，減法	u200	・百単位などに注目して、3位数の加法・減法（繰り上がりや繰り下がりが簡単な場合）を2位数の計算を拡張して処理できる。	・2位数計算の延長として3位数に取り組み、位ごとのまとまりを捉える力を養う。
 13	小2	A 数と計算	計算の意味・方法	足し算・引き算	sec_s1_g2_100	加法や減法に関して成り立つ性質	u300	・加法および減法について、交換法則(a + b = b + a)や結合法則((a + b) + c = a + (b + c))が成り立つことを具体的に理解できる。	・具体例や操作活動で、順序・まとまりを変えても結果が変わらないことを確認し、高学年の式操作へつなぐ素地を作る。
@@ -92,8 +223,8 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 28	小2	A 数と計算	日常生活への活用	掛け算	sec_s1_l2_600	乗法の活用	u500	・同じ数を繰り返し足すよりかけ算の方が便利だと実感でき、2桁×1桁程度の乗法を生活の簡単な計算に使える。	・計算力を生活で役立てる体験をし，学ぶ意義を感じさせる。
 29	小2	A 数と計算	計算の意味・方法	規則性	sec_s1_g2_1200	 繰り返しパターンを見つけ，次にくる要素を推測する	u100	○→△→□→○→△→□…のような簡単な周期がある並びを理解し，周回の周期がわかれば次の要素を正しく求められる	身近な繰り返し（曜日のサイクルやリズムパターンなど）を例に挙げると理解しやすい。図形や色カードなど具体物を用いて，周回の概念や指折りによる確認を体験的に学ばせる
 30	小2	A 数と計算	計算の意味・方法	規則性	sec_s1_g2_1200	一定の差で増減する並びをとらえ，指定された番目や合計を求める	u200	足し算・引き算の繰り返しとして扱い，感覚的に「差を加えていく」ことを経験させる。文章題や図を用いて，「1段目から何段目までの合計」を求める練習などにも応用しやすい	階段を上がる段数の増加や，何個ずつ増やす/減らすなど日常の場面に結びつけ，「同じ差で進む」イメージを育む。のちのかけ算や一次関数的な考え方の土台になるので，簡単な数例で繰り返し慣れさせる
-31	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u100		
-32	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u200		
+31	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u100
+32	小2	A 数と計算	計算の意味・方法	植木算	sec_s1_g2_1300		u200
 33	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	万の単位、1億などの比べ方や表し方	u100	・1万，10万，100万，1億などの上位の位を正しく読み書きできる。	・さらに大きな数への理解を深め，数のスケールを体感できるようにする。
 34	小3	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g3_100	大きな数の相対的大きさ	u200	 	・単なる記号操作ではなく，日常との結び付きで「いくつ分違うか」を考えさせる。
 35	小3	A 数と計算	数の概念	分数と少数	sec_s1_g3_700	小数	u100	・少数の意味を理解できる	・少数、整数の分類や比較などの問題を通して意味や概念を理解する
@@ -106,7 +237,7 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 42	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	1位数などのわり算	u100	・1桁わり算(27÷3等)を九九を用いてスムーズに解ける。	・2桁以上の除法に進む基礎固め。逆算としてかけ算との結び付きも確認。
 43	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	わり算とかけ算や引き算との関係	u200	・わり算が乗法/減法と逆演算の関係にあることを理解し，検算に利用できる。	・問題解決で「かけ算で確かめる」などの活用を経験させる。
 44	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	小数（10の位）の加法及び減法	u400	・0.5 + 0.3など，小数第1位までの加減計算を筆算または暗算で行える。	・小数点の位置合わせの重要性を強調し，整数との違いを意識させる。
-45	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	簡単な分数の加法及び減法	u500	・分母が同じな場合（1/2+1/2等）の計算を誤りなく行える。	・分割のイメージを図で示し，抽象化に慣れさせる初歩段階。
+45	小3	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g3_700	簡単な分数の加法及び減法		・分母が同じな場合（1/2+1/2等）の計算を誤りなく行える。	・分割のイメージを図で示し，抽象化に慣れさせる初歩段階。
 46	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	交換法則、結合法則、分配法則	u100	・a×(b + c)=ab+acなど，乗法・加法におけるこれらの法則を式で表せる。	・高学年での式操作に備え，体系的に理解させる。
 47	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	加法、減法及び乗法の結果の見積もり	u200	・計算前におおよその値を把握し，答えの妥当性を判断できる。	・日常での買い物や分量計算など，誤差の確認に役立つ習慣化が狙い。
 48	小3	A 数と計算	計算の意味・方法	計算の決まりや工夫	sec_s1_g3_900	計算の工夫や確かめ	u300	・逆算や暗算，そろばんなどを状況に応じて使い分け，結果を検証できる。	・複数の手段で自己点検することで，計算力と自信を高める。
@@ -123,10 +254,30 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 55	小3	A 数と計算	式・関係	式の表現		図及び式による表現・関連付け		・テープ図などを描いて数量を整理し，式に落とし込むスキルを身に付ける。	・段階的に思考を可視化し，文章題への対応力を養う。
 56	小3	A 数と計算	式・関係	式の表現		□を用いた式		・□+4=10のように，□を未知数として扱い答えを導ける。	・中学での文字式に進む前段階として重要な経験。
 57	小3	A 数と計算	日常生活への活用	大きな数の概念と活用	sec_s1_g3_100	大きな数の活用	u500	・買い物や距離の測定等で，大きな数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-58	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	小数の活用	u600	・買い物や距離の測定等で，小数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
-59	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	分数の活用	u700	・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+58	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	小数の活用		・買い物や距離の測定等で，小数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
+59	小3	A 数と計算	日常生活への活用	分数と少数	sec_s1_g3_700	分数の活用		・買い物や距離の測定等で，分数を用いた計算を体験できる。	・実際の金額やメジャーを用いるなど，リアルな課題設定で応用力を促す。
 60	小3	A 数と計算	日常生活への活用	割り算	sec_s1_g3_300	わり算の活用	u700	・人数で分ける，単価を求めるなど，わり算が不可欠な場面を処理できる。	・クラブ費やお菓子の分け方等，日常事例を取り入れ理解を深める。
 61	小3	A 数と計算	計算の意味・方法	割り算	sec_s1_g3_300	2桁のわり算	u500	あまりあり、あまりなしの2桁以上の除法(2桁÷1桁、2桁÷2桁など)を正しく計算できる。繰り上がりや0の処理を含めた筆算・暗算に対応し、答えを正確に求められる	筆算や暗算を組み合わせ、大きな数の除法へ移行する基礎を育成する
+62	小4	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g4_100	億、兆の単位などの比べ方や表し方（統合的）		・1億や1兆などを正しく読み書きし，桁数を把握できる。	・ニュースなどでよく見る大きな数を実感としてつかむ。
+63	小4	A 数と計算	数の概念	大きな数の概念と活用	sec_s1_g4_100	目的に合った数の処理		・四捨五入や概数を用いておおよその値を出すなど，計算の手間を調整できる。	・場面に応じて厳密な数値と概算を使い分ける力を育成する。
+64	小4	A 数と計算	数の概念	分数と少数	sec_s1_g4_400	小数の相対的大きさ	u100	・0.03と0.3のどちらが大きいかを位取りの考え方で正しく説明できる。	・整数から小数へ，位を横へ広げる段階の学習。
+65	小4	A 数と計算	数の概念	分数と少数	sec_s1_g4_400	分数（真分数、仮分数、帯分数）とその大きさの相違	u400	・3/2=1 1/2(帯分数)など，分数表示の変換と大小関係を正しく理解する。	・分数を統合的に捉えられるよう，図や具体物と結びつけて学ぶ。
+66	小4	A 数と計算	計算の意味・方法	分数と少数 	sec_s1_g4_400	小数を用いた n 倍の意味	u200	・1.2倍や2.5倍など，小数倍を具体的な例と式で示せる。	・拡大・縮小や単位量あたりの考え方とも関連づける。
+67	小4	A 数と計算	計算の意味・方法	割り算（除法）	sec_s1_g4_300	2位数などによる除法		・2桁÷1桁や3桁÷1桁などのわり算を筆算で処理できる。	・桁の扱いが複雑化するため，しっかりと手順を教える。
+68	小4	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g4_400	小数（100の位など）の加法及び減法	u300	・0.23+0.7など，小数第2～第3位程度の加減算を正確に行える。	・小数点の位置合わせに慣れさせ，整数部分と小数部分を区別する。
+69	小4	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g4_400	小数の乗法及び除法（小数×小数、小数÷小数）	u600	・0.5×0.2や1.2÷0.4など，小数点の位置を正しく処理できる。	・「小数点の移動量」を把握し，反復練習で確実性を高める。
+70	小4	A 数と計算	計算の意味・方法	分数と少数	sec_s1_g4_400	同分母分数の加法及び減法	u500	・分母が同じなら分子を足し引きすればよいことを理解し，計算できる。	・帯分数への変換などを図で示し，概念を定着させる。
+71	小4	A 数と計算	計算の意味・方法	計算の決まりや工夫		交換法則、結合法則、分配法則		・四則計算の簡略化にこれらの法則を活用し，実際に手順を省力化できる。	・式の一部をまとめたり展開したりする力を育て，中学の代数に備える。
+72	小4	A 数と計算	計算の意味・方法	計算の決まりや工夫		除法に関して成り立つ性質		・(a ÷ b) ÷ c = a ÷ (b × c)などを小数や簡単な整数で確かめられる。	・分数との関連理解（a/b ÷ c = a/b × 1/c）への布石となる。
+73	小4	A 数と計算	計算の意味・方法	計算の決まりや工夫		四則演算の結果の見積り		・加減乗除が混ざった式で，ざっくりした答えを先に想定できる。	・買い物や予算計算など，誤差と妥当性をチェックする習慣化。
+74	小4	A 数と計算	計算の意味・方法	計算の決まりや工夫		計算の工夫や確かめ		・同じ計算を繰り返さなくても，分配法則や検算を使って効率よく確認できる。	・自己点検を行う習慣づくりと，複数手段の併用を身に付ける。
+75	小4	A 数と計算	計算の意味・方法	"そろばん	"		そろばんによる計算		・4桁以上の加減や簡単なかけ算・わり算をそろばんで処理できる。	・デジタル機器だけでなく，アナログ計算の力も伸ばしていく。
+76	小4	A 数と計算	式・関係	式の表現		四則混合の式や ( ) を用いた式表現・式読み		・(3+2)×4-6などの演算順序を間違えずに処理し，式として適切に表せる。	・中学の文字式へ向かう前に，( ) の優先順位などのルールを定着させる。
+77	小4	A 数と計算	式・関係	式の表現		公式についての考え		・長方形の面積などを「たて×よこ」と一般化し，なぜそうなるかを理解する。	・図を使った操作で公式を導き納得させるプロセスを重視。
+78	小4	A 数と計算	式・関係	式の表現		n、△などを用いた式表現（簡潔・一般的）		・(n+2)×3 のような抽象的表記を読んだり書いたりできる。	・中学以降の文字式にスムーズに接続できるよう抽象化を体験させる。
+79	小4	A 数と計算	日常生活への活用	日常生活への活用		大きな数の活用		・1億や1兆をニュースや社会の数値と関連づけてイメージできる。	・親しみやすい例（全国人口や生産量など）を取り上げ，桁感覚を鍛える。
+80	小4	A 数と計算	日常生活への活用	日常生活への活用		目的に合った数の処理の仕方の活用		・概算を使って大量のものの個数や総額をすばやく求められる。	・精密さと効率のバランスを調整する判断力を養う。
+81	小4	A 数と計算	日常生活への活用	日常生活への活用		小数や分数の計算の活用		・料理の分量や距離計算などで，小数・分数混在の計算を行い結果を解釈できる。	・実際の測定やアクティビティを通じ，計算結果を検証する体験を大切に。
 
 
 # 文部科学省、学習指導要領
@@ -688,335 +839,15 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 
 そろばんは，どの桁の珠も同じ大きさの形でできている。この仕組みは，同じ記号で異なる数を表すという位取り記数法に沿ったものであることから，そろばんで数を表したり，計算をしたりすることは，位取り記数法の理解を確かにすることにつながる。指導に当たっては，こうしたそろばんの仕組みと数の仕組みを対比させながら，計算の仕方を考えさせることを大切にしたい。
 
--- その他の問題セットJSONの例
+
+
+
+
+#回答フォーマット
 ```json
 {
-  "json_id": "qset_s1_g2_sec600_u200_v100_100",
-  "unit_id": "unit_s1_g2_sec600_200",
-  "unit": {
-    "ja": "2位数や簡単な3位数の乗法",
-    "en": "Multiplying two-digit or simple three-digit numbers"
-  },
-  "title": {
-    "ja": "2桁と簡単な3桁のかけ算を学ぼう",
-    "en": "Let's Learn Multiplying Two-Digit and Simple Three-Digit Numbers"
-  },
-  "description": {
-    "ja": "この単元では、2桁×1桁や簡単な3桁×1桁の筆算に慣れることを目指します。九九を活用しながら繰り上がりにも注意して、正確かつ素早い計算力を身に付けましょう。",
-    "en": "In this unit, we aim to become familiar with multiplying two-digit and simple three-digit numbers by one-digit numbers. By making good use of the multiplication tables and carefully handling carries, you will develop faster and more accurate calculation skills."
-  },
-  "generate_question_prompt": {
-    "ja": "",
-    "en": ""
-  },
-  "order": 100,
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "questions": [
-    "ques_s1_g2_sec600_u200_diff100_qt51_v100_100",
-    "ques_s1_g2_sec600_u200_diff100_qt51_v100_200"
-  ]
-}
-
-```
-ーー対象のJSON
-```json
-{
-  "json_id": "qset_s1_g3_sec700_u200_v100_400",
-  "order": 400,
-  "unit_id": "unit_s1_g3_sec700_200",
-  "unit": {
-    "ja": "簡単な分数",
-    "en": "Simple fractions"
-  },
-  "title": {
-    "ja": "",
-    "en": ""
-  },
-  "description": {
-    "ja": "",
-    "en": ""
-  },
-  "background": {
-    "ja": "",
-    "en": ""
-  },
-  "generate_question_prompt": {
-    "ja": "",
-    "en": ""
-  },
-  "generate_question_prompt_file_name": "fill_in_the_blank",
-  "llm_generation_status": "DISABLED",
-  "memo": "分数を少数で表す",
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "validation_check": true,
-  "questions": [
-    "ques_s1_g3_sec700_u200_diff100_qt51_v100_700",
-    "ques_s1_g3_sec700_u200_diff100_qt51_v100_800",
-    "ques_s1_g3_sec700_u200_diff100_qt51_v100_900"
-  ]
-}
-
-```
-
-ーーこの問題セットで出題する問題
-```json
-{
-  "order": 700,
-  "id": "ques_s1_g3_sec700_u200_diff100_qt51_v100_700",
-  "level_id": "lev_003",
-  "grade_id": "gra_003",
-  "difficulty_id": "diff_100",
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "generated_by_llm": false,
-  "created_at": "2025-01-01 00:00:00",
-  "updated_at": "2025-01-01 00:00:00",
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 36,
-      "learning_requirement": "数の概念 分数と少数 簡単な分数",
-      "learning_required_competency": "・分数の意味を理解できる",
-      "learning_background": "・整数、分数の分類や比較などの問題を通して意味や概念を理解する",
-      "learning_category": "A",
-      "learning_grade_level": "小3"
-    }
-  ],
-  "evaluation_spec": {
-    "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
-    "response_format": {
-      "is_correct": "boolean",
-      "score": "number",
-      "question_text": {
-        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-        "en": "Please answer the number that fits in the blank."
-      },
-      "explanation": {
-        "ja": "1/2 は 1 を 2 で割った数なので、少数に直すと 0.5 です。",
-        "en": "Since 1/2 means 1 divided by 2, its decimal representation is 0.5."
-      },
-      "question": {
-        "ja": "\\(\\frac{1}{2}\\) は、少数で表すと ▢ です。",
-        "en": "\\(\\frac{1}{2}\\) in decimal form is ▢."
-      },
-      "fields": [
-        {
-          "field_id": "f_1",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 0.5,
-            "en": 0.5
-          },
-          "field_explanation": {
-            "ja": "1 を 2 でわると 0.5 になるので答えは 0.5 です。",
-            "en": "Dividing 1 by 2 gives 0.5, so the correct answer is 0.5."
-          }
-        }
-      ]
-    }
-  },
-  "metadata": {
-    "question_type": "FILL_IN_THE_BLANK",
-    "question_text": {
-      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-      "en": "Please answer the number that fits in the blank."
-    },
-    "explanation": {
-      "ja": "分数（\\(\\frac{1}{2}\\)）が小数でどのように表せるのかを理解する問題です。1 を 2 でわる考え方が分数と少数の関係を理解する上で大切になります。",
-      "en": "This problem asks how the fraction \\(\\frac{1}{2}\\) can be written as a decimal. Understanding that dividing 1 by 2 shows how fractions relate to decimals."
-    },
-    "background": {
-      "ja": "この問題は「分数を少数で表す」基礎的な概念を学ぶ狙いがあります。小学校3年生段階で、\\(\\frac{1}{2}\\)が0.5になることを通じて、分数と少数の変換に慣れ親しんでもらいたい意図があります。",
-      "en": "The purpose of this problem is to help third graders learn the basic concept of converting fractions to decimals. By seeing that \\(\\frac{1}{2}\\) is 0.5, they can become more familiar with fractions and decimals."
-    },
-    "input_format": {
-      "type": "fixed",
-      "fields": [
-        {
-          "field_id": "f_1",
-          "attribute": "number",
-          "user_answer": "number"
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "order": 50,
-          "attribute": "text",
-          "content": {
-            "ja": "\\(\\frac{1}{2}\\) は、少数で表すと ",
-            "en": "\\(\\frac{1}{2}\\) in decimal form is "
-          }
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_1",
-          "order": 100,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "order": 150,
-          "attribute": "text",
-          "content": {
-            "ja": " です。",
-            "en": "."
-          }
-        }
-      ]
-    },
-    "question": {
-      "ja": "\\(\\frac{1}{2}\\) は、少数で表すと ▢ です。",
-      "en": "\\(\\frac{1}{2}\\) in decimal form is ▢."
-    }
-  }
-}
-
-```
-```json
-{
-  "order": 800,
-  "id": "ques_s1_g3_sec700_u200_diff100_qt51_v100_800",
-  "level_id": "lev_003",
-  "grade_id": "gra_003",
-  "difficulty_id": "diff_100",
-  "version": "1.0.0",
-  "status": "PUBLISHED",
-  "generated_by_llm": false,
-  "created_at": "2025-01-01 00:00:00",
-  "updated_at": "2025-01-01 00:00:00",
-  "skills": [
-    {
-      "skill_id": "sk_004",
-      "name": "知識・技能"
-    }
-  ],
-  "learning_requirements": [
-    {
-      "learning_subject": "算数",
-      "learning_no": 36,
-      "learning_requirement": "数の概念 分数と少数 簡単な分数",
-      "learning_required_competency": "・分数の意味を理解できる",
-      "learning_background": "・整数、分数の分類や比較などの問題を通して意味や概念を理解する",
-      "learning_category": "A",
-      "learning_grade_level": "小3"
-    }
-  ],
-  "evaluation_spec": {
-    "evaluation_method": "CODE",
-    "checker_method": "CHECK_BY_EXACT_MATCH",
-    "response_format": {
-      "is_correct": "boolean",
-      "score": "number",
-      "question_text": {
-        "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-        "en": "Please answer the numbers that fit in the blank."
-      },
-      "explanation": {
-        "ja": "分数 \\(\\frac{1}{4}\\) は 1 ÷ 4 の計算と同じで、小数で書くと 0.25 となります。",
-        "en": "The fraction \\(\\frac{1}{4}\\) means 1 divided by 4, which equals 0.25 in decimal form."
-      },
-      "question": {
-        "ja": "\\(\\frac{1}{4}\\) は、少数で表すと ▢ です。",
-        "en": "\\(\\frac{1}{4}\\) in decimal form is ▢."
-      },
-      "fields": [
-        {
-          "field_id": "f_1",
-          "user_answer": "number",
-          "is_correct": "boolean",
-          "collect_answer": {
-            "ja": 0.25,
-            "en": 0.25
-          },
-          "field_explanation": {
-            "ja": "1 を 4 でわると 0.25 になるので、少数で書くと 0.25 となります。",
-            "en": "Because 1 divided by 4 is 0.25, that is how we write it in decimal form."
-          }
-        }
-      ]
-    }
-  },
-  "metadata": {
-    "question_type": "FILL_IN_THE_BLANK",
-    "question_text": {
-      "ja": "つぎの ▢ にあてはまる数を答えなさい。",
-      "en": "Please answer the number that fits in the blank."
-    },
-    "explanation": {
-      "ja": "分数と少数の関係を理解するために、\\(\\frac{1}{4}\\) を小数でどう表すかを考えます。1 を 4 でわる計算を思い出してみましょう。",
-      "en": "This problem focuses on understanding how fractions convert to decimals. Recall how dividing 1 by 4 demonstrates the relationship between fractions and decimals."
-    },
-    "background": {
-      "ja": "この問題では分数の\\(\\frac{1}{4}\\)を小数で表す練習をします。小学校３年生において、分数が小数で表されることを理解し、計算を通して数の仕組みを体感してほしい意図があります。",
-      "en": "This exercise asks third-grade students to express the fraction \\(\\frac{1}{4}\\) as a decimal. The intention is for them to experience how fractions relate to decimals through simple calculation."
-    },
-    "input_format": {
-      "type": "fixed",
-      "fields": [
-        {
-          "field_id": "f_1",
-          "attribute": "number",
-          "user_answer": "number"
-        }
-      ],
-      "question_components": [
-        {
-          "type": "text",
-          "order": 50,
-          "attribute": "text",
-          "content": {
-            "ja": "\\(\\frac{1}{4}\\) は、少数で表すと ",
-            "en": "\\(\\frac{1}{4}\\) in decimal form is "
-          }
-        },
-        {
-          "type": "input_field",
-          "field_id": "f_1",
-          "order": 100,
-          "attribute": "blank",
-          "content": {
-            "ja": "",
-            "en": ""
-          }
-        },
-        {
-          "type": "text",
-          "order": 150,
-          "attribute": "text",
-          "content": {
-            "ja": " です。",
-            "en": "."
-          }
-        }
-      ]
-    },
-    "question": {
-      "ja": "\\(\\frac{1}{4}\\) は、少数で表すと ▢ です。",
-      "en": "\\(\\frac{1}{4}\\) in decimal form is ▢."
-    }
-  }
-}
-
-```
-```json
-{
-  "order": 900,
-  "id": "ques_s1_g3_sec700_u200_diff100_qt51_v100_900",
+  "order": 600,
+  "id": "ques_s1_g3_sec700_u200_diff100_qt51_v100_600",
   "level_id": "lev_003",
   "grade_id": "gra_003",
   "difficulty_id": "diff_100",
@@ -1053,12 +884,12 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
         "en": "Please answer the number that fits in the blank."
       },
       "explanation": {
-        "ja": "分数を小数に直すときは、分母を「10」や「100」にそろえて考えてみるとわかりやすいです。この問題では、\\(\\tfrac{3}{4}\\) が小数でどのように表せるかを考えましょう。",
-        "en": "When converting a fraction to a decimal, it helps to think of the denominator as 10 or 100. In this problem, see how to express \\(\\frac{3}{4}\\) as a decimal."
+        "ja": "1 を \\(\\frac{1}{5}\\) で考えるとき、\\(\\frac{1}{5}\\) をいくつ集めると 1 になるかを考えれば求められます。",
+        "en": "When thinking of 1 as multiple pieces of \\(\\frac{1}{5}\\), consider how many 1/5 pieces add up to make 1."
       },
       "question": {
-        "ja": "\\(\\frac{3}{4}\\) は 小数で表すと ▢ です。",
-        "en": "\\(\\frac{3}{4}\\) is what decimal?"
+        "ja": "1 は \\(\\frac{1}{5}\\) の ▢こ分です。",
+        "en": "1 is how many pieces of \\(\\frac{1}{5}\\) ?"
       },
       "fields": [
         {
@@ -1066,12 +897,12 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
           "user_answer": "number",
           "is_correct": "boolean",
           "collect_answer": {
-            "ja": 0.75,
-            "en": 0.75
+            "ja": 5,
+            "en": 5
           },
           "field_explanation": {
-            "ja": "分母4を100に合わせると25倍なので、分子3も25倍して75。つまり 0.75 となります。",
-            "en": "By scaling the denominator (4) to 100 (which is ×25), we do the same for the numerator (3×25=75), so it becomes 0.75."
+            "ja": "1/5 を 5 つ集めると 1 になるので答えは 5 です。",
+            "en": "Because five pieces of 1/5 add up to 1, the correct answer is 5."
           }
         }
       ]
@@ -1084,16 +915,16 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
       "en": "Please answer the number that fits in the blank."
     },
     "question": {
-      "ja": "$$\\frac{3}{4}$$ は 小数で表すと ▢ です。",
-      "en": "$$\\frac{3}{4}$$ is what decimal?"
+      "ja": "1 は \\(\\frac{1}{5}\\) の ▢こ分です。",
+      "en": "1 is how many pieces of \\(\\frac{1}{5}\\)?"
     },
     "explanation": {
-      "ja": "分母4をもつ分数を小数第2位までの整数比に変換して考える練習です。実際に4分の3がどれだけの小数か計算してみましょう。",
-      "en": "This is an exercise in converting a fraction with denominator 4 into a decimal up to two places. See how many decimal places 3/4 corresponds to."
+      "ja": "1 を分数で表したときに、1/5 がいくつ集まれば 1 になるかを考えましょう。",
+      "en": "Think about how many 1/5 pieces are needed to make 1 when expressing it as a fraction."
     },
     "background": {
-      "ja": "この問題は、小学3年生が分数と少数の関係を理解するために作られています。分母や分子を整数にそろえて小数に直すステップを学んでほしいという意図があります。",
-      "en": "This problem is designed for third-grade students to understand the relationship between fractions and decimals. It helps them learn how to convert denominators and numerators into decimal form."
+      "ja": "この問題は、「分数の意味」に注目し、1 が分数でいくつ分になるかを理解する目的で出題しています。分数と整数の関係を直感的に把握できるようになるのが狙いです。",
+      "en": "This problem focuses on understanding the meaning of fractions by examining how many times a fraction fits into 1. It helps learners intuitively grasp the relationship between fractions and whole numbers."
     },
     "input_format": {
       "type": "fixed",
@@ -1108,8 +939,8 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
         {
           "type": "text",
           "content": {
-            "ja": "$$\\frac{3}{4}$$ は 小数で表すと ",
-            "en": "$$\\frac{3}{4}$$ is what decimal? "
+            "ja": "1 は \\(\\frac{1}{5}\\) の ",
+            "en": "1 is \\(\\frac{1}{5}\\) × "
           },
           "order": 50
         },
@@ -1126,8 +957,8 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
         {
           "type": "text",
           "content": {
-            "ja": " です。",
-            "en": ""
+            "ja": "こ分です。",
+            "en": " times."
           },
           "order": 150,
           "attribute": "text"
@@ -1138,3 +969,73 @@ No	学年	カテゴリ	サブカテゴリー	セクション	セクションID	�
 }
 
 ```
+
+
+
+# フォーマット説明
+3. 穴埋め問題（FILL_IN_OPERATOR）の例
+QuestionType::FILL_IN_OPERATOR かつ QuestionFormat::TEXT_ANSWER（あるいは NUMERIC_ANSWER）の場合、問題文中に空白部分（blank）があり、そこにユーザーが値を入力する形式になります。
+question_data.input_format.question_components が、問題文をどのように構成するかを定義しています。
+3.1 question_components の構造
+各要素には type（text や input_field など）、order（表示順）、content（テキストの場合の文字列）、field_id（input_fieldの場合の入力箇所のID）が含まれます。
+type: "input_field" となっている要素の field_id と一致する fields 情報が入力フォームに対応し、ユーザーが値を入力する場所になります。
+type: text  の場合は、必ず ja en オブジェクトを持つ多言語構造としてください
+3.2 サンプルJSON
+以下は API から返却される例です。（"FILL_IN_OPERATOR" の場合）
+"question": {
+  "id": "a3a8e81d-2d75-47fd-a245-232a88a542ee",
+  "question_text": "Please answer the numbers that fit in the blanks.",
+  "explanation": "",
+  "question_data": {
+    "question": "8 × 4 = ▢ × 8 = ▢",
+    "input_format": {
+      "type": "fixed",
+      "fields": [
+        {
+          "field_id": "f_1",
+          "attribute": "number",
+          "collect_answer": "4"
+        },
+        {
+          "field_id": "f_2",
+          "attribute": "number",
+          "collect_answer": "32"
+        }
+      ],
+      "question_components": [
+        {
+          "type": "text",
+          "content": {
+            "ja": "8 × 4 = ",
+            "en": "8 × 4 = "
+          },
+          "order": 1
+        },
+        {
+          "type": "input_field",
+          "field_id": "f_1",
+          "order": 2
+        },
+        {
+          "type": "text",
+          "content": {
+            "ja": " × 8 = ",
+            "en": " × 8 = "
+          },
+          "order": 3
+        },
+        {
+          "type": "input_field",
+          "field_id": "f_2",
+          "order": 4
+        }
+      ]
+    }
+  },
+  "version": "1.0.0",
+  "question_type": "51"
+}
+
+"question_components" の order（５０ずつ飛ばし） 順にテキストや空白が並んでおり、空白（type: "input_field") には field_id が付与されています。
+ここで f_1 や f_2 といった field_id が回答フォームに対応し、ユーザーは数値を入力します。（本例は NUMERIC_ANSWER のため数値入力UI）
+fields.collect_answer が正解となる数値（または文字列）を示し、サーバー側の判定ロジックに利用されます。
