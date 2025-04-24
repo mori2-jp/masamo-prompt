@@ -1143,939 +1143,1077 @@ C    D    B
 
 -- 対象JSON
 ```json
-[
-  {
-    "json_id": "sec_s1_g6_100",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 100,
-    "name": {
-      "ja": "対称な図形",
-      "en": ""
-    },
-    "units": [
+{
+   "sections": [
       {
-        "unit_id": "unit_s1_g6_sec100_100",
-        "order": 100,
-        "requirement": {
-          "ja": "対称な図形",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・点対称や線対称など，対称の性質を見抜き，図形として捉えられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・作図や折り返しを通じて，対称軸や対称中心を視覚的に確かめる。",
-          "en": ""
-        }
+         "order": 100,
+         "json_id": "sec_s1_g6_100",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "B",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "対称な図形",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec100_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "対称な図形",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・点対称や線対称など，対称の性質を見抜き，図形として捉えられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・作図や折り返しを通じて，対称軸や対称中心を視覚的に確かめる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec100_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "対称な図形",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・対称な図形の模様やパターンを作り出し，作図の方法を説明できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・折り紙や幾何模様づくりで，左右対称・点対称を活用したデザインを楽しむ。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec100_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "対称な図形",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・生活や自然界にある対称性（蝶や葉脈など）に気づき，図形として説明できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・芸術や建築にも多用される対称構造を見つけるなど，総合的な視点を育む。",
+                  "en": ""
+               }
+            }
+         ]
       },
       {
-        "unit_id": "unit_s1_g6_sec100_200",
-        "order": 200,
-        "requirement": {
-          "ja": "対称な図形",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・対称な図形の模様やパターンを作り出し，作図の方法を説明できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・折り紙や幾何模様づくりで，左右対称・点対称を活用したデザインを楽しむ。",
-          "en": ""
-        }
+         "order": 200,
+         "json_id": "sec_s1_g6_200",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "A",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "文字を用いた式",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec200_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "文字を用いて数量や計算の関係を一次式で表せる。",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・場面に応じて a や x などの文字を使い「4×x」「y＝7＋x」のような式を正しく立てられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学で学ぶ文字式・方程式への橋渡しとして数の一般化を体験させる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec200_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "文字式に数を代入して値を求めたり対応関係を読み取れる。",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・x＝15 など具体値を代入して計算し逆に式から x と y の対応関係を読み取れる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・比例・関数の式操作に自然につながるよう活用事例に慣れさせる。",
+                  "en": ""
+               }
+            }
+         ]
       },
       {
-        "unit_id": "unit_s1_g6_sec100_300",
-        "order": 300,
-        "requirement": {
-          "ja": "対称な図形",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・生活や自然界にある対称性（蝶や葉脈など）に気づき，図形として説明できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・芸術や建築にも多用される対称構造を見つけるなど，総合的な視点を育む。",
-          "en": ""
-        }
+         "order": 300,
+         "json_id": "sec_s1_g6_300",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "A",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "分数の計算（乗法・除法）",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec300_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "分数の掛け算",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・分数×整数、分数÷整数、分数×分数など多様な乗除混合計算を約分を含め正確に行える。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・図や操作活動を通じて，分数の乗法が「基準量の○/○倍」を表すことを理解し，中学の比例・関数へスムーズに橋渡しする。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec300_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "分数÷分数",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・分数÷分数を逆数を用いて乗法に変換し，筆算で正確に計算できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・逆数の概念を活用する考え方は，中学以降の有理数計算や式の変形の基礎となるため，理由付けとセットで定着させる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec300_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "乗法及び除法の適用範囲の拡張（分数）",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・(a/b)×(c/d)，(a/b)÷(c/d)など分数同士の乗除を式で表し，計算できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学の有理数計算に向け，整数・小数・分数すべての乗除を総合的に扱う。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 400,
+               "unit_id": "unit_s1_g6_sec300_400",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "分数の乗法及び除法（多面的）",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・分数×分数，分数÷分数を面積モデルや数直線など複数の観点で捉えられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・計算手順だけでなく，なぜそうなるのかを図解で理解させる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 500,
+               "unit_id": "unit_s1_g6_sec300_500",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "分数・小数の混合計算（統合的）",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・分数と小数が混在する計算（例：1.2 + 3/5や0.75×2/3）を正しく処理できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学以降のあらゆる数を扱う計算へスムーズにつなげる最終仕上げ。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 600,
+               "unit_id": "unit_s1_g6_sec300_600",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "分数の倍",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・「○の□倍」を分数で表し，数量を求められる（例：2/3倍は×2/3であることを使用）。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・割合の感覚を深化させ，中学の比例・関数へ接続するために「倍」を比やスケールの視点で扱う。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 700,
+               "unit_id": "unit_s1_g6_sec300_700",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "分数の文章題",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・日常場面を表す文章題を分数の乗除を用いて式化し，解答まで一貫して示せる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・数量の単位や比較対象を明確化し，誤った分数操作を防ぐ読解・モデリング力を養う。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 400,
+         "json_id": "sec_s1_g6_400",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "C",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "比",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec400_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比と比の値",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・a:b の形で二数の関係を表し，比の値 a/b を求めて大小比較や等しい比の判定ができる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・分数・小数との相互変換や比例式の基礎として，比の値を“ひとつの数”として扱う感覚を定着させる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec400_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "等しい比の性質",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・a:b = c:d となるとき ad=bc であることを用い，三つの値から未知数を求められる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・比例式への橋渡しとして，項を倍量変換しても比が不変であることを図や数直線で確かめる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec400_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・2:3 のような比を使って，2つの量の大小関係や調整を行える。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・割合・比例の概念と関連し，量の配分や地図の縮尺などにも活かす。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 400,
+               "unit_id": "unit_s1_g6_sec400_400",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・レシピの材料配分や縮図作成など，比の視点を使って調整や設計ができる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・先々の拡大図・縮図や中学数学（相似）の理解につなげる。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 500,
+         "json_id": "sec_s1_g6_500",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "B",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "縮図や拡大図",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec500_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "縮図や拡大図",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・もとの図形を一定の倍率で縮小・拡大する作図ができる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・方眼紙などを利用し，スケールを意識する練習を行う。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec500_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "縮図や拡大図による測量",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・地図や設計図などで縮尺を使い，実際の距離や大きさを算出できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・社会科との関連（地図読み取り）などを積極的に取り入れ，教科横断的に扱う。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 600,
+         "json_id": "sec_s1_g6_600",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "D",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "統計データの妥当性と代表値",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec600_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "結論の妥当性についての批判的な考察",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・データの偏りやサンプル数の妥当性を検討し，結論が本当に正しいか疑問を持てる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・「どのように集めたデータか」「例外はないか」を吟味する態度を養う。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec600_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "代表値",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・平均だけでなく中央値・最頻値も見比べ，どの値が適切な代表値になるか考えられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・一部のデータが極端なときは平均が代表値として適さない場合など，具体例を示す。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec600_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "ドットプロット",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・打点した分布を眺めて，どのあたりが多いかや外れ値の有無を把握できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・個々のデータを失わずに全体像を捉える利点を理解する。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 400,
+               "unit_id": "unit_s1_g6_sec600_400",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "度数分布を表す表やグラフ",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・区間ごとの度数を見て，「どこに集中しているか」「ばらつきはどうか」を説明できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・ヒストグラムの谷や山などに着目し，分布の特徴に言及する。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 500,
+               "unit_id": "unit_s1_g6_sec600_500",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "起こり得る場合の数",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・コインを2枚投げるときの結果の通り数などを数え，確率的観点への興味を持てる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・ゲーム感覚で取り組ませ，確率の基本アイデアを培う。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 700,
+         "json_id": "sec_s1_g6_700",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "B",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "図形の計量",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec700_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "円の求積",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・円の面積公式（πr²）を理解し，具体的数値に当てはめて計算できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・円周率の活用を再確認し，面積公式の由来（扇形の並べ替え等）を体験的に学ぶ。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 800,
+         "json_id": "sec_s1_g6_800",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "B",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "図形の計量",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec800_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "角柱，円柱の求積",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・角柱や円柱の側面積・表面積・体積を公式により求められる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・実際の容器や円柱模型を使い，公式の妥当性を検証する活動を行う。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 900,
+         "json_id": "sec_s1_g6_900",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "B",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "図形の活用",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec900_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "概形（がいけい）とおよその面積",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・大まかな形を使って，およその面積を推定し，見積もりをする活動ができる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・複雑な図形をいくつかの単純形に分けるなど，実用的な近似の方法を学ばせる。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 1000,
+         "json_id": "sec_s1_g6_1000",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "C",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "比例と反比例",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec1000_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比例の関係",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・一方が x 倍なら他方も x 倍となる関係を式やグラフで示し，特徴を読み取れる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学の比例・関数分野へスムーズにつなげるために，式とグラフの対応を強調。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec1000_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比例の関係を用いた問題解決の方法",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・未知の量を式や計算で求めたり，グラフから読み取ったりして問題を解決できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・文章題や実験データを使って，より実践的に比例を使う力を育成。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec1000_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "反比例の関係",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・一方が x 倍になると他方は 1/x 倍になる関係をグラフや式でとらえられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・水槽への注水時間，人数での分担作業など，身近な反比例場面を提示する。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 400,
+               "unit_id": "unit_s1_g6_sec1000_400",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比例の関係",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・買い物の単価×数量，移動時間=速度×時間 などを実生活で応用できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・学校行事の準備や家庭内での計画に取り入れ，体験的に理解を定着。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 500,
+               "unit_id": "unit_s1_g6_sec1000_500",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "比例の関係を用いた問題解決の方法",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・複数のデータから式を導き，必要な量を計算で求め，判断に生かせる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・小数・分数計算を組み合わせ，算数的思考力を総合的に発揮する場面を設定。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 1100,
+         "json_id": "sec_s1_g6_1100",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "D",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "統計的な問題解決と代表値",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec1100_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "統計的な問題解決の方法",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・課題を設定し，多面的なデータ収集と分析を計画的に行い，結果をまとめられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・総合的な学習や自由研究とも連携し，一連の手順を自分で組み立てる力を育む。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec1100_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "代表値",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・平均値だけでなく最頻値や中央値の概念に触れ，必要に応じ使い分けられる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・単に「平均＝代表」ではなく，代表値の特性と用途の違いを意識させる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec1100_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "ドットプロット",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・数直線上にデータを一つずつ打点し，分布の様子を視覚化できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・ばらつきや偏りを一目で捉えるための道具として紹介すると効果的。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 400,
+               "unit_id": "unit_s1_g6_sec1100_400",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "度数分布を表す表やグラフ",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・区間ごとの度数をまとめ，ヒストグラムのようなグラフを作成できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・簡易なヒストグラムを通じ，より高度な統計手法への興味を引き出す。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 500,
+               "unit_id": "unit_s1_g6_sec1100_500",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "起こり得る場合の数",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・サイコロやコイン投げなどの試行で，どのような結果が何通りあるかを列挙できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・確率の導入準備として，組合せ的思考に触れさせる。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 1200,
+         "json_id": "sec_s1_g6_1200",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "A",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "式とプログラミング",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec1200_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "文字 a、n などを用いた式表現・式の読み書き（簡潔・一般的）",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・“n + 5” “2a - 1”のような文字式を読み書きし，問題を整理できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学での方程式や不等式導入が円滑になるよう，文字化に慣れさせる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec1200_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "与えられたロジックに渡した値の結果を予測する",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・入力値の変化に伴う出力を表や簡単な式で整理し、結果を正確に特定できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学での方程式や不等式導入が円滑になるよう，文字化に慣れさせる。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec1200_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "複数の処理を経た結果を予想区する",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・条件分岐や繰り返し処理を把握し、いくつかの入力を通して最終的な出力を予測できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学での方程式や不等式導入が円滑になるよう，文字化に慣れさせる。",
+                  "en": ""
+               }
+            }
+         ]
+      },
+      {
+         "order": 1300,
+         "json_id": "sec_s1_g6_1300",
+         "subject_id": "sub_001",
+         "level_id": "lev_006",
+         "grade_id": "gra_006",
+         "learning_category": "A",
+         "status": "PUBLISHED",
+         "version": "1.0.0",
+         "subject": {
+            "ja": "算数",
+            "en": "Mathematics"
+         },
+         "name": {
+            "ja": "規則性",
+            "en": ""
+         },
+         "description": {
+            "ja": "",
+            "en": ""
+         },
+         "units": [
+            {
+               "order": 100,
+               "unit_id": "unit_s1_g6_sec1300_100",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "繰り返しパターンを見いだし、次の形や数を予測する",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・図や表を用いて、一定間隔や繰り返しパターンを抽出し式に表せる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・数列や図形パターンの本質を見極め、中学の関数的思考へつなぐ。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 200,
+               "unit_id": "unit_s1_g6_sec1300_200",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "入力と出力の対応を整理し、n番目など一般形で表す力を養う",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・入力と出力の対応から「n番目」「n+1番目」の値を求める関係を把握する。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・中学数学での一次関数導入前に、変化のきまりを捉える基礎力を養う。",
+                  "en": ""
+               }
+            },
+            {
+               "order": 300,
+               "unit_id": "unit_s1_g6_sec1300_300",
+               "status": "PUBLISHED",
+               "version": "1.0.0",
+               "requirement": {
+                  "ja": "複数の規則が組み合わさった問題でも式変形や表で解決策を見いだす",
+                  "en": ""
+               },
+               "required_competency": {
+                  "ja": "・式変形や表を活用し、複雑な規則の問題（例：等差数列+αなど）を解決できる。",
+                  "en": ""
+               },
+               "background": {
+                  "ja": "・小学校段階での規則性の最終整理として、多様なパターンを扱い思考力を育む。",
+                  "en": ""
+               }
+            }
+         ]
       }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_200",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 200,
-    "name": {
-      "ja": "文字を用いた式",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec200_100",
-        "order": 100,
-        "requirement": {
-          "ja": "文字を用いて数量や計算の関係を一次式で表せる。",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・場面に応じて a や x などの文字を使い「4×x」「y＝7＋x」のような式を正しく立てられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学で学ぶ文字式・方程式への橋渡しとして数の一般化を体験させる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec200_200",
-        "order": 200,
-        "requirement": {
-          "ja": "文字式に数を代入して値を求めたり対応関係を読み取れる。",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・x＝15 など具体値を代入して計算し逆に式から x と y の対応関係を読み取れる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・比例・関数の式操作に自然につながるよう活用事例に慣れさせる。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_300",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 300,
-    "name": {
-      "ja": "分数の計算（乗法・除法）",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec300_100",
-        "order": 100,
-        "requirement": {
-          "ja": "分数の掛け算",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・分数×整数、分数÷整数、分数×分数など多様な乗除混合計算を約分を含め正確に行える。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・図や操作活動を通じて，分数の乗法が「基準量の○/○倍」を表すことを理解し，中学の比例・関数へスムーズに橋渡しする。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec300_200",
-        "order": 200,
-        "requirement": {
-          "ja": "分数÷分数",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・分数÷分数を逆数を用いて乗法に変換し，筆算で正確に計算できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・逆数の概念を活用する考え方は，中学以降の有理数計算や式の変形の基礎となるため，理由付けとセットで定着させる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec300_300",
-        "order": 300,
-        "requirement": {
-          "ja": "乗法及び除法の適用範囲の拡張（分数）",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・(a/b)×(c/d)，(a/b)÷(c/d)など分数同士の乗除を式で表し，計算できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学の有理数計算に向け，整数・小数・分数すべての乗除を総合的に扱う。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec300_400",
-        "order": 400,
-        "requirement": {
-          "ja": "分数の乗法及び除法（多面的）",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・分数×分数，分数÷分数を面積モデルや数直線など複数の観点で捉えられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・計算手順だけでなく，なぜそうなるのかを図解で理解させる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec300_500",
-        "order": 500,
-        "requirement": {
-          "ja": "分数・小数の混合計算（統合的）",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・分数と小数が混在する計算（例：1.2 + 3/5や0.75×2/3）を正しく処理できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学以降のあらゆる数を扱う計算へスムーズにつなげる最終仕上げ。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec300_600",
-        "order": 600,
-        "requirement": {
-          "ja": "分数の倍",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・「○の□倍」を分数で表し，数量を求められる（例：2/3倍は×2/3であることを使用）。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・割合の感覚を深化させ，中学の比例・関数へ接続するために「倍」を比やスケールの視点で扱う。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec300_700",
-        "order": 700,
-        "requirement": {
-          "ja": "分数の文章題",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・日常場面を表す文章題を分数の乗除を用いて式化し，解答まで一貫して示せる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・数量の単位や比較対象を明確化し，誤った分数操作を防ぐ読解・モデリング力を養う。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_400",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 400,
-    "name": {
-      "ja": "比",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec400_100",
-        "order": 100,
-        "requirement": {
-          "ja": "比と比の値",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・a:b の形で二数の関係を表し，比の値 a/b を求めて大小比較や等しい比の判定ができる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・分数・小数との相互変換や比例式の基礎として，比の値を“ひとつの数”として扱う感覚を定着させる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec400_200",
-        "order": 200,
-        "requirement": {
-          "ja": "等しい比の性質",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・a:b = c:d となるとき ad=bc であることを用い，三つの値から未知数を求められる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・比例式への橋渡しとして，項を倍量変換しても比が不変であることを図や数直線で確かめる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec400_300",
-        "order": 300,
-        "requirement": {
-          "ja": "比",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・2:3 のような比を使って，2つの量の大小関係や調整を行える。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・割合・比例の概念と関連し，量の配分や地図の縮尺などにも活かす。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec400_400",
-        "order": 400,
-        "requirement": {
-          "ja": "比",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・レシピの材料配分や縮図作成など，比の視点を使って調整や設計ができる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・先々の拡大図・縮図や中学数学（相似）の理解につなげる。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_500",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 500,
-    "name": {
-      "ja": "縮図や拡大図",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec500_100",
-        "order": 100,
-        "requirement": {
-          "ja": "縮図や拡大図",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・もとの図形を一定の倍率で縮小・拡大する作図ができる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・方眼紙などを利用し，スケールを意識する練習を行う。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec500_200",
-        "order": 200,
-        "requirement": {
-          "ja": "縮図や拡大図による測量",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・地図や設計図などで縮尺を使い，実際の距離や大きさを算出できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・社会科との関連（地図読み取り）などを積極的に取り入れ，教科横断的に扱う。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_600",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 600,
-    "name": {
-      "ja": "統計データの妥当性と代表値 / 度数分布と起こり得る場合",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec600_100",
-        "order": 100,
-        "requirement": {
-          "ja": "結論の妥当性についての批判的な考察",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・データの偏りやサンプル数の妥当性を検討し，結論が本当に正しいか疑問を持てる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・「どのように集めたデータか」「例外はないか」を吟味する態度を養う。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec600_200",
-        "order": 200,
-        "requirement": {
-          "ja": "代表値",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・平均だけでなく中央値・最頻値も見比べ，どの値が適切な代表値になるか考えられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・一部のデータが極端なときは平均が代表値として適さない場合など，具体例を示す。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec600_300",
-        "order": 300,
-        "requirement": {
-          "ja": "ドットプロット",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・打点した分布を眺めて，どのあたりが多いかや外れ値の有無を把握できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・個々のデータを失わずに全体像を捉える利点を理解する。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec600_400",
-        "order": 400,
-        "requirement": {
-          "ja": "度数分布を表す表やグラフ",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・区間ごとの度数を見て，「どこに集中しているか」「ばらつきはどうか」を説明できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・ヒストグラムの谷や山などに着目し，分布の特徴に言及する。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec600_500",
-        "order": 500,
-        "requirement": {
-          "ja": "起こり得る場合の数",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・コインを2枚投げるときの結果の通り数などを数え，確率的観点への興味を持てる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・ゲーム感覚で取り組ませ，確率の基本アイデアを培う。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_700",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 700,
-    "name": {
-      "ja": "図形の計量（円の面積）",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec700_100",
-        "order": 100,
-        "requirement": {
-          "ja": "円の求積",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・円の面積公式（πr²）を理解し，具体的数値に当てはめて計算できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・円周率の活用を再確認し，面積公式の由来（扇形の並べ替え等）を体験的に学ぶ。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_800",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 800,
-    "name": {
-      "ja": "図形の計量（角柱・円柱の体積）",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec800_100",
-        "order": 100,
-        "requirement": {
-          "ja": "角柱，円柱の求積",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・角柱や円柱の側面積・表面積・体積を公式により求められる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・実際の容器や円柱模型を使い，公式の妥当性を検証する活動を行う。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_900",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 900,
-    "name": {
-      "ja": "概形とおよその面積",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec900_100",
-        "order": 100,
-        "requirement": {
-          "ja": "概形（がいけい）とおよその面積",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・大まかな形を使って，およその面積を推定し，見積もりをする活動ができる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・複雑な図形をいくつかの単純形に分けるなど，実用的な近似の方法を学ばせる。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_1000",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 1000,
-    "name": {
-      "ja": "比例と反比例 / 比例の活用",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec1000_100",
-        "order": 100,
-        "requirement": {
-          "ja": "比例の関係",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・一方が x 倍なら他方も x 倍となる関係を式やグラフで示し，特徴を読み取れる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学の比例・関数分野へスムーズにつなげるために，式とグラフの対応を強調。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1000_200",
-        "order": 200,
-        "requirement": {
-          "ja": "比例の関係を用いた問題解決の方法",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・未知の量を式や計算で求めたり，グラフから読み取ったりして問題を解決できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・文章題や実験データを使って，より実践的に比例を使う力を育成。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1000_300",
-        "order": 300,
-        "requirement": {
-          "ja": "反比例の関係",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・一方が x 倍になると他方は 1/x 倍になる関係をグラフや式でとらえられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・水槽への注水時間，人数での分担作業など，身近な反比例場面を提示する。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1000_300b",
-        "order": 400,
-        "requirement": {
-          "ja": "比例の関係",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・買い物の単価×数量，移動時間=速度×時間 などを実生活で応用できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・学校行事の準備や家庭内での計画に取り入れ，体験的に理解を定着。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1000_400",
-        "order": 500,
-        "requirement": {
-          "ja": "比例の関係を用いた問題解決の方法",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・複数のデータから式を導き，必要な量を計算で求め，判断に生かせる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・小数・分数計算を組み合わせ，算数的思考力を総合的に発揮する場面を設定。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_1100",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 1100,
-    "name": {
-      "ja": "統計的な問題解決と代表値 / 度数分布と場合の数",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec1100_100",
-        "order": 100,
-        "requirement": {
-          "ja": "統計的な問題解決の方法",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・課題を設定し，多面的なデータ収集と分析を計画的に行い，結果をまとめられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・総合的な学習や自由研究とも連携し，一連の手順を自分で組み立てる力を育む。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1100_200",
-        "order": 200,
-        "requirement": {
-          "ja": "代表値",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・平均値だけでなく最頻値や中央値の概念に触れ，必要に応じ使い分けられる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・単に「平均＝代表」ではなく，代表値の特性と用途の違いを意識させる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1100_300",
-        "order": 300,
-        "requirement": {
-          "ja": "ドットプロット",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・数直線上にデータを一つずつ打点し，分布の様子を視覚化できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・ばらつきや偏りを一目で捉えるための道具として紹介すると効果的。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1100_400",
-        "order": 400,
-        "requirement": {
-          "ja": "度数分布を表す表やグラフ",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・区間ごとの度数をまとめ，ヒストグラムのようなグラフを作成できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・簡易なヒストグラムを通じ，より高度な統計手法への興味を引き出す。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1100_500",
-        "order": 500,
-        "requirement": {
-          "ja": "起こり得る場合の数",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・サイコロやコイン投げなどの試行で，どのような結果が何通りあるかを列挙できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・確率の導入準備として，組合せ的思考に触れさせる。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_1200",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 1200,
-    "name": {
-      "ja": "式とプログラミング",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec1200_100",
-        "order": 100,
-        "requirement": {
-          "ja": "文字 a、n などを用いた式表現・式の読み書き（簡潔・一般的）",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・“n + 5” “2a - 1”のような文字式を読み書きし，問題を整理できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学での方程式や不等式導入が円滑になるよう，文字化に慣れさせる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1200_200",
-        "order": 200,
-        "requirement": {
-          "ja": "与えられたロジックに渡した値の結果を予測する",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・入力値の変化に伴う出力を表や簡単な式で整理し、結果を正確に特定できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学での方程式や不等式導入が円滑になるよう，文字化に慣れさせる。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1200_300",
-        "order": 300,
-        "requirement": {
-          "ja": "複数の処理を経た結果を予測する",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・条件分岐や繰り返し処理を把握し、いくつかの入力を通して最終的な出力を予測できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学での方程式や不等式導入が円滑になるよう，文字化に慣れさせる。",
-          "en": ""
-        }
-      }
-    ]
-  },
-  {
-    "json_id": "sec_s1_g6_1300",
-    "subject_id": "sub_001",
-    "level_id": "lev_006",
-    "grade_id": "gra_006",
-    "learning_category": "A",
-    "status": "PUBLISHED",
-    "version": "1.0.0",
-    "subject": {
-      "ja": "算数",
-      "en": "Mathematics"
-    },
-    "order": 1300,
-    "name": {
-      "ja": "規則性",
-      "en": ""
-    },
-    "units": [
-      {
-        "unit_id": "unit_s1_g6_sec1300_100",
-        "order": 100,
-        "requirement": {
-          "ja": "繰り返しパターンを見いだし、次の形や数を予測する",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・図や表を用いて、一定間隔や繰り返しパターンを抽出し式に表せる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・数列や図形パターンの本質を見極め、中学の関数的思考へつなぐ。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1300_200",
-        "order": 200,
-        "requirement": {
-          "ja": "入力と出力の対応を整理し、n番目など一般形で表す力を養う",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・入力と出力の対応から「n番目」「n+1番目」の値を求める関係を把握する。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・中学数学での一次関数導入前に、変化のきまりを捉える基礎力を養う。",
-          "en": ""
-        }
-      },
-      {
-        "unit_id": "unit_s1_g6_sec1300_300",
-        "order": 300,
-        "requirement": {
-          "ja": "複数の規則が組み合わさった問題でも式変形や表で解決策を見いだす",
-          "en": ""
-        },
-        "required_competency": {
-          "ja": "・式変形や表を活用し、複雑な規則の問題（例：等差数列+αなど）を解決できる。",
-          "en": ""
-        },
-        "background": {
-          "ja": "・小学校段階での規則性の最終整理として、多様なパターンを扱い思考力を育む。",
-          "en": ""
-        }
-      }
-    ]
-  }
-]
+   ]
+}
 
 ```
