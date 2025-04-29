@@ -114,7 +114,7 @@ question_sets にリレーションしている questions の json_id を配列�
 "en": "In this drill, you will practice adding and subtracting three- or four-digit numbers. Focus on learning the correct written methods for carrying and borrowing, and aim to calculate with accuracy."
 },
 "background": {
-"ja": "このドリルは、繰り上がり・繰り下がりの処理を伴う3桁＋3桁の加法問題を中心に構成しています。位ごとに正しく計算できるようになることを重視し、例えば「315+276」や「459+276」のように複数の繰り上がりが絡む問題を含んでいます。4桁の加減算にも応用可能な力を養うため、位取りを意識させる練習を重ねることを狙いとしています。類似の例として、単純な2桁や4桁の問題も関連が深いですが、今回は3桁どうしの組み合わせを中心に問題を配置しています。（ユーザーには非表示）",
+"ja": "このドリルは、繰り上がり・繰り下がりの処理を伴う3桁+3桁の加法問題を中心に構成しています。位ごとに正しく計算できるようになることを重視し、例えば「315+276」や「459+276」のように複数の繰り上がりが絡む問題を含んでいます。4桁の加減算にも応用可能な力を養うため、位取りを意識させる練習を重ねることを狙いとしています。類似の例として、単純な2桁や4桁の問題も関連が深いですが、今回は3桁どうしの組み合わせを中心に問題を配置しています。（ユーザーには非表示）",
 "en": "This drill mainly features three-digit addition problems requiring you to handle carrying and borrowing properly. For instance, you will see exercises like '315+276' or '459+276,' both of which involve multiple carry steps. By concentrating on place-value alignment, you'll develop skills that also apply to four-digit addition and subtraction. Although two-digit or four-digit problems are closely related, our primary focus here is on three-digit computations. (Not displayed to the user)"
 },
 "generate_question_prompt": {
@@ -1079,7 +1079,7 @@ class LlmManageService
      * --------------------------------------------------------------------------------
      * 【仕様】
      *   - QuestionSet 情報をもとにプロンプトを作り、LLMに投げて問題JSONを受け取る。
-     *   - 受け取った JSON は呼び出し元でバリデーション＋DB登録するのが推奨。
+     *   - 受け取った JSON は呼び出し元でバリデーション+DB登録するのが推奨。
      *
      * @param QuestionSet $questionSet
      * @return array 生成された問題JSON (連想配列)

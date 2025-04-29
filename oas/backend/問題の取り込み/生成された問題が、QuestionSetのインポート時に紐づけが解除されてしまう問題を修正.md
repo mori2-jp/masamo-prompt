@@ -54,11 +54,11 @@ order は、question_set_id がグループのキーとしたいので、questio
     "en": "Addition and Subtraction of Three- and Four-Digit Numbers"
   },
   "title": {
-    "ja": "3桁＋3桁の足し算",
+    "ja": "3桁+3桁の足し算",
     "en": "3-Digit Plus 3-Digit Addition"
   },
   "description": {
-    "ja": "このドリルでは、3桁＋3桁の整数を正しく筆算できるようになることを目指します。繰り上がりに注意しながら位をそろえて計算するコツを身につけ、素早く正確な計算力を養いましょう。",
+    "ja": "このドリルでは、3桁+3桁の整数を正しく筆算できるようになることを目指します。繰り上がりに注意しながら位をそろえて計算するコツを身につけ、素早く正確な計算力を養いましょう。",
     "en": "In this drill, we focus on accurately performing addition of two three-digit numbers. Learn how to handle carrying properly while aligning each place value, and build speed and accuracy in your calculations."
   },
   "background": {
@@ -66,7 +66,7 @@ order は、question_set_id がグループのキーとしたいので、questio
     "en": "Based on Guideline No. 37 (Addition and subtraction of three- and four-digit numbers), the goal is to develop precise addition skills for two three-digit numbers. This set includes problems ranging from those requiring a single carry to those with multiple carries, gradually increasing in difficulty. For instance, there are cases where carrying occurs twice or in multiple digit places, helping you not just find answers but also systematically learn written methods, place value concepts, and carrying procedures."
   },
   "generate_question_prompt": {
-    "ja": "3桁＋3桁の整数同士の足し算を、繰り上がりの有無ともにバリエーション豊富に1問作成してください。位を正しくそろえることや、くり上がりの処理に焦点を当てた問題にしてください。問題文は小学生が取り組みやすい形式で、式の形や穴埋めの形など、やさしい日本語でまとめてください。",
+    "ja": "3桁+3桁の整数同士の足し算を、繰り上がりの有無ともにバリエーション豊富に1問作成してください。位を正しくそろえることや、くり上がりの処理に焦点を当てた問題にしてください。問題文は小学生が取り組みやすい形式で、式の形や穴埋めの形など、やさしい日本語でまとめてください。",
     "en": "Please create a single addition problem involving two three-digit numbers, including variations of carrying or no carrying. Emphasize aligning digits correctly and handling carries. Present the problem in a clear format suitable for elementary school learners, using either a direct equation or a fill-in-the-blank style."
   },
   "generate_question_prompt_file_name": "fill_in_the_blank",
