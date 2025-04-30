@@ -7,7 +7,7 @@ JSON構造を元にユーザー（回答者）が回答出来るように問題�
 # 条件
 ・No4についての問題を作成してください
 1位数や簡単な2位数の加法及び減法 について、例題のような 回答が１位数になるひき算 の問題を作問してください。 question は1問だけね。
-例題： 6−6＝ □
+例題： 6-2＝ □
 
 
 小学1年生向けなので、回答がマイナスにならないようにしてください
@@ -91,23 +91,23 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
 **evaluation_spec** は、ユーザーが入力した回答を「正解かどうか」判定するための設定情報をまとめた部分です。
 
 - **evaluation_spec.evaluation_method**
-  - 今回は "CODE" が確定しています（他の方法は省略）。
+    - 今回は "CODE" が確定しています（他の方法は省略）。
 - **evaluation_spec.checker_method**
-  - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
-  - 例: `"CHECK_BY_EXACT_MATCH"`
+    - "CODE" のときは必須となる文字列で、`EvaluationCheckerMethod` に定義されている値のいずれかです。
+    - 例: `"CHECK_BY_EXACT_MATCH"`
 - **evaluation_spec.response_format**
-  - 回答判定の結果や、問題・解説の文言を指定する部分です。
-  - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
-  - **question_text / explanation / question**: 多言語オブジェクト（{ja, en} など）の形式を取り、問題文や解説文を埋め込みます。
-    - `evaluation_method="CODE"` では、この中身は実際の問題文と同じ内容を持ちます（metadata 内のものと一致）。
-  - **fields**:
-    - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
-    - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
-      - **field_id**: `"f_1"`, `"f_2"` など。
-      - **user_answer**: ユーザー入力値の型を表し、`"number"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
-      - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
-      - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数値なら `{ja: 500, en: 500}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
-      - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
+    - 回答判定の結果や、問題・解説の文言を指定する部分です。
+    - **is_correct / score**: 文字列 `"boolean"` / `"number"` を入れておき、全体正解かどうか、スコアを表す際に使います。
+    - **question_text / explanation / question**: 多言語オブジェクト（{ja, en} など）の形式を取り、問題文や解説文を埋め込みます。
+        - `evaluation_method="CODE"` では、この中身は実際の問題文と同じ内容を持ちます（metadata 内のものと一致）。
+    - **fields**:
+        - `"CODE"` では必須ではありませんが、**fill_in_the_blank** 問題の場合によく使われます。
+        - `fields` 配列には、ユーザーの各解答欄ごとの正誤情報や正解データを定義し、**field_id** で **metadata.input_format.fields** と対応付けます。
+            - **field_id**: `"f_1"`, `"f_2"` など。
+            - **user_answer**: ユーザー入力値の型を表し、`"number"` などを指定（実際のユーザー入力そのものはフロント側で受け取ります）。
+            - **is_correct**: `"boolean"` 文字列固定。個々のフィールドが正解か否か。
+            - **collect_answer**: 多言語オブジェクトで、正解となる値を `{ja, en}` の各言語で示します。数値なら `{ja: 500, en: 500}` のようになります。実際にはユーザーには見せず、フロント側・CheckerMethodなどで使われます。
+            - **field_explanation**: なぜその回答になるのかを、多言語形式で記載する解説文です。空文字は禁止。
 
 ### **fields と metadata.input_format.fields の関係**
 - **evaluation_spec.response_format.fields[].field_id** と **metadata.input_format.fields[].field_id** が同じ値を使うことで、
@@ -120,31 +120,31 @@ created_atとupdated_at には、Y-m-d H:i:s 形式で生成した時間を入�
 
 **metadata** は、問題を表示するためのUI情報や、問題文そのもののデータを定義する部分です。
 - **metadata.question_type**
-  - 問題の形式を表し、"FILL_IN_THE_BLANK" などが入ります。
+    - 問題の形式を表し、"FILL_IN_THE_BLANK" などが入ります。
 - **metadata.question_text**
-  - 問題文のタイトルや指示文。
-  - 例: 「▢にあてはまる数を答えなさい。」
+    - 問題文のタイトルや指示文。
+    - 例: 「▢にあてはまる数を答えなさい。」
 - **metadata.question**
-  - 実際の問題式や文章を多言語オブジェクトで定義。
-  - 例: 「315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢」
+    - 実際の問題式や文章を多言語オブジェクトで定義。
+    - 例: 「315 + 276 = (300 + 200) + (10 + 70) + (5 + 6) = ▢ + ▢ + ▢ = ▢」
 - **metadata.explanation**
-  - 問題全体の解説を多言語オブジェクト形式で記入します。学習者が回答前に見るので回答など具体的な問題の内容に触れてはいけません。
-  - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
+    - 問題全体の解説を多言語オブジェクト形式で記入します。学習者が回答前に見るので回答など具体的な問題の内容に触れてはいけません。
+    - 例: 「3桁の数の足し算を位ごとに考えることで正確に計算する方法を学びます。」
 - **metadata.background**
-  - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
-  - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
+    - 出題意図や、なぜこのような問題にしたかなどを多言語オブジェクト形式で記述します。
+    - 例: 「この問題は、学習者が位取りの考え方に慣れることを目的としています。」
 - **metadata.input_format**
-  - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
-  - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
-  - **fields**: ユーザーが回答を入力する欄の定義を配列でまとめます。
-    - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
-    - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
-    - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
-  - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。
-    - **type**: `"text"`, `"newline"`, `"input_field"` など。
-    - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
-    - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
-    - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
+    - フロントエンドが問題画面を組み立てる際のルールを定義する部分です。
+    - **type**: `"fixed"` or `"custom"` など、入力欄数が固定かどうかを指定。
+    - **fields**: ユーザーが回答を入力する欄の定義を配列でまとめます。
+        - **field_id**: `"f_1"`, `"f_2"` など。**evaluation_spec.response_format.fields** のそれぞれと対応付けされます。
+        - **attribute**: `"number"` などの属性。フロントエンドで `<input type="number">` のように使われる想定。
+        - **user_answer**: "number" など、実際の回答の型を指定。**collect_answer** はここには絶対に含めない（ユーザーに答えが見えてしまうため禁止）。
+    - **question_components**: UI で問題文をどう表示するか、テキストや改行、ブランク欄などを順番 (`order`) に並べます。
+        - **type**: `"text"`, `"newline"`, `"input_field"` など。
+        - **field_id**: `type="input_field"` の場合に、metadata.input_format.fields[] と紐づくIDを指定。
+        - **content**: ここに `{ja, en}` の多言語テキストを入れることで、問題を細かく分割した表示が可能です。
+        - **order**: フロント側でこの順序を見て画面を構築します。重複禁止で、小さい順に並べた要素から順に表示されるイメージです。
 
 **ポイント**: fill_in_the_blank の問題では
 - 「**metadata.input_format** の fields → どこに回答欄があるか」
