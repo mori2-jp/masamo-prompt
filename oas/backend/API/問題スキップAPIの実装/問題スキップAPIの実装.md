@@ -32,7 +32,8 @@ UserQuestion の Status が、UserQuestionStatus::NOT_START または PROGRESS �
 # 説明
 question_sets：問題（questions）を束ねるグループ
 questions: 問題
-unit: 単元
+sections: 単元をまとめるセクション
+unit: 問題セットをまとめる単元
 question_set_questions：question_sets と questions を紐づけるPivotテーブル。questions は複数のquestion_sets に紐づく事があり多対多の関係なのでこのような設計になっている。
 user_question_sets: ユーザーが学習した questions_sets。学習開始時に question_sets_id と紐づいて status （UserQuestionSetsStatus::NOT_START) が未開始の状態で生成され、進捗ステータスはスコアなどが管理される
 user_questions: ユーザーが学習した questions。学習開始時に、学習を開始した question_sets に紐づく questions が全て、 user_question_sets_id と question_id（questions）を紐づけて status （UserQuestionStatus::NOT_START) が未開始の状態で全てのquestionsの数の分、生成され、進捗ステータスはスコアなどが管理される
